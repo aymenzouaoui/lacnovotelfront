@@ -1,0 +1,554 @@
+/* Import the base styles from Dashboard.css */
+@import url("./Dashboard.css");
+
+/* Additional styles specific to the Offres page */
+
+.search-filter-container {
+  display: flex;
+  margin-bottom: 20px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.search-container {
+  position: relative;
+  flex: 1;
+  min-width: 250px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-medium);
+  font-size: 16px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 16px 12px 44px;
+  background: var(--bg-darker);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+  color: #3399ff;
+  font-size: 14px;
+  transition: var(--transition-normal);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(106, 48, 147, 0.2);
+}
+
+.search-input::placeholder {
+  color: var(--text-dim);
+}
+
+.view-sort-container {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.view-toggle {
+  display: flex;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.view-btn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.view-btn.active {
+  background: rgba(236, 64, 122, 0.6);
+}
+
+.sort-select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: #dc007d;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.sort-select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.form-container {
+  margin-bottom: 24px;
+}
+
+.offre-form {
+  background: var(--gradient-card);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.offre-form input,
+.offre-form textarea,
+.offre-form select {
+  padding: 12px 16px;
+  font-size: 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.05);
+  color: #3399ff;
+  transition: var(--transition-normal);
+}
+
+.offre-form input:focus,
+.offre-form textarea:focus,
+.offre-form select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(106, 48, 147, 0.2);
+}
+
+.offre-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.btn {
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-normal);
+  border: none;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary {
+  background: var(--gradient-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--gradient-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #3399ff;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Add preview image styling */
+.preview-img {
+  max-width: 200px;
+  max-height: 150px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Offres List */
+.offres-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.offres-list.list-view {
+  grid-template-columns: 1fr;
+}
+
+.offre-card {
+  background: var(--gradient-card);
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: var(--shadow-md);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.offre-card .card-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.offre-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.offre-card h3 {
+  margin-top: 0;
+  font-size: 18px;
+  color: var(--text-brightest);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.offre-card p {
+  margin: 8px 0;
+  color: var(--text-medium);
+  font-size: 14px;
+}
+
+.condition-preview {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  padding: 12px;
+  font-size: 14px;
+  margin-top: 12px;
+  white-space: pre-wrap;
+  border-radius: var(--radius-md);
+  color: var(--text-medium);
+  font-family: monospace;
+}
+
+.offre-actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 16px;
+}
+
+.btn-edit {
+  background: var(--primary);
+  color: white;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-normal);
+}
+
+.btn-edit:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+}
+
+.btn-delete {
+  background: var(--accent-red);
+  color: white;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition-normal);
+}
+
+.btn-delete:hover {
+  background: #d81b60;
+  transform: translateY(-2px);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  background: var(--gradient-card);
+  border-radius: var(--radius-lg);
+  max-width: 500px;
+  margin: 24px auto;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: var(--shadow-md);
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.7;
+}
+
+.empty-state h3 {
+  font-size: 20px;
+  margin-bottom: 8px;
+  color: var(--text-brightest);
+}
+
+.empty-state p {
+  margin-bottom: 24px;
+  color: var(--text-medium);
+}
+
+/* List View Styles */
+.list-view .offre-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+
+.list-view .offre-card .card-image {
+  width: 150px;
+  height: 150px;
+  flex-shrink: 0;
+  margin-bottom: 0;
+}
+
+/* Menus Container Styles - For Participants */
+.menus-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+  transition: all 0.3s ease;
+}
+
+.menus-container.list {
+  grid-template-columns: 1fr;
+}
+
+/* Menu Card Styles */
+.menu-card {
+  background: var(--gradient-card);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  height: fit-content !important;
+  padding-bottom: 0 !important;
+}
+
+.menu-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.card-image {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
+.menu-content {
+  padding: 16px !important;
+  flex: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  margin-bottom: 0 !important;
+}
+
+.menu-card h3 {
+  font-size: 16px;
+  margin: 0 0 8px 0;
+  color: var(--text-brightest);
+  font-weight: 600;
+}
+
+.menu-items-count {
+  color: var(--text-medium);
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.menu-card-actions {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  margin: 8px 16px 16px 16px !important;
+}
+
+.menu-card-actions .btn {
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 6px;
+  min-width: auto;
+  flex: none;
+}
+
+/* List View Styles */
+.menus-container.list .menu-card {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  padding: 0 !important;
+  height: 80px !important;
+  max-height: 80px !important;
+  min-height: 80px !important;
+  width: 100% !important;
+  position: relative !important;
+}
+
+.menus-container.list .card-image,
+.menus-container.list .participant-avatar {
+  width: 80px !important;
+  height: 80px !important;
+  object-fit: cover !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: var(--gradient-primary) !important;
+  font-size: 32px !important;
+  color: white !important;
+  font-weight: bold !important;
+}
+
+.menus-container.list .menu-content {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  width: calc(100% - 80px) !important;
+  height: 100% !important;
+  position: absolute !important;
+  left: 80px !important;
+  top: 0 !important;
+  padding: 0 16px !important;
+}
+
+.menus-container.list h3 {
+  margin: 0 !important;
+  font-size: 16px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 200px !important;
+  position: absolute !important;
+  left: 16px !important;
+}
+
+.menus-container.list .menu-card-actions {
+  display: flex !important;
+  gap: 8px !important;
+  position: absolute !important;
+  right: 16px !important;
+  margin: 0 !important;
+}
+
+.menus-container.list .btn {
+  padding: 4px 8px !important;
+  font-size: 12px !important;
+  height: auto !important;
+  min-height: unset !important;
+  white-space: nowrap !important;
+}
+
+/* Grid View Styles - Exact match to SkyLounge */
+.menus-container:not(.list) .menu-card {
+  height: 280px !important;
+  max-height: 280px !important;
+}
+
+.menus-container:not(.list) .participant-avatar {
+  width: 100% !important;
+  height: 160px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: var(--gradient-primary) !important;
+  font-size: 72px !important;
+  color: white !important;
+  font-weight: bold !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .list-view .offre-card {
+    flex-direction: column;
+  }
+
+  .list-view .offre-card .card-image {
+    width: 100%;
+    height: 180px;
+  }
+
+  .menus-container.list .menu-card {
+    height: 80px !important;
+  }
+
+  .menus-container.list h3 {
+    max-width: 150px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn {
+    width: 100%;
+  }
+
+  .menus-container.list .menu-card {
+    height: 80px !important;
+  }
+
+  .menus-container.list h3 {
+    max-width: 120px !important;
+  }
+
+  .menus-container.list .btn {
+    padding: 3px 6px !important;
+    font-size: 11px !important;
+  }
+}
+.card-action-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(5px);
+  transition: background 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.edit-btn:hover {
+  background: rgba(78, 205, 196, 0.8);
+}
+
+.delete-btn:hover {
+  background: rgba(255, 107, 107, 0.8);
+}

@@ -1,0 +1,190 @@
+/* Import the base styles from Dashboard.css */
+@import url("./Dashboard.css");
+
+/* Additional styles specific to the Profile page */
+
+.profile-info-container {
+  background: var(--gradient-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 24px;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  padding: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: linear-gradient(to right, rgba(106, 48, 147, 0.1), rgba(236, 64, 122, 0.1));
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-full);
+  background: var(--gradient-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 32px;
+  margin-right: 24px;
+  box-shadow: var(--shadow-glow);
+}
+
+.profile-name {
+  flex: 1;
+}
+
+.profile-name h3 {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-brightest);
+  margin-bottom: 4px;
+}
+
+.profile-name p {
+  font-size: 16px;
+  color: var(--text-medium);
+}
+
+.profile-details {
+  padding: 24px;
+}
+
+.profile-detail-item {
+  display: flex;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.profile-detail-item:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.detail-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-right: 20px;
+  flex-shrink: 0;
+}
+
+.detail-content {
+  flex: 1;
+}
+
+.detail-content h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-brightest);
+  margin-bottom: 8px;
+}
+
+.detail-content p {
+  font-size: 15px;
+  color: var(--text-medium);
+}
+
+.change-password-button {
+  margin-top: 12px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-full);
+  color: var(--text-medium);
+  font-size: 14px;
+  transition: var(--transition-normal);
+}
+
+.change-password-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-brightest);
+  transform: translateY(-2px);
+}
+
+/* Modal form styles */
+.modal-content {
+  padding: 24px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-medium);
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--bg-darkest);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+color: #3399ff;
+  font-size: 14px;
+  transition: var(--transition-normal);
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(106, 48, 147, 0.2);
+}
+
+.form-group input::placeholder {
+  color: var(--text-dim);
+}
+
+.password-error {
+  color: var(--accent-red);
+  font-size: 14px;
+  margin-top: -10px;
+  margin-bottom: 20px;
+  padding: 8px 12px;
+  background: rgba(255, 107, 107, 0.1);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--accent-red);
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .profile-avatar {
+    margin-right: 0;
+    margin-bottom: 16px;
+  }
+
+  .profile-detail-item {
+    flex-direction: column;
+  }
+
+  .detail-icon {
+    margin-right: 0;
+    margin-bottom: 16px;
+    align-self: center;
+  }
+
+  .detail-content {
+    text-align: center;
+  }
+}

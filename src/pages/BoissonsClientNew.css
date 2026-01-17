@@ -1,0 +1,565 @@
+/* New CSS file for drinks page with unique class names */
+
+/* Global styles */
+.hotel-app-drinks {
+  min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.hotel-app-drinks::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("https://itbafa.com/images/restaurants.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(3px);
+  opacity: 0.25;
+  z-index: -1;
+}
+
+/* Header styles */
+.app-header-drinks {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 71, 171, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-back-link-drinks {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #0047ab;
+  text-decoration: none;
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.header-back-link-drinks:hover {
+  color: #003d96;
+}
+
+.logo-container-drinks {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.logo-drinks {
+  height: 40px;
+  width: auto;
+}
+
+/* Main content */
+.app-main-drinks {
+  flex: 1;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+/* Menu display container */
+.menu-display-container-drinks {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+  z-index: 2;
+}
+
+/* Menu spread - book-like layout */
+.menu-spread-drinks {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 71, 171, 0.15);
+  overflow: hidden;
+  margin-bottom: 2rem;
+  min-height: 600px;
+  position: relative;
+  z-index: 2;
+}
+
+.menu-content-drinks {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 600px;
+}
+
+/* Left side - Category Image */
+.menu-image-side-drinks {
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-right: 2px solid #e9ecef;
+}
+
+.menu-image-drinks {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.menu-image-placeholder-drinks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  color: #0047ab;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Right side - Drinks Items */
+.menu-items-side-drinks {
+  padding: 2rem;
+  overflow-y: auto;
+  max-height: 600px;
+}
+
+.menu-title-drinks {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0047ab;
+  margin-bottom: 2rem;
+  text-align: center;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 1rem;
+}
+
+.menu-items-list-drinks {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.menu-item-drinks {
+  padding: 1rem;
+  border-radius: 8px;
+  background: #f8f9fa;
+  border-left: 4px solid #0047ab;
+  transition: all 0.3s ease;
+}
+
+.menu-item-drinks:hover {
+  background: #e3f2fd;
+  transform: translateX(4px);
+}
+
+.menu-item-header-drinks {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  gap: 1rem;
+}
+
+.menu-item-name-drinks {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  flex: 1;
+}
+
+.menu-item-price-drinks {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0047ab;
+  white-space: nowrap;
+}
+
+.menu-item-description-drinks {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Menu navigation */
+.menu-navigation-drinks {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.nav-button-drinks {
+  background: white;
+  border: 2px solid #0047ab;
+  color: #0047ab;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-button-drinks:hover:not(:disabled) {
+  background: #0047ab;
+  color: white;
+  transform: scale(1.1);
+}
+
+.nav-button-drinks:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Loading and empty states */
+.loading-container-drinks {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  color: #0047ab;
+}
+
+.loading-spinner-drinks {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #e3f2fd;
+  border-top: 4px solid #0047ab;
+  border-radius: 50%;
+  animation: spin-drinks 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin-drinks {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.empty-menu-drinks {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-style: italic;
+}
+
+/* Footer */
+.app-footer-drinks {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(0, 71, 171, 0.1);
+  padding: 2rem;
+  text-align: center;
+  margin-top: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.footer-content-drinks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.footer-section-drinks {
+  color: #666;
+}
+
+.footer-section-drinks h4 {
+  color: #0047ab;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.footer-section-drinks p {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.social-links-drinks {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.social-links-drinks a {
+  color: #0047ab;
+  transition: color 0.3s ease;
+}
+
+.social-links-drinks a:hover {
+  color: #003d96;
+}
+
+.copyright-drinks {
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  border-top: 1px solid rgba(0, 71, 171, 0.1);
+  padding-top: 2rem;
+}
+
+.copyright-drinks a {
+  color: #0047ab;
+  text-decoration: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .app-header-drinks {
+    padding: 1rem;
+  }
+
+  .app-main-drinks {
+    padding: 1rem;
+  }
+
+  .footer-content-drinks {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+    text-align: center;
+  }
+
+  /* Mobile menu layout - keep side by side but fix image and spacing */
+  .menu-spread-drinks {
+    min-height: auto;
+  }
+
+  .menu-content-drinks {
+    display: grid;
+    grid-template-columns: 60% 40%;
+    min-height: 600px;
+  }
+
+  .menu-image-side-drinks {
+    height: auto;
+    min-height: 200px;
+    border-right: 2px solid #e9ecef;
+    border-bottom: none;
+    flex-shrink: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    background: #f8f9fa;
+  }
+
+  .menu-image-drinks {
+    width: 100%;
+    height: auto;
+    min-height: 200px;
+    max-height: 250px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .menu-items-side-drinks {
+    padding: 1rem;
+    max-height: none;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .menu-title-drinks {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .menu-items-list-drinks {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem; /* Reduced gap */
+  }
+
+  .menu-item-drinks {
+    padding: 0.75rem;
+    margin-bottom: 0; /* Remove margin-bottom */
+  }
+
+  .menu-item-name-drinks {
+    font-size: 1rem;
+  }
+
+  .menu-item-price-drinks {
+    font-size: 1rem;
+  }
+
+  .menu-item-description-drinks {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-header-drinks {
+    padding: 0.75rem;
+  }
+
+  .logo-drinks {
+    height: 32px;
+  }
+
+  .footer-content-drinks {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* Keep side by side layout with better proportions for very small screens */
+  .menu-content-drinks {
+    grid-template-columns: 55% 45%;
+    min-height: 550px;
+  }
+
+  .menu-image-side-drinks {
+    min-height: 180px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    background: #f8f9fa;
+  }
+
+  .menu-image-drinks {
+    width: 100%;
+    height: auto;
+    min-height: 180px;
+    max-height: 220px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .menu-items-side-drinks {
+    padding: 0.75rem;
+  }
+
+  .menu-title-drinks {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.25rem;
+  }
+
+  .menu-items-list-drinks {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* Even smaller gap for very small screens */
+  }
+
+  .menu-item-drinks {
+    padding: 0.5rem;
+    margin-bottom: 0; /* Remove margin-bottom */
+  }
+
+  .menu-item-name-drinks {
+    font-size: 0.9rem;
+  }
+
+  .menu-item-price-drinks {
+    font-size: 0.9rem;
+  }
+
+  .menu-item-description-drinks {
+    font-size: 0.8rem;
+    line-height: 1.3;
+  }
+
+  .menu-item-header-drinks {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+}
+
+/* Animation classes for menu transitions */
+.slide-out-left-drinks {
+  animation: slideOutLeft-drinks 0.3s ease-in-out;
+}
+
+.slide-out-right-drinks {
+  animation: slideOutRight-drinks 0.3s ease-in-out;
+}
+
+.slide-in-left-drinks {
+  animation: slideInLeft-drinks 0.3s ease-in-out;
+}
+
+.slide-in-right-drinks {
+  animation: slideInRight-drinks 0.3s ease-in-out;
+}
+
+@keyframes slideOutLeft-drinks {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+@keyframes slideOutRight-drinks {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes slideInLeft-drinks {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight-drinks {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

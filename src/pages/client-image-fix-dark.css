@@ -1,0 +1,232 @@
+/* Client page image carousel fixes for small screens - Dark mode styles */
+
+/* Fix navigation arrows positioning and visibility */
+.image-nav-btn-new-dark {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 15;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.image-nav-btn-new-dark:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.image-nav-btn-new-dark:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.prev-image-new-dark {
+  left: 10px;
+}
+
+.next-image-new-dark {
+  right: 10px;
+}
+
+/* Image counter positioning */
+.image-counter-new-dark {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  z-index: 15;
+}
+
+/* Image dots positioning */
+.image-dots-new-dark {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 0;
+  margin-top: auto;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+}
+
+.image-dot-new-dark {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.image-dot-new-dark.active {
+  background: white;
+  transform: scale(1.2);
+}
+
+.image-dot-new-dark:hover {
+  background: white;
+}
+
+/* Small screens - make images display vertically within the image section */
+@media (max-width: 768px) {
+  /* Keep the side-by-side layout but adjust image section for vertical image display */
+  .menu-image-carousel-new-dark {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 8px;
+  }
+  
+  .carousel-container-new-dark {
+    position: relative;
+    flex: 1;
+    min-height: 200px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  /* Adjust navigation arrows for mobile */
+  .image-nav-btn-new-dark {
+    width: 32px;
+    height: 32px;
+  }
+
+  .prev-image-new-dark {
+    left: 8px;
+  }
+
+  .next-image-new-dark {
+    right: 8px;
+  }
+
+  .image-counter-new-dark {
+    top: 8px;
+    right: 8px;
+    font-size: 0.7rem;
+    padding: 3px 6px;
+  }
+
+  .image-dots-new-dark {
+    gap: 6px;
+    padding: 8px 0;
+    bottom: 8px;
+  }
+
+  .image-dot-new-dark {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+  .carousel-container-new-dark {
+    min-height: 180px;
+  }
+  
+  .image-nav-btn-new-dark {
+    width: 28px;
+    height: 28px;
+  }
+
+  .prev-image-new-dark {
+    left: 5px;
+  }
+
+  .next-image-new-dark {
+    right: 5px;
+  }
+
+  .image-counter-new-dark {
+    font-size: 0.65rem;
+    padding: 2px 4px;
+  }
+
+  .image-dots-new-dark {
+    gap: 4px;
+    padding: 6px 0;
+    bottom: 6px;
+  }
+
+  .image-dot-new-dark {
+    width: 5px;
+    height: 5px;
+  }
+}
+
+/* Ensure carousel container has proper positioning */
+.carousel-container-new-dark {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.carousel-container-new-dark .menu-image-new {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+/* Fix z-index issues */
+.menu-image-carousel-new-dark {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Ensure proper stacking context */
+.menu-image-side-new {
+  position: relative;
+  z-index: 1;
+}
+
+/* Animation for smooth image transitions */
+.menu-image-new-dark {
+  animation: fadeInDark 0.3s ease-in-out;
+}
+
+@keyframes fadeInDark {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Focus styles for accessibility */
+.image-nav-btn-new-dark:focus,
+.image-dot-new-dark:focus {
+  outline: 2px solid #0047ab;
+  outline-offset: 2px;
+}
+
+/* Hover effects for better UX */
+.image-nav-btn-new-dark:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.image-dot-new-dark:hover {
+  transform: scale(1.1);
+}

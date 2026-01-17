@@ -1,0 +1,88 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+input,
+textarea,
+select {
+  color: black !important;
+  background-color: white; /* optional, for better contrast */
+}
+
+/* Optional: to also style placeholder text */
+::placeholder {
+  color: black; /* darker placeholder */
+}
+input[type="text"],
+textarea,
+select {
+  color: #000 !important;
+  background-color: #fff !important;
+  caret-color: #000;
+  border: 1px solid #ccc;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #555 !important;
+}
+input,
+textarea,
+select {
+  filter: none !important;
+  mix-blend-mode: normal !important;
+  background-blend-mode: normal !important;
+}
+*,
+*::before,
+*::after {
+  color: black !important;
+}
+
+input,
+textarea,
+select {
+  color: black !important;
+  background-color: white !important;
+  caret-color: black !important;
+  border: 1px solid #ccc !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #555 !important;
+}

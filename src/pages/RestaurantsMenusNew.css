@@ -1,0 +1,796 @@
+/* New CSS file for restaurants and menus with unique class names */
+
+/* Global styles */
+.hotel-app-new {
+  min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.hotel-app-new::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("https://itbafa.com/images/restaurants.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(3px);
+  opacity: 0.25;
+  z-index: -1;
+}
+
+/* Header styles */
+.app-header-new {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 71, 171, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-back-link-new {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #0047ab;
+  text-decoration: none;
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.header-back-link-new:hover {
+  color: #003d96;
+}
+
+.logo-container-new {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.logo-new {
+  height: 40px;
+  width: auto;
+}
+
+/* Main content */
+.app-main-new {
+  flex: 1;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+/* Welcome banner */
+.welcome-banner-new {
+  text-align: center;
+  margin-bottom: 3rem;
+  color: #0047ab;
+}
+
+.welcome-banner-new h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 4px rgba(0, 71, 171, 0.1);
+}
+
+.welcome-banner-new h1 span {
+  color: #0047ab;
+}
+
+.welcome-banner-new p {
+  font-size: 1.2rem;
+  color: #666;
+  font-weight: 400;
+}
+
+/* Restaurant grid */
+.restaurants-grid-new {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Restaurant card - matching the white design from the image */
+.restaurant-card-new {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 71, 171, 0.12);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 71, 171, 0.08);
+  max-width: 320px; /* Make cards smaller like event cards */
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.restaurant-card-new:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 40px rgba(0, 71, 171, 0.2);
+  border-color: #0047ab;
+}
+
+.restaurant-card-image-new {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  position: relative;
+}
+
+.restaurant-card-image-new img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.restaurant-card-new:hover .restaurant-card-image-new img {
+  transform: scale(1.05);
+}
+
+.restaurant-card-content-new {
+  padding: 1.5rem;
+}
+
+.restaurant-card-title-new {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0047ab;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+
+.restaurant-card-description-new {
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.restaurant-card-footer-new {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.restaurant-card-buttons-new {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.view-menu-button-new {
+  background: #0047ab;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.view-menu-button-new:hover {
+  background: #003d96;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 71, 171, 0.3);
+}
+
+.reserve-button-new {
+  background: #0047ab;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.reserve-button-new:hover {
+  background: #003d96;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 71, 171, 0.3);
+}
+
+/* Menu display container */
+.menu-display-container-new {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+  z-index: 2;
+}
+
+/* Menu spread - book-like layout */
+.menu-spread-new {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 71, 171, 0.15);
+  overflow: hidden;
+  margin-bottom: 2rem;
+  min-height: 600px;
+  position: relative;
+  z-index: 2;
+}
+
+.menu-content-new {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 600px;
+}
+
+/* Left side - Menu Image */
+.menu-image-side-new {
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-right: 2px solid #e9ecef;
+}
+
+.menu-image-new {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.menu-image-placeholder-new {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  color: #0047ab;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Right side - Menu Items */
+.menu-items-side-new {
+  padding: 2rem;
+  overflow-y: auto;
+  max-height: 600px;
+}
+
+.menu-title-new {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0047ab;
+  margin-bottom: 2rem;
+  text-align: center;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 1rem;
+}
+
+.menu-items-list-new {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.menu-item-new {
+  padding: 1rem;
+  border-radius: 8px;
+  background: #f8f9fa;
+  border-left: 4px solid #0047ab;
+  transition: all 0.3s ease;
+}
+
+.menu-item-new:hover {
+  background: #e3f2fd;
+  transform: translateX(4px);
+}
+
+.menu-item-header-new {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  gap: 1rem;
+}
+
+.menu-item-name-new {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  flex: 1;
+}
+
+.menu-item-price-new {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0047ab;
+  white-space: nowrap;
+}
+
+.menu-item-description-new {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Menu navigation */
+.menu-navigation-new {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.nav-button-new {
+  background: white;
+  border: 2px solid #0047ab;
+  color: #0047ab;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-button-new:hover:not(:disabled) {
+  background: #0047ab;
+  color: white;
+  transform: scale(1.1);
+}
+
+.nav-button-new:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Loading and empty states */
+.loading-container-new {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  color: #0047ab;
+}
+
+.loading-spinner-new {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #e3f2fd;
+  border-top: 4px solid #0047ab;
+  border-radius: 50%;
+  animation: spin-new 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin-new {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.empty-state-new {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #666;
+}
+
+.empty-icon-new {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state-new h3 {
+  font-size: 1.5rem;
+  color: #0047ab;
+  margin-bottom: 0.5rem;
+}
+
+.empty-menu-new {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-style: italic;
+}
+
+/* Modal styles */
+.modal-backdrop-new {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-new {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 1002;
+}
+
+.modal-new h2 {
+  color: #0047ab;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.modal-new input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.modal-new input:focus {
+  outline: none;
+  border-color: #0047ab;
+}
+
+.modal-actions-new {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.modal-actions-new button {
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.modal-actions-new button:first-child {
+  background: #0047ab;
+  color: white;
+}
+
+.modal-actions-new button:first-child:hover {
+  background: #003d96;
+}
+
+.modal-actions-new button:last-child {
+  background: #e9ecef;
+  color: #666;
+}
+
+.modal-actions-new button:last-child:hover {
+  background: #dee2e6;
+}
+
+/* Footer */
+.app-footer-new {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(0, 71, 171, 0.1);
+  padding: 2rem;
+  text-align: center;
+  margin-top: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.copyright-new {
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.copyright-new a {
+  color: #0047ab;
+  text-decoration: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .app-header-new {
+    padding: 1rem;
+  }
+
+  .app-main-new {
+    padding: 1rem;
+  }
+
+  .welcome-banner-new h1 {
+    font-size: 2rem;
+  }
+
+  .welcome-banner-new p {
+    font-size: 1rem;
+  }
+
+  .restaurants-grid-new {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    justify-items: center;
+  }
+
+  .restaurant-card-new {
+    margin: 0 auto;
+    max-width: 320px;
+    width: 100%;
+  }
+
+  /* Mobile menu layout - keep side by side but fix image and spacing */
+  .menu-spread-new {
+    min-height: auto;
+  }
+
+  .menu-content-new {
+    display: grid;
+    grid-template-columns: 60% 40%;
+    min-height: 600px;
+  }
+
+  .menu-image-side-new {
+    height: auto;
+    min-height: 300px;
+    border-right: 2px solid #e9ecef;
+    border-bottom: none;
+    flex-shrink: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.125rem;
+    background: #f8f9fa;
+  }
+
+  .menu-image-new {
+    width: 100%;
+    height: auto;
+    min-height: 200px;
+    max-height: 250px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .menu-items-side-new {
+    padding: 1rem;
+    max-height: none;
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .menu-title-new {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .menu-items-list-new {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem; /* Reduced gap */
+  }
+
+  .menu-item-new {
+    padding: 0.75rem;
+    margin-bottom: 0; /* Remove margin-bottom */
+  }
+
+  .menu-item-name-new {
+    font-size: 1rem;
+  }
+
+  .menu-item-price-new {
+    font-size: 1rem;
+  }
+
+  .menu-item-description-new {
+    font-size: 0.85rem;
+  }
+
+  .modal-new {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .modal-actions-new {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-header-new {
+    padding: 0.75rem;
+  }
+
+  .logo-new {
+    height: 32px;
+  }
+
+  .welcome-banner-new h1 {
+    font-size: 1.75rem;
+  }
+
+  .restaurant-card-content-new {
+    padding: 1.25rem;
+  }
+
+  .restaurant-card-title-new {
+    font-size: 1.25rem;
+  }
+
+  /* Keep side by side layout with better proportions for very small screens */
+  .menu-content-new {
+    grid-template-columns: 55% 45%;
+    min-height: 550px;
+  }
+
+  .menu-image-side-new {
+    min-height: 550px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.125rem;
+    background: #f8f9fa;
+  }
+
+  .menu-image-new {
+    width: 100%;
+    height: auto;
+    min-height: 500px;
+    max-height: 530px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .menu-items-side-new {
+    padding: 0.75rem;
+  }
+
+  .menu-title-new {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.25rem;
+  }
+
+  .menu-items-list-new {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* Even smaller gap for very small screens */
+  }
+
+  .menu-item-new {
+    padding: 0.5rem;
+    margin-bottom: 0; /* Remove margin-bottom */
+  }
+
+  .menu-item-name-new {
+    font-size: 0.9rem;
+  }
+
+  .menu-item-price-new {
+    font-size: 0.9rem;
+  }
+
+  .menu-item-description-new {
+    font-size: 0.8rem;
+    line-height: 1.3;
+  }
+
+  .menu-item-header-new {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+}
+
+/* Animation classes for menu transitions */
+.slide-out-left-new {
+  animation: slideOutLeft-new 0.3s ease-in-out;
+}
+
+.slide-out-right-new {
+  animation: slideOutRight-new 0.3s ease-in-out;
+}
+
+.slide-in-left-new {
+  animation: slideInLeft-new 0.3s ease-in-out;
+}
+
+.slide-in-right-new {
+  animation: slideInRight-new 0.3s ease-in-out;
+}
+
+@keyframes slideOutLeft-new {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+@keyframes slideOutRight-new {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes slideInLeft-new {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight-new {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+

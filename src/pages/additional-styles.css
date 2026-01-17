@@ -1,0 +1,651 @@
+/* Additional styles for multiple images support */
+
+/* Image carousel styles for menu display */
+.menu-image-carousel-new {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.carousel-container-new {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.carousel-container-new .menu-image-new {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+/* Image navigation buttons */
+.image-nav-btn-new {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.image-nav-btn-new:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.image-nav-btn-new:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.prev-image-new {
+  left: 10px;
+}
+
+.next-image-new {
+  right: 10px;
+}
+
+/* Image counter */
+.image-counter-new {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  z-index: 10;
+}
+
+/* Image dots indicator */
+.image-dots-new {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 0;
+  margin-top: auto;
+}
+
+.image-dot-new {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 71, 171, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.image-dot-new.active {
+  background: #0047ab;
+  transform: scale(1.2);
+}
+
+.image-dot-new:hover {
+  background: #0047ab;
+}
+
+/* Admin form styles for multiple images */
+.image-upload-section {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  background: #f9f9f9;
+}
+
+.image-upload-section label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.image-upload-section small {
+  display: block;
+  margin-top: 0.25rem;
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.preview-images-container {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 2px solid #e3f2fd;
+  border-radius: 8px;
+  background: #f8f9fa;
+}
+
+.preview-images-container h4 {
+  margin: 0 0 1rem 0;
+  color: #0047ab;
+  font-size: 1.1rem;
+}
+
+/* Responsive grid handling for all image counts */
+.preview-images-grid {
+  display: grid;
+  gap: 1rem;
+  /* Dynamic grid based on image count */
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+}
+
+/* Specific grid layouts for different image counts on larger screens */
+@media (min-width: 769px) {
+  .preview-images-grid[data-count="1"] {
+    grid-template-columns: 1fr;
+    max-width: 200px;
+    margin: 0 auto;
+  }
+  
+  .preview-images-grid[data-count="2"] {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 300px;
+    margin: 0 auto;
+  }
+  
+  .preview-images-grid[data-count="3"] {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  
+  .preview-images-grid[data-count="4"] {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 300px;
+    margin: 0 auto;
+  }
+  
+  .preview-images-grid[data-count="5"] {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 400px;
+    margin: 0 auto;
+  }
+}
+
+/* Mobile and tablet responsive adjustments */
+@media (max-width: 768px) {
+  /* Stack images vertically on mobile */
+  .preview-images-grid {
+    grid-template-columns: 1fr !important;
+    max-width: 200px;
+    margin: 0 auto;
+    gap: 0.75rem;
+  }
+  
+  .preview-image-item .preview-img {
+    height: 150px;
+  }
+  
+  /* Image carousel adjustments for mobile */
+  .image-nav-btn-new {
+    width: 32px;
+    height: 32px;
+  }
+
+  .prev-image-new {
+    left: 5px;
+  }
+
+  .next-image-new {
+    right: 5px;
+  }
+
+  .image-counter-new {
+    top: 5px;
+    right: 5px;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+  }
+
+  .image-dots-new {
+    gap: 6px;
+    padding: 8px 0;
+  }
+
+  .image-dot-new {
+    width: 6px;
+    height: 6px;
+  }
+  
+  /* Menu image side adjustments */
+  .menu-image-side-new {
+    height: 250px;
+  }
+  
+  .carousel-container-new {
+    height: 200px;
+  }
+}
+
+/* Small mobile screens */
+@media (max-width: 480px) {
+  .preview-images-grid {
+    grid-template-columns: 1fr !important;
+    max-width: 180px;
+    gap: 0.5rem;
+  }
+  
+  .preview-image-item .preview-img {
+    height: 120px;
+  }
+  
+  .image-nav-btn-new {
+    width: 28px;
+    height: 28px;
+  }
+
+  .image-counter-new {
+    font-size: 0.65rem;
+    padding: 2px 4px;
+  }
+  
+  .menu-image-side-new {
+    height: 200px;
+  }
+  
+  .carousel-container-new {
+    height: 150px;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+  .preview-images-grid {
+    max-width: 150px;
+  }
+  
+  .preview-image-item .preview-img {
+    height: 100px;
+  }
+  
+  .menu-image-side-new {
+    height: 180px;
+  }
+  
+  .carousel-container-new {
+    height: 130px;
+  }
+}
+
+/* Ensure proper aspect ratio for all image counts */
+.preview-image-item {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+  aspect-ratio: 1;
+}
+
+.preview-image-item:hover {
+  transform: scale(1.02);
+}
+
+.preview-image-item .preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Menu content layout adjustments for mobile */
+@media (max-width: 768px) {
+  .menu-content-new {
+    flex-direction: column !important;
+    height: auto !important;
+  }
+  
+  .menu-image-side-new {
+    width: 100% !important;
+    margin-bottom: 1rem;
+  }
+  
+  .menu-items-side-new {
+    width: 100% !important;
+    padding: 1rem;
+  }
+}
+
+/* Dots indicator responsive adjustments */
+@media (max-width: 768px) {
+  .image-dots-new {
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 200px;
+    margin: 0 auto;
+  }
+}
+
+/* Admin form responsive adjustments */
+@media (max-width: 768px) {
+  .image-upload-section {
+    margin: 0.75rem 0;
+    padding: 0.75rem;
+  }
+  
+  .preview-images-container {
+    margin: 0.75rem 0;
+    padding: 0.75rem;
+  }
+  
+  .preview-images-container h4 {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+}
+
+.preview-image-item {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.preview-image-item:hover {
+  transform: scale(1.02);
+}
+
+.preview-image-item .preview-img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.remove-image-btn:hover {
+  background: rgba(255, 0, 0, 0.1);
+  transform: scale(1.1);
+}
+
+/* Menu card image display */
+.menu-images-display {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 8px 8px 0 0;
+}
+
+.menu-images-carousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.menu-images-carousel .main-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.menu-images-carousel:hover .main-image {
+  transform: scale(1.05);
+}
+
+.image-count-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  z-index: 5;
+}
+
+/* Animation for image transitions */
+.menu-image-new {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Focus styles for accessibility */
+.image-nav-btn-new:focus,
+.image-dot-new:focus,
+.remove-image-btn:focus {
+  outline: 2px solid #0047ab;
+  outline-offset: 2px;
+}
+
+/* Enhanced responsive layout for menu display */
+.menu-spread-new {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.menu-content-new {
+  display: flex;
+  height: 500px;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.menu-image-side-new {
+  flex: 1;
+  position: relative;
+  background: #f8f9fa;
+}
+
+.menu-items-side-new {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+/* Tablet adjustments */
+@media (max-width: 1024px) {
+  .menu-content-new {
+    height: 450px;
+  }
+  
+  .menu-items-side-new {
+    padding: 1.5rem;
+  }
+}
+
+/* Mobile layout - stack vertically */
+@media (max-width: 768px) {
+  .menu-content-new {
+    flex-direction: column;
+    height: auto;
+    min-height: 400px;
+  }
+  
+  .menu-image-side-new {
+    flex: none;
+    height: 250px;
+    width: 100%;
+  }
+  
+  .menu-items-side-new {
+    flex: none;
+    padding: 1rem;
+    max-height: none;
+  }
+  
+  .menu-spread-new {
+    margin: 1rem;
+  }
+}
+
+/* Small mobile adjustments */
+@media (max-width: 480px) {
+  .menu-image-side-new {
+    height: 200px;
+  }
+  
+  .menu-items-side-new {
+    padding: 0.75rem;
+  }
+  
+  .menu-spread-new {
+    margin: 0.5rem;
+  }
+  
+  .menu-title-new {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .menu-item-new {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+  }
+}
+
+/* Ensure images maintain aspect ratio across all devices */
+.carousel-container-new .menu-image-new {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Navigation buttons positioning for different screen sizes */
+@media (max-width: 768px) {
+  .menu-navigation-new {
+    padding: 1rem;
+    gap: 1rem;
+  }
+  
+  .nav-button-new {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .menu-navigation-new {
+    padding: 0.75rem;
+  }
+  
+  .nav-button-new {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* Image dots responsive behavior */
+.image-dots-new {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 0;
+  margin-top: auto;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .image-dots-new {
+    gap: 6px;
+    padding: 8px 0;
+  }
+  
+  /* Limit dots to 2 rows on very small screens */
+  .image-dots-new {
+    max-width: 120px;
+    margin: 8px auto 0;
+  }
+}
+
+/* Loading and empty states responsive */
+@media (max-width: 768px) {
+  .loading-container-new,
+  .empty-state-new {
+    padding: 2rem 1rem;
+  }
+  
+  .empty-icon-new {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Fixed dimensions for menu images on small and medium screens */
+@media (max-width: 1024px) {
+  .menu-image-new,
+  .carousel-container-new .menu-image-new {
+    width: 250px !important;
+    height: 200px !important;
+    object-fit: cover !important;
+    object-position: center !important;
+  }
+  
+  .carousel-container-new {
+    width: 250px !important;
+    height: 200px !important;
+    margin: 0 auto !important;
+  }
+  
+  /* For mobile vertical layout */
+  .menu-image-carousel-new {
+    align-items: center !important;
+    gap: 1rem !important;
+  }
+}
+
+/* Additional constraints for very small screens */
+@media (max-width: 480px) {
+  .menu-image-new,
+  .carousel-container-new .menu-image-new {
+    width: 250px !important;
+    height: 200px !important;
+  }
+  
+  .carousel-container-new {
+    width: 250px !important;
+    height: 200px !important;
+  }
+}

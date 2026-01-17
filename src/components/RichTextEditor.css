@@ -1,0 +1,347 @@
+/* Dark Mode Styles */
+.rich-text-container {
+  border: 2px solid #374151;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #1f2937;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  border-bottom: 2px solid #374151;
+}
+
+.toolbar-group {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+  padding: 0 0.5rem;
+  border-right: 1px solid #374151;
+}
+
+.toolbar-group:last-child {
+  border-right: none;
+}
+
+.toolbar-label {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  margin-right: 0.25rem;
+}
+
+.toolbar button {
+  padding: 0.5rem 0.75rem;
+  background: #374151;
+  border: 1px solid #4b5563;
+  border-radius: 6px;
+  color: #e5e7eb;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+  min-width: 36px;
+}
+
+.toolbar button:hover:not(:disabled) {
+  background: linear-gradient(45deg, #ec4899, #8b5cf6);
+  border-color: transparent;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.toolbar button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toolbar button.is-active {
+  background: linear-gradient(45deg, #ec4899, #8b5cf6);
+  border-color: transparent;
+  color: white;
+}
+
+.color-btn {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  padding: 0;
+  border-radius: 50%;
+  border: 2px solid #4b5563;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.color-btn:hover {
+  transform: scale(1.15);
+  border-color: white;
+}
+
+.tiptap-editor {
+  padding: 1rem;
+  min-height: 200px;
+  max-height: 400px;
+  overflow-y: auto;
+  background: #1f2937;
+  color: #e5e7eb;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.tiptap-editor:focus {
+  outline: none;
+}
+
+.tiptap-editor h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 1rem 0 0.5rem;
+  color: #f3f4f6;
+}
+
+.tiptap-editor h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0.75rem 0 0.5rem;
+  color: #f3f4f6;
+}
+
+.tiptap-editor h3 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin: 0.5rem 0 0.5rem;
+  color: #f3f4f6;
+}
+
+.tiptap-editor p {
+  margin: 0.5rem 0;
+}
+
+.tiptap-editor ul,
+.tiptap-editor ol {
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.tiptap-editor li {
+  margin: 0.25rem 0;
+}
+
+.tiptap-editor code {
+  background: #374151;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: "Courier New", monospace;
+  font-size: 0.9em;
+}
+
+.tiptap-editor strong {
+  font-weight: bold;
+}
+
+.tiptap-editor em {
+  font-style: italic;
+}
+
+.tiptap-editor s {
+  text-decoration: line-through;
+}
+
+/* Light Mode Styles */
+.rich-text-container-light {
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.toolbar-light {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #ffffff 0%, #fdf2f8 100%);
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.toolbar-light .toolbar-group {
+  border-right: 1px solid #e2e8f0;
+}
+
+.toolbar-light .toolbar-label {
+  color: #64748b;
+}
+
+.toolbar-light button {
+  padding: 0.5rem 0.75rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  font-weight: 500;
+  min-width: 36px;
+}
+
+.toolbar-light button:hover:not(:disabled) {
+  background: linear-gradient(45deg, #ec4899, #8b5cf6);
+  border-color: transparent;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.toolbar-light button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toolbar-light button.is-active {
+  background: linear-gradient(45deg, #ec4899, #8b5cf6);
+  border-color: transparent;
+  color: white;
+}
+
+.toolbar-light .color-btn {
+  border: 2px solid #e2e8f0;
+}
+
+.toolbar-light .color-btn:hover {
+  border-color: #ec4899;
+}
+
+.tiptap-editor-light {
+  padding: 1rem;
+  min-height: 200px;
+  max-height: 400px;
+  overflow-y: auto;
+  background: #ffffff;
+  color: #1e293b;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.tiptap-editor-light:focus {
+  outline: none;
+}
+
+.tiptap-editor-light h1,
+.tiptap-editor-light h2,
+.tiptap-editor-light h3 {
+  color: #1e293b;
+}
+
+.tiptap-editor-light h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 1rem 0 0.5rem;
+}
+
+.tiptap-editor-light h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0.75rem 0 0.5rem;
+}
+
+.tiptap-editor-light h3 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin: 0.5rem 0 0.5rem;
+}
+
+.tiptap-editor-light p {
+  margin: 0.5rem 0;
+}
+
+.tiptap-editor-light ul,
+.tiptap-editor-light ol {
+  padding-left: 1.5rem;
+  margin: 0.5rem 0;
+}
+
+.tiptap-editor-light li {
+  margin: 0.25rem 0;
+}
+
+.tiptap-editor-light code {
+  background: #f1f5f9;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: "Courier New", monospace;
+  font-size: 0.9em;
+  color: #ec4899;
+}
+
+.tiptap-editor-light strong {
+  font-weight: bold;
+}
+
+.tiptap-editor-light em {
+  font-style: italic;
+}
+
+.tiptap-editor-light s {
+  text-decoration: line-through;
+}
+
+/* Scrollbar Styles */
+.tiptap-editor::-webkit-scrollbar,
+.tiptap-editor-light::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tiptap-editor::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+.tiptap-editor-light::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+.tiptap-editor::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 4px;
+}
+
+.tiptap-editor-light::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.tiptap-editor::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+.tiptap-editor-light::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .toolbar,
+  .toolbar-light {
+    gap: 0.25rem;
+    padding: 0.5rem;
+  }
+
+  .toolbar-group {
+    padding: 0 0.25rem;
+  }
+
+  .toolbar button,
+  .toolbar-light button {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.8rem;
+    min-width: 32px;
+  }
+
+  .color-btn {
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+  }
+}

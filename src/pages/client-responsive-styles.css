@@ -1,0 +1,532 @@
+/* Client page responsive styles for image display */
+
+/* Desktop and large screens - keep horizontal layout */
+@media (min-width: 769px) {
+  .menu-content-new {
+    display: flex;
+    height: 500px;
+  }
+  
+  .menu-image-side-new {
+    flex: 1;
+    position: relative;
+  }
+  
+  .menu-items-side-new {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+  }
+}
+
+/* Tablet and mobile screens - vertical layout */
+@media (max-width: 768px) {
+  .menu-content-new {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 400px;
+  }
+  
+  .menu-image-side-new {
+    width: 100%;
+    height: auto;
+    min-height: 250px;
+    order: 1;
+  }
+  
+  .menu-items-side-new {
+    width: 100%;
+    padding: 1.5rem;
+    order: 2;
+  }
+  
+  /* Image carousel container adjustments */
+  .menu-image-carousel-new {
+    height: 100%;
+    min-height: 250px;
+  }
+  
+  .carousel-container-new {
+    height: 250px;
+  }
+}
+
+/* Small mobile screens */
+@media (max-width: 480px) {
+  .menu-content-new {
+    margin: 0.5rem;
+  }
+  
+  .menu-image-side-new {
+    min-height: 200px;
+  }
+  
+  .carousel-container-new {
+    height: 200px;
+  }
+  
+  .menu-items-side-new {
+    padding: 1rem;
+  }
+  
+  .menu-title-new {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .menu-item-new {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+  }
+  
+  .menu-item-name-new {
+    font-size: 1rem;
+  }
+  
+  .menu-item-price-new {
+    font-size: 1rem;
+  }
+  
+  .menu-item-description-new {
+    font-size: 0.875rem;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 360px) {
+  .menu-image-side-new {
+    min-height: 180px;
+  }
+  
+  .carousel-container-new {
+    height: 180px;
+  }
+  
+  .menu-items-side-new {
+    padding: 0.75rem;
+  }
+  
+  .menu-title-new {
+    font-size: 1.125rem;
+  }
+  
+  .menu-item-new {
+    padding: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+}
+
+/* Image navigation responsive adjustments for client */
+@media (max-width: 768px) {
+  .image-nav-btn-new {
+    width: 32px;
+    height: 32px;
+  }
+
+  .prev-image-new {
+    left: 8px;
+  }
+
+  .next-image-new {
+    right: 8px;
+  }
+
+  .image-counter-new {
+    top: 8px;
+    right: 8px;
+    font-size: 0.7rem;
+    padding: 3px 6px;
+  }
+
+  .image-dots-new {
+    gap: 6px;
+    padding: 8px 0;
+  }
+
+  .image-dot-new {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .image-nav-btn-new {
+    width: 28px;
+    height: 28px;
+  }
+
+  .prev-image-new {
+    left: 5px;
+  }
+
+  .next-image-new {
+    right: 5px;
+  }
+
+  .image-counter-new {
+    font-size: 0.65rem;
+    padding: 2px 4px;
+  }
+
+  .image-dots-new {
+    gap: 4px;
+    padding: 6px 0;
+  }
+
+  .image-dot-new {
+    width: 5px;
+    height: 5px;
+  }
+}
+
+/* Menu navigation buttons responsive */
+@media (max-width: 768px) {
+  .menu-navigation-new {
+    padding: 1rem;
+    gap: 1rem;
+  }
+  
+  .nav-button-new {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .nav-button-new.prev,
+  .nav-button-new.next {
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid #0047ab;
+    color: #0047ab;
+  }
+}
+
+@media (max-width: 480px) {
+  .menu-navigation-new {
+    padding: 0.75rem;
+    gap: 0.75rem;
+  }
+  
+  .nav-button-new {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* Restaurant cards responsive on client */
+@media (max-width: 768px) {
+  .restaurants-grid-new {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 0 1rem;
+  }
+  
+  .restaurant-card-new {
+    max-width: 100%;
+  }
+  
+  .restaurant-card-image-new {
+    height: 200px;
+  }
+  
+  .restaurant-card-content-new {
+    padding: 1rem;
+  }
+  
+  .restaurant-card-buttons-new {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .view-menu-button-new,
+  .reserve-button-new {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .restaurants-grid-new {
+    padding: 0 0.5rem;
+    gap: 0.75rem;
+  }
+  
+  .restaurant-card-image-new {
+    height: 150px;
+  }
+  
+  .restaurant-card-content-new {
+    padding: 0.75rem;
+  }
+  
+  .restaurant-card-title-new {
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .restaurant-card-description-new {
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Welcome banner responsive */
+@media (max-width: 768px) {
+  .welcome-banner-new {
+    padding: 2rem 1rem;
+    text-align: center;
+  }
+  
+  .welcome-banner-new h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .welcome-banner-new p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome-banner-new {
+    padding: 1.5rem 0.75rem;
+  }
+  
+  .welcome-banner-new h1 {
+    font-size: 1.75rem;
+  }
+  
+  .welcome-banner-new p {
+    font-size: 0.9rem;
+  }
+}
+
+/* Header responsive adjustments */
+@media (max-width: 768px) {
+  .app-header-new {
+    padding: 0.75rem 1rem;
+  }
+  
+  .header-back-link-new {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .logo-new {
+    height: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-header-new {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .header-back-link-new {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.6rem;
+  }
+  
+  .logo-new {
+    height: 25px;
+  }
+}
+
+/* Loading and empty states responsive */
+@media (max-width: 768px) {
+  .loading-container-new {
+    padding: 2rem 1rem;
+  }
+  
+  .loading-spinner-new {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .empty-state-new {
+    padding: 2rem 1rem;
+  }
+  
+  .empty-icon-new {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .loading-container-new,
+  .empty-state-new {
+    padding: 1.5rem 0.75rem;
+  }
+  
+  .loading-spinner-new {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .empty-icon-new {
+    font-size: 2.5rem;
+  }
+}
+
+/* Modal responsive adjustments */
+@media (max-width: 768px) {
+  .modal {
+    width: 90%;
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+  }
+  
+  .modal h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .modal input,
+  .modal textarea {
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+  
+  .modal-actions-new {
+    gap: 0.75rem;
+  }
+  
+  .modal-actions-new button {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal {
+    width: 95%;
+    margin: 1rem auto;
+    padding: 1rem;
+  }
+  
+  .modal h2 {
+    font-size: 1.125rem;
+  }
+  
+  .modal input,
+  .modal textarea {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+  
+  .modal-actions-new {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .modal-actions-new button {
+    width: 100%;
+    padding: 0.75rem;
+  }
+}
+
+/* Ensure proper spacing and layout flow */
+.menu-display-container-new {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+@media (max-width: 768px) {
+  .menu-display-container-new {
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .menu-display-container-new {
+    padding: 0.25rem;
+  }
+}
+
+/* Image carousel specific responsive behavior */
+.menu-image-carousel-new {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 768px) {
+  .menu-image-carousel-new {
+    min-height: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .menu-image-carousel-new {
+    min-height: 200px;
+  }
+}
+
+@media (max-width: 360px) {
+  .menu-image-carousel-new {
+    min-height: 180px;
+  }
+}
+
+/* Dots indicator responsive positioning */
+.image-dots-new {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 0;
+  margin-top: auto;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .image-dots-new {
+    gap: 6px;
+    padding: 8px 0;
+    max-width: 200px;
+    margin: 8px auto 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .image-dots-new {
+    gap: 4px;
+    padding: 6px 0;
+    max-width: 150px;
+  }
+}
+
+/* Ensure images maintain proper aspect ratio */
+.carousel-container-new .menu-image-new {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Footer responsive */
+@media (max-width: 768px) {
+  .app-footer-new {
+    padding: 1.5rem 1rem;
+  }
+  
+  .copyright-new p {
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-footer-new {
+    padding: 1rem 0.75rem;
+  }
+  
+  .copyright-new p {
+    font-size: 0.75rem;
+  }
+}
