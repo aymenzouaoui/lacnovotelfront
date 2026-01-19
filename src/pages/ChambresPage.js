@@ -107,7 +107,16 @@ const ChambresPage = () => {
 
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const savedTheme = localStorage.getItem("theme")
-    return savedTheme ? savedTheme === "dark" : true
+    // Si aucun thème n'est sauvegardé, vérifier la préférence système
+    if (!savedTheme) {
+      // Vérifier la préférence système du navigateur
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        return false
+      }
+      // Par défaut, retourner false (light mode) au lieu de true
+      return false
+    }
+    return savedTheme === "dark"
   })
 
   const fetchChambres = async () => {
@@ -432,9 +441,23 @@ const ChambresPage = () => {
         </nav>
 
         <div className={isDarkMode ? "sidebar-footer" : "light-sidebar-footer"}>
-          <button className={isDarkMode ? "theme-toggle" : "light-theme-toggle"} onClick={toggleTheme}>
-            {isDarkMode ? "Mode clair" : "Mode sombre"}
-          </button>
+          <div className={isDarkMode ? "theme-switch-container" : "light-theme-switch-container"}>
+            <span className={isDarkMode ? "theme-switch-label" : "light-theme-switch-label"}>
+              {isDarkMode ? "🌙" : "☀️"}
+            </span>
+            <button 
+              className={`theme-switch ${isDarkMode ? "theme-switch-dark" : "theme-switch-light"}`}
+              onClick={toggleTheme}
+              role="switch"
+              aria-checked={isDarkMode}
+              aria-label={isDarkMode ? "Passer en mode clair" : "Passer en mode sombre"}
+            >
+              <span className="theme-switch-slider"></span>
+            </button>
+            <span className={isDarkMode ? "theme-switch-label" : "light-theme-switch-label"}>
+              {isDarkMode ? "☀️" : "🌙"}
+            </span>
+          </div>
           <button
             className={isDarkMode ? "logout-btn" : "light-logout-btn"}
             onClick={() => {
@@ -443,7 +466,8 @@ const ChambresPage = () => {
               navigate("/")
             }}
           >
-            Déconnexion
+            <span className={isDarkMode ? "logout-icon" : "light-logout-icon"}>🚪</span>
+            <span className={isDarkMode ? "logout-text" : "light-logout-text"}>Déconnexion</span>
           </button>
         </div>
       </div>

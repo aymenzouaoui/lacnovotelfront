@@ -413,7 +413,7 @@ const HomeClient = () => {
       title: t("feedback"),
       image: "/images/feedback.webp",
       fallback: "/placeholder.svg?height=300&width=200&text=Feedback",
-      url: "https://tinyurl.com/28npzs5f",
+      url: "https://tinyurl.com/ydpjnzt7",
     },
   ]
 
