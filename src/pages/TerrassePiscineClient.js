@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react"
 import API from "../services/api"
-import "./SkyLoungeClient.css"
+import "./TerrassePiscineClient.css"
 import "./client-image-fix-dark.css"
 import { ChevronLeft, ChevronRight, LayoutGrid, Book } from "lucide-react"
 
@@ -17,13 +17,13 @@ const translations = {
     switchToBook: "Passer à la vue livre",
 
     // Welcome Banner
-    skyLounge: "Sky Lounge",
-    panoramicLounge: "Notre lounge panoramique avec vue imprenable",
+    skyLounge: "Terrasse Piscine",
+    panoramicLounge: "Détendez-vous sur notre terrasse piscine avec vue sur le lac et ambiance conviviale",
 
     // Loading & Empty States
-    loadingLounges: "Chargement des lounges...",
-    noSkyLoungeAvailable: "Aucun Sky Lounge disponible",
-    comeBackSoonLounges: "Revenez bientôt pour découvrir nos espaces",
+    loadingLounges: "Chargement des espaces de la terrasse...",
+    noSkyLoungeAvailable: "Aucune offre disponible pour la Terrasse Piscine pour le moment",
+    comeBackSoonLounges: "Revenez bientôt pour découvrir nos nouvelles expériences en plein air",
     backToList: "Retour à la liste",
     noDescriptionAvailable: "Pas de description disponible.",
     viewDetails: "Voir détails",
@@ -33,12 +33,12 @@ const translations = {
     noDishAvailable: "Aucun plat disponible dans ce menu",
 
     // Lounge Details
-    viewMenu: "Voir le menu",
-    reserveTable: "Réserver une table",
-    panoramicView: "Vue panoramique",
-    signatureCocktails: "Cocktails signature",
-    relaxingAmbiance: "Ambiance relaxante",
-    personalizedService: "Service personnalisé",
+    viewMenu: "Voir la carte",
+    reserveTable: "Réserver un transat ou une table",
+    panoramicView: "Vue sur la piscine et le lac",
+    signatureCocktails: "Cocktails signature & rafraîchissements",
+    relaxingAmbiance: "Ambiance détente au bord de la piscine",
+    personalizedService: "Service attentionné en extérieur",
 
     // Modals
     reserveRoom: "Réserver une salle", // Re-used for table reservation
@@ -65,8 +65,8 @@ const translations = {
     network: "Réseau",
     password: "Mot de passe",
     availableAtReception: "Disponible à la réception",
-    addressLine1: "Avenue Mohamed V",
-    addressLine2: "Tunis, Tunisie",
+    addressLine1: "Rue de la Feuille d'Érable - Cité Les Pins - Les Berges du Lac 2",
+    addressLine2: "1053 Tunis, TN",
     allRightsReserved: "Tous droits réservés",
     createdBy: "Créé par",
   },
@@ -79,13 +79,13 @@ const translations = {
     switchToBook: "Switch to book view",
 
     // Welcome Banner
-    skyLounge: "Sky Lounge",
-    panoramicLounge: "Our panoramic lounge with breathtaking views",
+    skyLounge: "Pool Terrace",
+    panoramicLounge: "Relax on our pool terrace with lake views and a warm, casual atmosphere",
 
     // Loading & Empty States
-    loadingLounges: "Loading lounges...",
-    noSkyLoungeAvailable: "No Sky Lounge available",
-    comeBackSoonLounges: "Come back soon to discover our spaces",
+    loadingLounges: "Loading pool terrace areas...",
+    noSkyLoungeAvailable: "No Pool Terrace offers available at the moment",
+    comeBackSoonLounges: "Come back soon to discover new outdoor experiences",
     backToList: "Back to list",
     noDescriptionAvailable: "No description available.",
     viewDetails: "View details",
@@ -95,12 +95,12 @@ const translations = {
     noDishAvailable: "No dish available in this menu",
 
     // Lounge Details
-    viewMenu: "View Menu",
-    reserveTable: "Reserve a table",
-    panoramicView: "Panoramic view",
-    signatureCocktails: "Signature cocktails",
-    relaxingAmbiance: "Relaxing ambiance",
-    personalizedService: "Personalized service",
+    viewMenu: "View the menu",
+    reserveTable: "Reserve a sunbed or table",
+    panoramicView: "View of the pool and the lake",
+    signatureCocktails: "Signature cocktails & refreshments",
+    relaxingAmbiance: "Relaxed atmosphere by the pool",
+    personalizedService: "Attentive outdoor service",
 
     // Modals
     reserveRoom: "Reserve a room", // Re-used for table reservation
@@ -127,8 +127,8 @@ const translations = {
     network: "Network",
     password: "Password",
     availableAtReception: "Available at reception",
-    addressLine1: "Avenue Mohamed V",
-    addressLine2: "1002 Tunis, Tunisia",
+    addressLine1: "Rue de la Feuille d'Érable - Cité Les Pins - Les Berges du Lac 2",
+    addressLine2: "1053 Tunis, TN",
     allRightsReserved: "All rights reserved",
     createdBy: "Created by",
   },
@@ -141,13 +141,13 @@ const translations = {
     switchToBook: "التبديل إلى عرض الكتاب",
 
     // Welcome Banner
-    skyLounge: "سكاي لاونج",
-    panoramicLounge: "صالة البانوراما لدينا مع إطلالة خلابة",
+    skyLounge: "تراس المسبح",
+    panoramicLounge: "استرخِ على تراس المسبح مع إطلالة على البحيرة وأجواء مريحة",
 
     // Loading & Empty States
-    loadingLounges: "جاري تحميل الصالات...",
-    noSkyLoungeAvailable: "لا توجد صالة سكاي لاونج متاحة",
-    comeBackSoonLounges: "عد قريبًا لاكتشاف مساحاتنا",
+    loadingLounges: "جاري تحميل مساحات تراس المسبح...",
+    noSkyLoungeAvailable: "لا توجد عروض متاحة حالياً على تراس المسبح",
+    comeBackSoonLounges: "عد قريبًا لاكتشاف تجاربنا الخارجية الجديدة",
     backToList: "العودة إلى القائمة",
     noDescriptionAvailable: "لا يوجد وصف متاح.",
     viewDetails: "عرض التفاصيل",
@@ -157,12 +157,12 @@ const translations = {
     noDishAvailable: "لا يوجد طبق متاح في هذه القائمة",
 
     // Lounge Details
-    viewMenu: "عرض القائمة",
-    reserveTable: "حجز طاولة",
-    panoramicView: "إطلالة بانورامية",
-    signatureCocktails: "كوكتيلات مميزة",
-    relaxingAmbiance: "أجواء مريحة",
-    personalizedService: "خدمة شخصية",
+    viewMenu: "عرض قائمة التراس",
+    reserveTable: "حجز سرير استرخاء أو طاولة",
+    panoramicView: "إطلالة على المسبح والبحيرة",
+    signatureCocktails: "كوكتيلات مميزة ومنعشات",
+    relaxingAmbiance: "أجواء هادئة بجانب المسبح",
+    personalizedService: "خدمة خارجية مميزة",
 
     // Modals
     reserveRoom: "حجز غرفة", // Re-used for table reservation
@@ -189,8 +189,8 @@ const translations = {
     network: "الشبكة",
     password: "كلمة المرور",
     availableAtReception: "متوفرة في الاستقبال",
-    addressLine1: "شارع الكورنيش",
-    addressLine2: "تونس، تونس",
+    addressLine1: "شارع ورقة القيقب - مدينة الصنوبر - ضفاف البحيرة 2",
+    addressLine2: "1053 تونس، تونس",
     allRightsReserved: "جميع الحقوق محفوظة",
     createdBy: "تم إنشاؤه بواسطة",
   },
@@ -213,7 +213,7 @@ const renderDietaryBadges = (item) => (
   </>
 )
 
-const SkyLoungeClient = () => {
+const TerrassePiscineClient = () => {
   const [lounges, setLounges] = useState([])
   const [selectedLounge, setSelectedLounge] = useState(null)
   const [isLoaded, setIsLoaded] = useState(false)
@@ -237,17 +237,17 @@ const SkyLoungeClient = () => {
   const bookRef = useRef(null)
   const [currentLanguage, setCurrentLanguage] = useState("fr")
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false)
-  const [showVegetarianOnly, setShowVegetarianOnly] = useState(false)
-// React state and fetch
+  const [showVegetarianOnly] = useState(false)
+  // React state and fetch
 const [pageContent, setPageContent] = useState(null);
 
 useEffect(() => {
   const fetchPageContent = async () => {
     try {
-      const res = await API.get("/page-contents/page/Skylounge"); // 👈 pageName = skylounge
+      const res = await API.get("/page-contents/page/TerrassePiscine"); // 👈 pageName = TerrassePiscine
       setPageContent(res.data);
     } catch (err) {
-      console.error("Error fetching skylounge page content:", err);
+      console.error("Error fetching terrasse piscine page content:", err);
       setPageContent(null);
     }
   };
@@ -289,11 +289,11 @@ useEffect(() => {
     return () => clearInterval(interval)
   }, [viewMode, selectedLounge, menus, currentMenuIndex])
 
-  const fetchMenus = async (skyLoungeId) => {
+  const fetchMenus = async (terrassePiscineId) => {
     try {
       setIsLoading(true)
       const res = await API.get("/menus")
-      const filtered = res.data.filter((menu) => menu.skyLounge?._id === skyLoungeId || menu.skyLounge === skyLoungeId)
+      const filtered = res.data.filter((menu) => menu.terrassePiscine?._id === terrassePiscineId || menu.terrassePiscine === terrassePiscineId)
       setMenus(filtered)
       setCurrentMenuIndex(0)
       setCurrentImageIndex(0) // Reset image index when switching menus
@@ -319,7 +319,7 @@ useEffect(() => {
       }
       const payload = {
         ...reservationData,
-        service: "skyLounge",
+        service: "terrassePiscine",
         serviceDetails: selectedLounge?.name || "",
         status: "pending",
       }
@@ -424,7 +424,7 @@ useEffect(() => {
   const fetchLounges = async () => {
     try {
       setIsLoading(true)
-      const res = await API.get("/sky-lounges")
+      const res = await API.get("/terrasses-piscine")
       setLounges(res.data)
       setIsLoaded(true)
     } catch (err) {
@@ -467,56 +467,7 @@ useEffect(() => {
 
   const getCurrentLanguage = () => languages.find((lang) => lang.code === currentLanguage)
 
-  // Allergen icons mapping
-  const allergenIcons = {
-    mushrooms: (
-      <svg width="24" height="24" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-        <path
-          d="M32 6C17 6 6 17 6 26s12 12 26 12 26-3 26-12S47 6 32 6zm0 30c-5.2 0-10.4-.9-14.7-2.4 1.5 6.6 5.5 13 9.7 13.8v5.6h10v-5.6c4.2-.8 8.2-7.2 9.7-13.8C42.4 35.1 37.2 36 32 36z"
-          fill="#ffffff"
-          stroke="#007BFF"
-          strokeWidth="2"
-        />
-      </svg>
-    ),
-    gluten: (
-      <svg width="24" height="24" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="32" cy="32" r="28" fill="#ffffff" stroke="#007BFF" strokeWidth="2" />
-        <line x1="16" y1="16" x2="48" y2="48" stroke="#007BFF" strokeWidth="3" />
-      </svg>
-    ),
-    nuts: (
-      <svg width="24" height="24" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-        <path
-          d="M32 8C20 8 12 20 12 32s8 24 20 24 20-12 20-24S44 8 32 8zm0 40c-8 0-16-6-16-16s8-16 16-16 16 6 16 16-8 16-16 16z"
-          fill="#ffffff"
-          stroke="#007BFF"
-          strokeWidth="2"
-        />
-        <circle cx="32" cy="32" r="4" fill="#007BFF" />
-      </svg>
-    ),
-    milk: (
-      <svg width="24" height="24" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-        <path
-          d="M24 4v12l-6 10v34h28V26l-6-10V4H24zm12 12h-8V6h8v10zm4 38H24V28l4-6h8l4 6v26z"
-          fill="#ffffff"
-          stroke="#007BFF"
-          strokeWidth="2"
-        />
-      </svg>
-    ),
-    eggs: (
-      <svg width="24" height="24" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-        <path
-          d="M32 6C22 6 10 24 10 36c0 10 10 20 22 20s22-10 22-20C54 24 42 6 32 6zm0 46c-8 0-16-6-16-16s8-22 16-22 16 12 16 22-8 16-16 16z"
-          fill="#ffffff"
-          stroke="#007BFF"
-          strokeWidth="2"
-        />
-      </svg>
-    ),
-  }
+  // Allergen icons mapping (reserved for future use with legend)
   return (
     <div className={`hotel-app9 ${currentLanguage === "ar" ? "rtl" : "ltr"}`}>
       <style jsx>{`
@@ -1268,20 +1219,20 @@ useEffect(() => {
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
           }
         }
-          /* CSS for Skylounge page content */
-.page-content-skylounge {
+          /* CSS for Terrasse Piscine page content */
+.page-content-terrassepiscine {
   margin: 20px 0;
   text-align: center;
 }
 
-.page-content-skylounge img.page-content-image {
+.page-content-terrassepiscine img.page-content-image {
   max-width: 100%;
   height: auto;
   border-radius: 8px;
   margin-bottom: 15px;
 }
 
-.page-content-skylounge p.page-content-description {
+.page-content-terrassepiscine p.page-content-description {
   font-size: 16px;
   color: #444;
   line-height: 1.6;
@@ -1345,13 +1296,13 @@ useEffect(() => {
         <div></div> {/* Empty div for spacing */}
       </header>
       <main className="app-main">
-        {/* JSX for Skylounge page content */}
+        {/* JSX for Terrasse Piscine page content */}
 {pageContent && (
-  <div className="page-content-skylounge">
+  <div className="page-content-terrassepiscine">
     {pageContent.image && (
       <img
         src={pageContent.image}
-        alt="Skylounge"
+        alt="Terrasse Piscine"
         className="page-content-image"
         onError={(e) => (e.target.src = "/placeholder.svg")}
       />
@@ -1551,7 +1502,7 @@ useEffect(() => {
                                     <div key={index} className="carousel-container-fixed">
                                       <img
                                         src={image || "/placeholder.svg"}
-                                        alt={`${menus[currentMenuIndex].title} - Image ${index + 1}`}
+                                        alt={`${menus[currentMenuIndex].title} ${index + 1}`}
                                         className="menu-image-fixed"
                                         onError={(e) => (e.target.src = "/placeholder.svg")}
                                       />
@@ -1563,7 +1514,7 @@ useEffect(() => {
                                     <div className="carousel-container-new carousel-container-new-dark">
                                       <img
                                         src={menus[currentMenuIndex].images[currentImageIndex] || "/placeholder.svg"}
-                                        alt={`${menus[currentMenuIndex].title} - Image ${currentImageIndex + 1}`}
+                                        alt={`${menus[currentMenuIndex].title} ${currentImageIndex + 1}`}
                                         className="menu-image-new menu-image-new-dark"
                                         onError={(e) => (e.target.src = "/placeholder.svg")}
                                       />
@@ -1828,7 +1779,7 @@ useEffect(() => {
         <div className="footer-content">
           <div className="footer-section">
             <h4>{t("contact")}</h4>
-            <p>+216 71 142 900</p>
+            <p>+216 31 329 329</p>
             <p>H6145@accor.com</p>
           </div>
           <div className="footer-section">
@@ -1838,7 +1789,7 @@ useEffect(() => {
           </div>
           <div className="footer-section">
             <h4>{t("reservations")}</h4>
-            <p>+216 71 142 900</p>
+            <p>+216 31 329 329</p>
             <p>H6145@accor.com</p>
           </div>
           <div className="footer-section">
@@ -1851,7 +1802,7 @@ useEffect(() => {
           <div className="footer-section">
             <h4>{t("followUs")}</h4>
             <div className="social-links">
-              <a href="https://www.facebook.com/NovotelTunis" aria-label="Facebook">
+              <a href="https://www.facebook.com/Novoteltunislac/" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -1866,7 +1817,24 @@ useEffect(() => {
                   <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                 </svg>
               </a>
-              <a href="https://www.instagram.com/novotel.tunis" aria-label="Instagram">
+              <a href="https://tn.linkedin.com/company/novotel-tunis-lac" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                  <rect x="2" y="9" width="4" height="12"></rect>
+                  <circle cx="4" cy="4" r="2"></circle>
+                </svg>
+              </a>
+              <a href="https://www.instagram.com/novotel_tunis_lac/" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -1889,7 +1857,7 @@ useEffect(() => {
         </div>
         <div className="copyright">
           <p>
-            © {new Date().getFullYear()} Novotel Tunis. {t("allRightsReserved")}.
+            © {new Date().getFullYear()} Novotel Tunis Lac. {t("allRightsReserved")}.
             <br />
             {t("createdBy")}{" "}
             <a href="https://www.itbafa.com" target="_blank" rel="noopener noreferrer">
@@ -1906,4 +1874,4 @@ useEffect(() => {
   )
 }
 
-export default SkyLoungeClient
+export default TerrassePiscineClient

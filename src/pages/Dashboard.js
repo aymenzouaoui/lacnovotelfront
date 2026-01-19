@@ -152,9 +152,9 @@ const Dashboard = () => {
     },
     {
       icon: "🌆",
-      title: "Sky Lounge",
-      description: "Gérez vos espaces Sky Lounge",
-      path: "/skylounge",
+      title: "Terrasse Piscine",
+      description: "Gérez votre Terrasse Piscine",
+      path: "/terrasse-piscine",
       color: "#4CC9F0",
     },
     {
@@ -653,7 +653,7 @@ const filteredSections = sections.filter((section) => {
         }}
       >
         <p>
-          © {new Date().getFullYear()} Novotel Tunis. Tous droits réservés.
+          © {new Date().getFullYear()} Novotel Tunis Lac. Tous droits réservés.
           <br />
           Créé par{" "}
           <a href="https://www.itbafa.com" target="_blank" rel="noopener noreferrer">

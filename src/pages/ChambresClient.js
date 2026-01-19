@@ -2,24 +2,24 @@
 
 import { useEffect, useState } from "react"
 import API from "../services/api"
-import "./EvenementsClient.css"
+import "./client-image-fix-dark.css"
 
 // Translation system
 const translations = {
   fr: {
     // Header
     back: "Retour",
-
     // Welcome banner
-    specialEvents: "Événements",
-    special: "Spéciaux",
-    discoverEvents: "Découvrez nos événements et activités",
-
+    rooms: "Nos Chambres",
+    discoverRooms: "Découvrez nos chambres confortables et élégantes",
     // Loading & Empty states
-    loadingEvents: "Chargement des événements...",
-    noEventsFound: "Aucun événement trouvé",
-    comeBackSoon: "Revenez bientôt pour découvrir nos prochains événements",
-
+    loadingRooms: "Chargement des chambres...",
+    noRoomsFound: "Aucune chambre trouvée",
+    comeBackSoon: "Revenez bientôt pour découvrir nos chambres",
+    // Room details
+    noDescription: "Pas de description disponible.",
+    viewDetails: "Voir détails",
+    reserveRoom: "Réserver une chambre",
     // Footer
     contact: "Contact",
     address: "Adresse",
@@ -34,21 +34,20 @@ const translations = {
     allRightsReserved: "Tous droits réservés",
     createdBy: "Créé par",
   },
-
   en: {
     // Header
     back: "Back",
-
     // Welcome banner
-    specialEvents: "Special",
-    special: "Events",
-    discoverEvents: "Discover our events and activities",
-
+    rooms: "Our Rooms",
+    discoverRooms: "Discover our comfortable and elegant rooms",
     // Loading & Empty states
-    loadingEvents: "Loading events...",
-    noEventsFound: "No events found",
-    comeBackSoon: "Come back soon to discover our upcoming events",
-
+    loadingRooms: "Loading rooms...",
+    noRoomsFound: "No rooms found",
+    comeBackSoon: "Come back soon to discover our rooms",
+    // Room details
+    noDescription: "No description available.",
+    viewDetails: "View details",
+    reserveRoom: "Reserve a room",
     // Footer
     contact: "Contact",
     address: "Address",
@@ -63,21 +62,20 @@ const translations = {
     allRightsReserved: "All rights reserved",
     createdBy: "Created by",
   },
-
   ar: {
     // Header
     back: "رجوع",
-
     // Welcome banner
-    specialEvents: "فعاليات",
-    special: "خاصة",
-    discoverEvents: "اكتشف فعالياتنا وأنشطتنا",
-
+    rooms: "غرفنا",
+    discoverRooms: "اكتشف غرفنا المريحة والأنيقة",
     // Loading & Empty states
-    loadingEvents: "جاري تحميل الفعاليات...",
-    noEventsFound: "لم يتم العثور على فعاليات",
-    comeBackSoon: "عد قريبًا لاكتشاف فعالياتنا القادمة",
-
+    loadingRooms: "جاري تحميل الغرف...",
+    noRoomsFound: "لم يتم العثور على غرف",
+    comeBackSoon: "عد قريبًا لاكتشاف غرفنا",
+    // Room details
+    noDescription: "لا يوجد وصف متاح.",
+    viewDetails: "عرض التفاصيل",
+    reserveRoom: "حجز غرفة",
     // Footer
     contact: "اتصل بنا",
     address: "العنوان",
@@ -100,48 +98,68 @@ const languages = [
   { code: "ar", name: "العربية", flag: "/images/ar-flag-v2.png" },
 ]
 
-const EvenementsClient = () => {
-  const [evenements, setEvenements] = useState([])
+const ChambresClient = () => {
+  const [rooms, setRooms] = useState([])
   const [isLoaded, setIsLoaded] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [selectedEvent, setSelectedEvent] = useState(null)
   const [currentLanguage, setCurrentLanguage] = useState("fr")
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false)
+  const [pageContent, setPageContent] = useState(null)
 
   // Get translation function
   const t = (key) => translations[currentLanguage][key] || translations.fr[key] || key
 
-  const fetchEvenements = async () => {
+  const fetchRooms = async () => {
     try {
       setIsLoading(true)
-      const res = await API.get("/evenements")
-      setEvenements(res.data)
+      // Note: This endpoint might need to be created on the backend
+      // For now, we'll use a placeholder or empty array
+      const res = await API.get("/rooms").catch(() => ({ data: [] }))
+      setRooms(res.data || [])
       setIsLoaded(true)
-    } catch (err) {
-      console.error("Erreur chargement:", err)
+    } catch (error) {
+      console.error("Error loading rooms:", error)
+      setRooms([])
     } finally {
       setIsLoading(false)
     }
   }
 
+  // Fetch page content
   useEffect(() => {
-    fetchEvenements()
+    const fetchPageContent = async () => {
+      try {
+        const res = await API.get("/page-contents/page/Chambres")
+        setPageContent(res.data)
+      } catch (err) {
+        console.error("Error fetching rooms page content:", err)
+        setPageContent(null)
+      }
+    }
+    fetchPageContent()
+  }, [])
+
+  useEffect(() => {
+    fetchRooms()
     const timer = setTimeout(() => {
       setIsLoaded(true)
     }, 100)
-    return () => clearTimeout(timer)
+
+    return () => {
+      clearTimeout(timer)
+    }
   }, [])
 
+  // Scroll to top on mount
   useEffect(() => {
-    window.scrollTo(0, 0) // Scroll to the top of the page
+    window.scrollTo(0, 0)
   }, [])
 
+  // Language loading and saving
   useEffect(() => {
-    // Load saved language from localStorage
     const savedLanguage = localStorage.getItem("novotel-language")
     if (savedLanguage && translations[savedLanguage]) {
       setCurrentLanguage(savedLanguage)
-      // Update document direction for Arabic
       document.documentElement.dir = savedLanguage === "ar" ? "rtl" : "ltr"
       document.documentElement.lang = savedLanguage
     }
@@ -152,8 +170,6 @@ const EvenementsClient = () => {
     setCurrentLanguage(langCode)
     localStorage.setItem("novotel-language", langCode)
     setShowLanguageDropdown(false)
-
-    // Update document direction for Arabic
     document.documentElement.dir = langCode === "ar" ? "rtl" : "ltr"
     document.documentElement.lang = langCode
   }
@@ -161,16 +177,14 @@ const EvenementsClient = () => {
   const getCurrentLanguage = () => languages.find((lang) => lang.code === currentLanguage)
 
   return (
-    <div className={`hotel-app2 ${currentLanguage === "ar" ? "rtl" : "ltr"}`}>
+    <div className={`hotel-app ${currentLanguage === "ar" ? "rtl" : "ltr"}`}>
       <style jsx>{`
-        /* Language dropdown styles */
         .language-selector {
           position: absolute;
           top: 15px;
           left: 15px;
           z-index: 20;
         }
-        
         .language-toggle {
           display: flex;
           align-items: center;
@@ -186,19 +200,16 @@ const EvenementsClient = () => {
           transition: all 0.3s ease;
           backdrop-filter: blur(10px);
         }
-        
         .language-toggle:hover {
           background: rgba(0, 0, 0, 0.8);
           transform: scale(1.05);
         }
-        
         .language-flag {
           width: 20px;
           height: 15px;
           object-fit: cover;
           border-radius: 2px;
         }
-        
         .language-dropdown {
           position: absolute;
           top: 100%;
@@ -211,7 +222,6 @@ const EvenementsClient = () => {
           backdrop-filter: blur(10px);
           margin-top: 5px;
         }
-        
         .language-option {
           display: flex;
           align-items: center;
@@ -222,85 +232,46 @@ const EvenementsClient = () => {
           color: white;
           font-size: 14px;
         }
-        
         .language-option:hover {
           background: rgba(255, 255, 255, 0.1);
         }
-        
         .language-option.active {
           background: rgba(255, 255, 255, 0.2);
         }
-        
         .flag-small {
           width: 20px;
           height: 15px;
           object-fit: cover;
           border-radius: 2px;
         }
-
-        /* RTL Support */
         .rtl {
           direction: rtl;
         }
-
         .rtl .language-selector {
           left: auto;
           right: 15px;
         }
-
         .rtl .language-dropdown {
           left: auto;
           right: 0;
           text-align: right;
         }
-
-        .rtl .header-back-link {
-          flex-direction: row-reverse;
+        .page-content-rooms {
+          margin: 20px 0;
+          text-align: center;
         }
-
-        .rtl .header-back-link svg {
-          margin-left: 8px;
-          margin-right: 0;
+        .page-content-rooms img.page-content-image {
+          max-width: 100%;
+          height: auto;
+          border-radius: 8px;
+          margin-bottom: 15px;
         }
-
-        .rtl .welcome-banner h1 {
-          text-align: right;
-        }
-
-        .rtl .welcome-banner p {
-          text-align: right;
-        }
-
-        .rtl .empty-state {
-          text-align: right;
-        }
-
-        .rtl .content-item-content {
-          text-align: right;
-        }
-
-        .rtl .content-item-arrow {
-          transform: scaleX(-1); /* Flip arrow for RTL */
-        }
-
-        .rtl .event-detail-content {
-          text-align: right;
-        }
-
-        .rtl .footer-section {
-          text-align: right;
-        }
-
-        .rtl .copyright {
-          text-align: right;
-        }
-
-        .rtl .copyright a {
-          margin-left: 0;
-          margin-right: 5px;
+        .page-content-rooms p.page-content-description {
+          font-size: 16px;
+          color: #444;
+          line-height: 1.6;
         }
       `}</style>
-
       {/* Language Selector */}
       <div className="language-selector">
         <button className="language-toggle" onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}>
@@ -331,16 +302,7 @@ const EvenementsClient = () => {
       </div>
 
       <header className="app-header">
-        <button
-          className="header-back-link"
-          onClick={() => {
-            if (selectedEvent) {
-              setSelectedEvent(null)
-            } else {
-              window.location.href = "/Home"
-            }
-          }}
-        >
+        <button className="header-back-link" onClick={() => (window.location.href = "/Home")}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d={currentLanguage === "ar" ? "M5 12H19M19 12L12 5M19 12L12 19" : "M19 12H5M5 12L12 19M5 12L12 5"}
@@ -358,75 +320,64 @@ const EvenementsClient = () => {
         <div></div>
       </header>
       <main className="app-main">
+        {/* Page content */}
+        {pageContent && (
+          <div className="page-content-rooms">
+            {pageContent.image && (
+              <img
+                src={pageContent.image}
+                alt="Chambres"
+                className="page-content-image"
+                onError={(e) => (e.target.src = "/placeholder.svg")}
+              />
+            )}
+            {pageContent.description && (
+              <div className="page-content-description" dangerouslySetInnerHTML={{ __html: pageContent.description }} />
+            )}
+          </div>
+        )}
+
         <div className="welcome-banner">
           <h1>
-            <span>{t("specialEvents")}</span> {t("special")}
+            <span>{t("rooms")}</span>
           </h1>
-          <p>{t("discoverEvents")}</p>
+          <p>{t("discoverRooms")}</p>
         </div>
         <div className="content-container">
           {isLoading ? (
             <div className="loading-container">
               <div className="loading-spinner"></div>
-              <p>{t("loadingEvents")}</p>
+              <p>{t("loadingRooms")}</p>
             </div>
-          ) : evenements.length === 0 ? (
+          ) : rooms.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-icon">🔍</div>
-              <h3>{t("noEventsFound")}</h3>
+              <div className="empty-icon">🏨</div>
+              <h3>{t("noRoomsFound")}</h3>
               <p>{t("comeBackSoon")}</p>
             </div>
-          ) : selectedEvent ? (
-            // ✅ Detail view of selected event
-            <div className="event-detail">
-              <div className="event-detail-image">
-                <img
-                  src={selectedEvent.image || "/placeholder.svg"}
-                  alt={selectedEvent.name}
-                  onError={(e) => {
-                    e.target.src = `/placeholder.svg?height=120&width=300&text=${selectedEvent.name}`
-                  }}
-                />
-              </div>
-              <div className="event-detail-content">
-                <h2>{selectedEvent.name}</h2>
-                <p>{selectedEvent.description}</p>
-                <p>{selectedEvent.price} TND</p>
-              </div>
-            </div>
           ) : (
-            // ✅ Default grid view
             <div className={`content-grid ${isLoaded ? "loaded" : ""}`}>
-              {evenements.map((evenement, index) => (
+              {rooms.map((room, index) => (
                 <div
-                  key={evenement._id}
+                  key={room._id || index}
                   className="content-item"
                   style={{ animationDelay: `${index * 0.05}s` }}
-                  onClick={() => setSelectedEvent(evenement)}
                 >
                   <div className="content-item-image">
                     <img
-                      src={evenement.image || "/placeholder.svg"}
-                      alt={evenement.name}
+                      src={room.image || "/placeholder.svg"}
+                      alt={room.name}
                       onError={(e) => {
-                        e.target.src = `/placeholder.svg?height=120&width=300&text=${evenement.name}`
+                        e.target.src = `/placeholder.svg?height=120&width=300&text=${room.name}`
                       }}
                     />
+                    <div className="content-item-overlay">
+                      <span className="view-details">{t("viewDetails")}</span>
+                    </div>
                   </div>
                   <div className="content-item-content">
-                    <h3>{evenement.name}</h3>
-                    {/* Description removed in card */}
-                    <div className="content-item-arrow">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M12 4L20 12L12 20M4 12H20"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </div>
+                    <h3>{room.name}</h3>
+                    <p>{room.description || t("noDescription")}</p>
                   </div>
                 </div>
               ))}
@@ -434,7 +385,6 @@ const EvenementsClient = () => {
           )}
         </div>
       </main>
-
       <footer className="app-footer">
         <div className="footer-content">
           <div className="footer-section">
@@ -454,7 +404,6 @@ const EvenementsClient = () => {
           </div>
           <div className="footer-section">
             <h4>{t("wifi")}</h4>
-             
             <p>
               {t("password")}: {t("availableAtReception")}
             </p>
@@ -463,17 +412,7 @@ const EvenementsClient = () => {
             <h4>{t("followUs")}</h4>
             <div className="social-links">
               <a href="https://www.facebook.com/Novoteltunislac/" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                 </svg>
               </a>
@@ -484,24 +423,13 @@ const EvenementsClient = () => {
                   <circle cx="4" cy="4" r="2"></circle>
                 </svg>
               </a>
-              <a href="https://www.instagram.com/novotel_tunis_lac/" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
+              <a href="https://www.instagram.com/novotel.tunis" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
                   <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                   <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                 </svg>
               </a>
-               
             </div>
           </div>
         </div>
@@ -524,4 +452,4 @@ const EvenementsClient = () => {
   )
 }
 
-export default EvenementsClient
+export default ChambresClient

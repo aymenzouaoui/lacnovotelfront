@@ -594,7 +594,7 @@ color: #3399ff;
   }
 }
 
-/* Additional styles specific to the SkyLounge page */
+/* Additional styles specific to the Terrasse Piscine page */
 .search-filter-container {
   display: flex;
   margin-bottom: 20px;
@@ -1051,7 +1051,7 @@ color: #3399ff;
   transform: translateY(-2px);
 }
 
-/* SkyLounge specific styles */
+/* Terrasse Piscine specific styles */
 .submenu-container {
   width: 100%;
 }

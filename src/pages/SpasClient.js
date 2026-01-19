@@ -28,8 +28,8 @@ const translations = {
     network: "Réseau",
     password: "Mot de passe",
     availableAtReception: "Disponible à la réception",
-    addressLine1: "Avenue Mohamed V",
-    addressLine2: "Tunis, Tunisie",
+    addressLine1: "Rue de la Feuille d'Érable - Cité Les Pins - Les Berges du Lac 2",
+    addressLine2: "1053 Tunis, TN",
     allRightsReserved: "Tous droits réservés",
     createdBy: "Créé par",
   },
@@ -55,8 +55,8 @@ const translations = {
     network: "Network",
     password: "Password",
     availableAtReception: "Available at reception",
-    addressLine1: "Avenue Mohamed V",
-    addressLine2: "1002 Tunis, Tunisia",
+    addressLine1: "Rue de la Feuille d'Érable - Cité Les Pins - Les Berges du Lac 2",
+    addressLine2: "1053 Tunis, TN",
     allRightsReserved: "All rights reserved",
     createdBy: "Created by",
   },
@@ -82,8 +82,8 @@ const translations = {
     network: "الشبكة",
     password: "كلمة المرور",
     availableAtReception: "متوفرة في الاستقبال",
-    addressLine1: "شارع الكورنيش",
-    addressLine2: "تونس، تونس",
+    addressLine1: "شارع ورقة القيقب - مدينة الصنوبر - ضفاف البحيرة 2",
+    addressLine2: "1053 تونس، تونس",
     allRightsReserved: "جميع الحقوق محفوظة",
     createdBy: "تم إنشاؤه بواسطة",
   },
@@ -968,7 +968,7 @@ const SpasClient = () => {
         <div className="footer-content">
           <div className="footer-section">
             <h4>{t("contact")}</h4>
-            <p>+216 71 142 900</p>
+            <p>+216 31 329 329</p>
             <p>H6145@accor.com</p>
           </div>
           <div className="footer-section">
@@ -978,7 +978,7 @@ const SpasClient = () => {
           </div>
           <div className="footer-section">
             <h4>{t("reservations")}</h4>
-            <p>+216 71 142 900</p>
+            <p>+216 31 329 329</p>
             <p>H6145@accor.com</p>
           </div>
           <div className="footer-section">
@@ -990,10 +990,17 @@ const SpasClient = () => {
           <div className="footer-section">
             <h4>{t("followUs")}</h4>
             <div className="social-links">
-              <a href="https://www.facebook.com/NovotelTunis" aria-label="Facebook">
+              <a href="https://www.facebook.com/Novoteltunislac/" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
                 <Facebook width="24" height="24" />
               </a>
-              <a href="https://www.instagram.com/novotel.tunis" aria-label="Instagram">
+              <a href="https://tn.linkedin.com/company/novotel-tunis-lac" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                  <rect x="2" y="9" width="4" height="12" />
+                  <circle cx="4" cy="4" r="2" />
+                </svg>
+              </a>
+              <a href="https://www.instagram.com/novotel_tunis_lac/" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
                 <Instagram width="24" height="24" />
               </a>
             </div>
@@ -1001,7 +1008,7 @@ const SpasClient = () => {
         </div>
         <div className="copyright">
           <p>
-            © {new Date().getFullYear()} Novotel Tunis. {t("allRightsReserved")}.
+            © {new Date().getFullYear()} Novotel Tunis Lac. {t("allRightsReserved")}.
             <br />
             {t("createdBy")}{" "}
             <a href="https://www.itbafa.com" target="_blank" rel="noopener noreferrer">

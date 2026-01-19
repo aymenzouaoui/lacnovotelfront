@@ -418,7 +418,7 @@ const LoisirsClient = () => {
         <div className="footer-content">
           <div className="footer-section">
             <h4>{t("contact")}</h4>
-            <p>+216 71 142 900</p>
+            <p>+216 31 329 329</p>
             <p>H6145@accor.com</p>
           </div>
           <div className="footer-section">
@@ -428,7 +428,7 @@ const LoisirsClient = () => {
           </div>
           <div className="footer-section">
             <h4>{t("reservations")}</h4>
-            <p>+216 71 142 900</p>
+            <p>+216 31 329 329</p>
             <p>H6145@accor.com</p>
           </div>
           <div className="footer-section">
@@ -440,10 +440,17 @@ const LoisirsClient = () => {
           <div className="footer-section">
             <h4>{t("followUs")}</h4>
             <div className="social-links">
-              <a href="https://www.facebook.com/NovotelTunis" aria-label="Facebook">
+              <a href="https://www.facebook.com/Novoteltunislac/" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
                 <Facebook width="24" height="24" />
               </a>
-              <a href="https://www.instagram.com/novotel.tunis" aria-label="Instagram">
+              <a href="https://tn.linkedin.com/company/novotel-tunis-lac" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                  <rect x="2" y="9" width="4" height="12"></rect>
+                  <circle cx="4" cy="4" r="2"></circle>
+                </svg>
+              </a>
+              <a href="https://www.instagram.com/novotel_tunis_lac/" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
                 <Instagram width="24" height="24" />
               </a>
             </div>
@@ -451,7 +458,7 @@ const LoisirsClient = () => {
         </div>
         <div className="copyright">
           <p>
-            © {new Date().getFullYear()} Novotel Tunis. {t("allRightsReserved")}.
+            © {new Date().getFullYear()} Novotel Tunis Lac. {t("allRightsReserved")}.
             <br />
             {t("createdBy")}{" "}
             <a href="https://www.itbafa.com" target="_blank" rel="noopener noreferrer">

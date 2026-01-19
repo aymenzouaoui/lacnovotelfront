@@ -8,7 +8,7 @@ import OffersPopup from "../components/OffersPopup"
 const translations = {
   fr: {
     // Hero section
-    welcome: "Bienvenue au Novotel Tunis",
+    welcome: "Bienvenue au Novotel Tunis Lac",
     scrollDown: "DÉFILER VERS LE BAS",
 
     // Main banners
@@ -19,13 +19,14 @@ const translations = {
     restaurants: "RESTAURANTS",
     exploreSpecialties: "Explorez nos spécialités culinaires et notre gastronomie",
     relaxAt: "DÉTENDEZ-VOUS À",
-    ourSkyLounge: "NOTRE SKY LOUNGE",
+    ourSkyLounge: "NOTRE TERRASSE PISCINE",
     panoramicView: "Profitez d'une vue panoramique avec des boissons premium",
 
     // Feature cards
     eat: "Restaurant Novotel",
     drink: "Bar",
-    relax: "Sky Lounge",
+    relax: "Terrasse Piscine",
+    room: "Chambre",
     wellness: "IN BALANCE BY NOVOTEL",
     events: "Événements",
     services: "S'informer",
@@ -62,7 +63,7 @@ const translations = {
 
   en: {
     // Hero section
-    welcome: "Welcome to Novotel Tunis",
+    welcome: "Welcome to Novotel Tunis Lac",
     scrollDown: "SCROLL DOWN",
 
     // Main banners
@@ -73,13 +74,14 @@ const translations = {
     restaurants: "RESTAURANTS",
     exploreSpecialties: "Explore our culinary specialties and gastronomy",
     relaxAt: "RELAX AT",
-    ourSkyLounge: "OUR SKY LOUNGE",
+    ourSkyLounge: "OUR POOL TERRACE",
     panoramicView: "Enjoy panoramic views with premium drinks",
 
     // Feature cards
     eat: "Novotel  Restaurant",
     drink: "Bar",
-    relax: "Sky Lounge",
+    relax: "Pool Terrace",
+    room: "Room",
     wellness: "IN BALANCE BY NOVOTEL",
     events: "Events",
     services: "Inform",
@@ -115,8 +117,8 @@ const translations = {
   },
 
   ar: {
-    // Hero section
-    welcome: "مرحباً بكم في نوفوتيل تونس",
+    // Hero section 
+    welcome: "مرحباً بكم في نوفوتيل تونس لاك",
     scrollDown: "انتقل للأسفل",
 
     // Main banners
@@ -127,13 +129,14 @@ const translations = {
     restaurants: "مطاعمنا",
     exploreSpecialities: "استكشف تخصصاتنا الطهوية وفن الطبخ لدينا",
     relaxAt: "استرخ في",
-    ourSkyLounge: "صالة السكاي لاونج",
+    ourSkyLounge: "تراس المسبح",
     panoramicView: "استمتع بإطلالة بانورامية مع المشروبات المميزة",
 
     // Feature cards
     eat: "مطاعم نوفوتيل",
     drink: "حانة",
-    relax: "صالة سكاي",
+    relax: "تراس المسبح",
+    room: "غرفة",
     wellness: "منتجع",
     events: "فعاليات",
     services: "خدمات",
@@ -450,11 +453,18 @@ const HomeClient = () => {
       path: "/boissons-client",
     },
     {
-      id: "skylounge",
+      id: "terrassepiscine",
       title: t("relax"),
-      image: "/images/skylounge.jpg",
-      fallback: "/placeholder.svg?height=300&width=200&text=Sky+Lounge",
-      path: "/skylounge-client",
+      image: "/images/terrasse-piscine.jpg",
+      fallback: "/placeholder.svg?height=300&width=200&text=Terrasse+Piscine",
+      path: "/terrasse-piscine-client",
+    },
+    {
+      id: "chambre",
+      title: t("room"),
+      image: "/images/chambre.jpg",
+      fallback: "/placeholder.svg?height=300&width=200&text=Chambre",
+      path: "/chambres-client",
     },
     {
       id: "seminaire",
@@ -487,7 +497,7 @@ const HomeClient = () => {
     {
       id: "feedback",
       title: t("feedback"),
-      image: "/images/feedback.png",
+      image: "/images/feedback.webp",
       fallback: "/placeholder.svg?height=300&width=200&text=Feedback",
       url: "https://tinyurl.com/28npzs5f",
     },
@@ -661,7 +671,7 @@ const HomeClient = () => {
           </div>
 
           <div className="novotel-v2-social">
-            <a href="https://www.facebook.com/NovotelTunis" className="novotel-v2-social-icon">
+            <a href="https://www.facebook.com/Novoteltunislac/" className="novotel-v2-social-icon" target="_blank" rel="noopener noreferrer">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                   d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
@@ -672,7 +682,20 @@ const HomeClient = () => {
                 />
               </svg>
             </a>
-            <a href="https://www.instagram.com/novotel.tunis" className="novotel-v2-social-icon">
+            <a href="https://tn.linkedin.com/company/novotel-tunis-lac" className="novotel-v2-social-icon" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <rect x="2" y="9" width="4" height="12" stroke="currentColor" strokeWidth="2" />
+                <circle cx="4" cy="4" r="2" stroke="currentColor" strokeWidth="2" />
+              </svg>
+            </a>
+            <a href="https://www.instagram.com/novotel_tunis_lac/" className="novotel-v2-social-icon" target="_blank" rel="noopener noreferrer">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="currentColor" strokeWidth="2" />
                 <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" stroke="currentColor" strokeWidth="2" />
@@ -691,7 +714,9 @@ const HomeClient = () => {
 
           <div className="copyright">
             <p>
-              © {new Date().getFullYear()} Novotel Tunis. {t("allRightsReserved")}.
+              © {new Date().getFullYear()} Novotel Tunis Lac. {t("allRightsReserved")}.
+              <br />
+              Rue de la Feuille d'Érable - Cité Les Pins - Les Berges du Lac 2, 1053 Tunis, TN
               <br />
               {t("createdBy")}{" "}
               <a href="https://www.itbafa.com" target="_blank" rel="noopener noreferrer">

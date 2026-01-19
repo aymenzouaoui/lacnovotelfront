@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import API from "../services/api"
-import "./SkyLoungePage.css"
+import "./TerrassePiscinePage.css"
 import "./client-image-fix-dark.css"
 import CompressedFileInput from "../components/CompressedFileInput"
 
-const SkyLoungePage = () => {
+const TerrassePiscinePage = () => {
   const navigate = useNavigate()
   const [lounges, setLounges] = useState([])
   const [selectedLounge, setSelectedLounge] = useState(null)
@@ -48,7 +48,7 @@ const SkyLoungePage = () => {
   const fetchLounges = async () => {
     setIsLoading(true)
     try {
-      const res = await API.get("/sky-lounges")
+      const res = await API.get("/terrasses-piscine")
       setLounges(res.data)
     } catch (error) {
       console.error("Erreur chargement lounges:", error)
@@ -62,7 +62,7 @@ const SkyLoungePage = () => {
     setIsLoading(true)
     try {
       const res = await API.get("/menus")
-      const filteredMenus = res.data.filter((menu) => menu.skyLounge?._id === loungeId || menu.skyLounge === loungeId)
+      const filteredMenus = res.data.filter((menu) => menu.terrassePiscine?._id === loungeId || menu.terrassePiscine === loungeId)
       setMenus(filteredMenus)
     } catch (error) {
       console.error("Erreur chargement menus:", error)
@@ -170,7 +170,7 @@ const handleSubmit = async (e) => {
     const form = new FormData()
     form.append("title", formData.title)
     form.append("items", JSON.stringify(formData.items))
-    form.append("skyLounge", selectedLounge._id)
+    form.append("terrassePiscine", selectedLounge._id)
 
     // Separate existing images (URLs) from new images (Blob/File objects)
     const existingImages = []
@@ -286,7 +286,6 @@ const handleLoungeChange = (e) => {
   if (name === "image" && files && files[0]) {
     const image = files[0];
     setLoungeFormData((prev) => ({ ...prev, image }));
-
     const reader = new FileReader();
     reader.onloadend = () => setLoungePreviewImage(reader.result);
     reader.readAsDataURL(image);
@@ -310,12 +309,12 @@ const handleLoungeChange = (e) => {
       if (loungeFormData.image) form.append("image", loungeFormData.image)
 
       if (editingLoungeId) {
-        await API.put(`/sky-lounges/${editingLoungeId}`, form, {
+        await API.put(`/terrasses-piscine/${editingLoungeId}`, form, {
           headers: { "Content-Type": "multipart/form-data" },
         })
         alert("Lounge modifié avec succès")
       } else {
-        await API.post("/sky-lounges", form, {
+        await API.post("/terrasses-piscine", form, {
           headers: { "Content-Type": "multipart/form-data" },
         })
         alert("Lounge créé avec succès")
@@ -338,7 +337,7 @@ const handleLoungeChange = (e) => {
     if (window.confirm("Voulez-vous vraiment supprimer ce lounge ?")) {
       try {
         setIsLoading(true)
-        await API.delete(`/sky-lounges/${id}`)
+        await API.delete(`/terrasses-piscine/${id}`)
         alert("Lounge supprimé")
         fetchLounges()
       } catch (error) {
@@ -435,8 +434,8 @@ const handleLoungeChange = (e) => {
     src={isDarkMode ? "/GUESTLY_LIGHT.jpg" : "/GUESTLY_DARK.jpg"}
     alt="Guestly Logo"
     style={{
-      width: "180px",        // wide logo
-      height: "auto",        // maintain aspect ratio
+      width: "180px",
+      height: "auto",
       objectFit: "contain",
       transition: "opacity 0.3s ease"
     }}
@@ -457,8 +456,8 @@ const handleLoungeChange = (e) => {
     src={isDarkMode ? "/GUESTLY_LIGHT.jpg" : "/GUESTLY_DARK.jpg"}
     alt="Guestly Logo"
     style={{
-      width: "180px",        // wide logo
-      height: "auto",        // maintain aspect ratio
+      width: "180px",
+      height: "auto",
       objectFit: "contain",
       transition: "opacity 0.3s ease"
     }}
@@ -505,9 +504,9 @@ const handleLoungeChange = (e) => {
               </a>
             </li>
             <li className="active">
-              <a href="#skylounge">
-                <span className={isDarkMode ? "nav-icon" : "light-nav-icon"}>🌌</span>
-                <span>Sky Lounge</span>
+              <a href="#terrasse-piscine">
+                <span className={isDarkMode ? "nav-icon" : "light-nav-icon"}>🏊</span>
+                <span>Terrasse Piscine</span>
               </a>
             </li>
           </ul>
@@ -532,8 +531,8 @@ const handleLoungeChange = (e) => {
         <div className={isDarkMode ? "welcome-section" : "light-welcome-section"}>
           <div className={isDarkMode ? "welcome-header" : "light-welcome-header"}>
             <h1>
-              {selectedLounge ? `${selectedLounge.name} - Menus` : "Sky Lounge"}{" "}
-              <span className={isDarkMode ? "wave-emoji" : "light-wave-emoji"}>🌌</span>
+              {selectedLounge ? `${selectedLounge.name} - Menus` : "Terrasse Piscine"}{" "}
+              <span className={isDarkMode ? "wave-emoji" : "light-wave-emoji"}>🏊</span>
             </h1>
             <div className={isDarkMode ? "welcome-actions" : "light-welcome-actions"}>
               <button
@@ -642,16 +641,16 @@ const handleLoungeChange = (e) => {
                     onChange={handleLoungeChange}
                     className={isDarkMode ? "" : "light-form-input"}
                   />
-<div className="skylounge-checkbox-wrapper">
+<div className="terrassepiscine-checkbox-wrapper">
   <label
-    className={`skylounge-checkbox ${isDarkMode ? "dark" : "light"}`}
+    className={`terrassepiscine-checkbox ${isDarkMode ? "dark" : "light"}`}
   >
     <input
       type="checkbox"
       name="reservable"
       checked={loungeFormData.reservable}
       onChange={handleLoungeChange}
-      className="skylounge-checkbox-input"
+      className="terrassepiscine-checkbox-input"
     />
     Réservable
   </label>
@@ -697,7 +696,7 @@ const handleLoungeChange = (e) => {
 
             {filteredLounges.length === 0 ? (
               <div className={isDarkMode ? "empty-state" : "light-empty-state"}>
-                <div className="empty-icon">🌌</div>
+                <div className="empty-icon">🏊</div>
                 <h3>Aucun lounge trouvé</h3>
                 <p>Commencez par créer un nouveau lounge</p>
                 <button
@@ -1023,7 +1022,7 @@ const handleLoungeChange = (e) => {
       </div>
 
       <style jsx>{`
-/* Light Mode Styles for Sky Lounge Page */
+/* Light Mode Styles for Terrasse Piscine Page */
 .light-dashboard {
   background: linear-gradient(135deg, #ffffff 0%, #fdf2f8 50%, #f8fafc 100%);
   color: #1e293b;
@@ -1056,8 +1055,8 @@ const handleLoungeChange = (e) => {
   cursor: pointer;
 }
 .checkbox-label span {
-  align-self: flex-start; /* push only the span up */
-  margin-top: -3px;       /* fine tune */
+  align-self: flex-start;
+  margin-top: -3px;
 }
 .checkbox-input {
   margin-right: 0.5rem;
@@ -1154,21 +1153,22 @@ const handleLoungeChange = (e) => {
   backdrop-filter: blur(10px);
 }
 /* Wrapper forces left alignment */
-.skylounge-checkbox-wrapper {
+.terrassepiscine-checkbox-wrapper {
   display: block;
   text-align: left;
-  margin: 10px 0; /* spacing from other elements */
+  margin: 10px 0;
 }
 
 /* Label styling */
-.skylounge-checkbox {
-  display: inline-flex; /* checkbox + text inline */
-  align-items: center;  /* vertical alignment */
-  gap: 10px;            /* space between checkbox and text */
+.terrassepiscine-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-size: 16px;
   cursor: pointer;
   user-select: none;
-  line-height: 1.4;      /* bett*
+  line-height: 1.4;
+}
 
 .light-menu-toggle {
   background: none;
@@ -1801,10 +1801,10 @@ const handleLoungeChange = (e) => {
 }
 .remove-item-btn,
 .light-remove-item-btn {
-  align-self: flex-start !important; /* force alignment to top */
-  margin-top: -6px !important;       /* adjust value to move up */
-  position: relative !important;     /* ensure position can be adjusted */
-  top: -2px !important;              /* additional fine-tune if needed */
+  align-self: flex-start !important;
+  margin-top: -6px !important;
+  position: relative !important;
+  top: -2px !important;
 }
 
 .light-add-item-btn {
@@ -2126,4 +2126,4 @@ const handleLoungeChange = (e) => {
   )
 }
 
-export default SkyLoungePage
+export default TerrassePiscinePage

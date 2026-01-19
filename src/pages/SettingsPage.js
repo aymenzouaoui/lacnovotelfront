@@ -513,7 +513,7 @@ const SettingsPage = () => {
               <div className={isDarkMode ? "form-group" : "light-form-group"}>
                 <label>Rôles</label>
                 <div className={isDarkMode ? "checkbox-group" : "light-checkbox-group"}>
-                  {["admin", "skylounge", "restaurant", "seminaire", "spa", "questionnaire","skip_clean"].map((roleOption) => (
+                  {["admin", "terrassepiscine", "restaurant", "seminaire", "spa", "questionnaire","skip_clean"].map((roleOption) => (
                     <label key={roleOption} className={isDarkMode ? "checkbox-label" : "light-checkbox-label"}>
                       <input
                         type="checkbox"

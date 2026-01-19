@@ -425,7 +425,7 @@ const PageContentsPage = () => {
                 <option value="Spa">Spa</option>
                 <option value="Restaurants">Restaurants</option>
                 <option value="Boissons">Boissons</option>
-                <option value="Skylounge">Skylounge</option>
+                <option value="TerrassePiscine">Terrasse Piscine</option>
                 <option value="Seminaire">Séminaire</option>
                 <option value="Roomservice">Room Service</option>
 

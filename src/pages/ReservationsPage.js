@@ -28,7 +28,7 @@ const ReservationsPage = () => {
 
   const SERVICE_MAP = {
     restaurant: "restaurant",
-    skylounge: "skylounge",
+    terrassepiscine: "terrassepiscine",
     seminaire: "seminaire",
     spa: "spa",
   }

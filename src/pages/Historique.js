@@ -174,7 +174,7 @@ const Historique = () => {
       doc.setPage(i)
       doc.setFontSize(8)
       doc.setTextColor(128, 128, 128)
-      doc.text(`© ${new Date().getFullYear()} Novotel Tunis - Créé par ITBAFA`, 20, doc.internal.pageSize.height - 10)
+      doc.text(`© ${new Date().getFullYear()} Novotel Tunis Lac - Créé par ITBAFA`, 20, doc.internal.pageSize.height - 10)
       doc.text(`Page ${i} sur ${pageCount}`, doc.internal.pageSize.width - 40, doc.internal.pageSize.height - 10)
     }
 
@@ -636,7 +636,7 @@ const Historique = () => {
         }}
       >
         <p>
-          © {new Date().getFullYear()} Novotel Tunis. Tous droits réservés.
+          © {new Date().getFullYear()} Novotel Tunis Lac. Tous droits réservés.
           <br />
           Créé par{" "}
           <a href="https://www.itbafa.com" target="_blank" rel="noopener noreferrer">

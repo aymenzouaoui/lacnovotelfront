@@ -62,7 +62,7 @@ const Statistiques = () => {
   }
 
   const fetchReservationsFallback = async () => {
-    const services = ["restaurant", "skylounge", "seminaire", "spa"]
+    const services = ["restaurant", "terrassepiscine", "seminaire", "spa"]
     const statuses = ["pending", "confirmed", "cancelled"]
     let allReservations = []
 

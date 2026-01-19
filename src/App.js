@@ -12,7 +12,7 @@ import LoisirsPage from "./pages/LoisirsPage";
 import OffresPage from "./pages/OffresPage";
 import EvenementsPage from "./pages/EvenementsPage";
 import RoomServicePage from "./pages/RoomServicePage";
-import SkyLoungePage from "./pages/SkyLoungePage";
+import TerrassePiscinePage from "./pages/TerrassePiscinePage";
 import Statistiques from "./pages/Statistiques";
 import PageContents from "./pages/page-contents";
 import CommitmentPage from "./pages/CommitmentPage";
@@ -32,7 +32,8 @@ import LoisirsClient from "./pages/LoisirsClient";
 import OffresClient from "./pages/OffresClient";
 import EvenementsClient from "./pages/EvenementsClient";
 import RoomServiceClient from "./pages/RoomServiceClient";
-import SkyLoungeClient from "./pages/SkyLoungeClient";
+import TerrassePiscineClient from "./pages/TerrassePiscineClient";
+import ChambresClient from "./pages/ChambresClient";
 import SettingsPage from "./pages/SettingsPage";
 import ProfilePage from "./pages/ProfilePage";
 import ReservationsPage from "./pages/ReservationsPage";
@@ -66,7 +67,7 @@ function App() {
         <Route path="/evenements" element={<EvenementsPage />} />
         <Route path="/offres" element={<OffresPage />} />
         <Route path="/roomservices" element={<RoomServicePage />} />
-        <Route path="/skylounge" element={<SkyLoungePage />} />
+        <Route path="/terrasse-piscine" element={<TerrassePiscinePage />} />
         <Route path="/questionnaire-client" element={<QuestionnaireClient />} />
         <Route path="/skipclean-client" element={<SkipCleanClient />} />
         <Route path="/questionnaires" element={<QuestionnairesPage />} />
@@ -84,7 +85,8 @@ function App() {
         <Route path="/evenements-client" element={<EvenementsClient />} />
         <Route path="/offres-client" element={<OffresClient />} />
         <Route path="/roomservices-client" element={<RoomServiceClient />} />
-        <Route path="/skylounge-client" element={<SkyLoungeClient />} />
+        <Route path="/terrasse-piscine-client" element={<TerrassePiscineClient />} />
+        <Route path="/chambres-client" element={<ChambresClient />} />
         <Route path="/policy-client" element={<PrivacyClient />} />
 
       </Routes>
