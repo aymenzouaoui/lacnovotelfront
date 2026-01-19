@@ -365,33 +365,108 @@ const ChambresClient = () => {
           text-align: right;
         }
         .page-content-rooms {
-          margin: 20px 0;
+          margin: 30px 0;
           text-align: center;
+          padding: 20px;
+          background: rgba(255, 255, 255, 0.95);
+          border-radius: 16px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
         .page-content-rooms img.page-content-image {
           max-width: 100%;
           height: auto;
-          border-radius: 8px;
-          margin-bottom: 15px;
+          border-radius: 12px;
+          margin-bottom: 20px;
+          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
         .page-content-rooms p.page-content-description {
-          font-size: 16px;
-          color: #444;
-          line-height: 1.6;
+          font-size: 17px;
+          color: #555;
+          line-height: 1.8;
+        }
+        .welcome-banner {
+          text-align: center;
+          margin: 40px 0 50px;
+          padding: 40px 20px;
+          background: linear-gradient(135deg, rgba(0, 41, 132, 0.05) 0%, rgba(0, 102, 204, 0.05) 100%);
+          border-radius: 20px;
+          border: 2px solid rgba(0, 41, 132, 0.1);
+        }
+        .welcome-banner h1 {
+          font-size: 3rem;
+          font-weight: 300;
+          margin-bottom: 12px;
+          letter-spacing: -1px;
+        }
+        .welcome-banner h1 span {
+          font-weight: 800;
+          background: linear-gradient(135deg, #002984 0%, #0066cc 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        .welcome-banner p {
+          font-size: 1.3rem;
+          color: #666;
+          font-weight: 400;
+        }
+        .content-container {
+          padding: 20px;
+          min-height: 400px;
+        }
+        .content-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+          gap: 30px;
+          opacity: 0;
+          transform: translateY(20px);
+          transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .content-grid.loaded {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        .content-grid.loaded .room-card {
+          animation: fadeInUp 0.6s ease forwards;
+        }
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
         .room-card {
           cursor: pointer;
           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
           background: white;
-          border-radius: 16px;
+          border-radius: 20px;
           overflow: hidden;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-          border: 1px solid rgba(0, 41, 132, 0.08);
+          box-shadow: 0 4px 20px rgba(0, 41, 132, 0.1);
+          border: 2px solid rgba(0, 41, 132, 0.08);
+          position: relative;
+        }
+        .room-card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 4px;
+          background: linear-gradient(90deg, #002984, #0066cc);
+          opacity: 0;
+          transition: opacity 0.3s ease;
         }
         .room-card:hover {
-          transform: translateY(-8px) scale(1.02);
-          box-shadow: 0 16px 40px rgba(0, 41, 132, 0.15);
-          border-color: rgba(0, 41, 132, 0.2);
+          transform: translateY(-12px) scale(1.03);
+          box-shadow: 0 20px 50px rgba(0, 41, 132, 0.25);
+          border-color: rgba(0, 41, 132, 0.3);
+        }
+        .room-card:hover::before {
+          opacity: 1;
         }
         .room-card-meta {
           display: flex;
@@ -402,7 +477,9 @@ const ChambresClient = () => {
         }
         .content-item-image {
           width: 100%;
-          height: 200px;
+          height: 240px;
+          min-height: 240px;
+          max-height: 240px;
           overflow: hidden;
           position: relative;
           background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
@@ -411,10 +488,12 @@ const ChambresClient = () => {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+          object-position: center;
+          transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+          display: block;
         }
         .room-card:hover .content-item-image img {
-          transform: scale(1.1);
+          transform: scale(1.15);
         }
         .content-item-overlay {
           position: absolute;
@@ -422,13 +501,13 @@ const ChambresClient = () => {
           left: 0;
           width: 100%;
           height: 100%;
-          background: linear-gradient(135deg, rgba(0, 41, 132, 0.7) 0%, rgba(0, 102, 204, 0.7) 100%);
+          background: linear-gradient(135deg, rgba(0, 41, 132, 0.85) 0%, rgba(0, 102, 204, 0.85) 100%);
           display: flex;
           justify-content: center;
           align-items: center;
           opacity: 0;
           transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-          backdrop-filter: blur(2px);
+          backdrop-filter: blur(4px);
         }
         .room-card:hover .content-item-overlay {
           opacity: 1;
@@ -436,57 +515,82 @@ const ChambresClient = () => {
         .view-details {
           background: white;
           color: #002984;
-          padding: 10px 20px;
-          border-radius: 25px;
-          font-weight: 600;
-          font-size: 14px;
-          transform: translateY(10px);
-          transition: transform 0.3s ease;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+          padding: 12px 24px;
+          border-radius: 30px;
+          font-weight: 700;
+          font-size: 15px;
+          transform: translateY(15px) scale(0.9);
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+          letter-spacing: 0.5px;
         }
         .room-card:hover .view-details {
-          transform: translateY(0);
+          transform: translateY(0) scale(1);
+        }
+        .view-details:hover {
+          background: #002984;
+          color: white;
+          transform: scale(1.05);
         }
         .image-count-badge {
           position: absolute;
-          top: 12px;
-          right: 12px;
-          background: rgba(255, 255, 255, 0.95);
+          top: 16px;
+          right: 16px;
+          background: rgba(255, 255, 255, 0.98);
           color: #002984;
-          padding: 6px 10px;
-          border-radius: 20px;
-          font-size: 12px;
-          font-weight: 700;
+          padding: 8px 14px;
+          border-radius: 25px;
+          font-size: 13px;
+          font-weight: 800;
           z-index: 3;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+          box-shadow: 0 4px 15px rgba(0, 41, 132, 0.25);
           display: flex;
           align-items: center;
-          gap: 4px;
-          backdrop-filter: blur(10px);
+          gap: 6px;
+          backdrop-filter: blur(15px);
+          border: 1px solid rgba(255, 255, 255, 0.5);
+          transition: all 0.3s ease;
+        }
+        .room-card:hover .image-count-badge {
+          transform: scale(1.1);
+          box-shadow: 0 6px 20px rgba(0, 41, 132, 0.35);
         }
         .room-type-badge {
           display: inline-flex;
           align-items: center;
-          background: linear-gradient(135deg, rgba(0, 41, 132, 0.1) 0%, rgba(0, 102, 204, 0.1) 100%);
+          background: linear-gradient(135deg, rgba(0, 41, 132, 0.12) 0%, rgba(0, 102, 204, 0.12) 100%);
           color: #002984;
-          padding: 6px 12px;
-          border-radius: 20px;
-          font-size: 12px;
-          font-weight: 600;
-          border: 1px solid rgba(0, 41, 132, 0.15);
+          padding: 8px 16px;
+          border-radius: 25px;
+          font-size: 13px;
+          font-weight: 700;
+          border: 2px solid rgba(0, 41, 132, 0.2);
           transition: all 0.3s ease;
+          box-shadow: 0 2px 8px rgba(0, 41, 132, 0.1);
+        }
+        .room-type-badge:hover {
+          background: linear-gradient(135deg, rgba(0, 41, 132, 0.2) 0%, rgba(0, 102, 204, 0.2) 100%);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 41, 132, 0.2);
         }
         .room-capacity-badge {
           display: inline-flex;
           align-items: center;
-          gap: 6px;
-          background: linear-gradient(135deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 193, 7, 0.1) 100%);
+          gap: 8px;
+          background: linear-gradient(135deg, rgba(255, 152, 0, 0.12) 0%, rgba(255, 193, 7, 0.12) 100%);
           color: #f57c00;
-          padding: 6px 12px;
-          border-radius: 20px;
-          font-size: 12px;
-          font-weight: 600;
-          border: 1px solid rgba(255, 152, 0, 0.2);
+          padding: 8px 16px;
+          border-radius: 25px;
+          font-size: 13px;
+          font-weight: 700;
+          border: 2px solid rgba(255, 152, 0, 0.25);
+          box-shadow: 0 2px 8px rgba(255, 152, 0, 0.15);
+          transition: all 0.3s ease;
+        }
+        .room-capacity-badge:hover {
+          background: linear-gradient(135deg, rgba(255, 152, 0, 0.2) 0%, rgba(255, 193, 7, 0.2) 100%);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(255, 152, 0, 0.25);
         }
         .room-capacity-badge svg {
           stroke: #f57c00;
@@ -505,26 +609,34 @@ const ChambresClient = () => {
           gap: 4px;
         }
         .room-description-preview {
-          font-size: 14px;
-          color: #666;
-          line-height: 1.6;
-          margin-top: 12px;
+          font-size: 15px;
+          color: #555;
+          line-height: 1.7;
+          margin-top: 16px;
           display: -webkit-box;
           -webkit-line-clamp: 3;
           -webkit-box-orient: vertical;
           overflow: hidden;
+          padding: 12px;
+          background: rgba(0, 41, 132, 0.03);
+          border-radius: 10px;
+          border-left: 3px solid rgba(0, 41, 132, 0.2);
         }
         .content-item-content {
-          padding: 20px;
+          padding: 24px;
           display: flex;
           flex-direction: column;
         }
         .content-item-content h3 {
-          font-size: 20px;
-          font-weight: 700;
-          color: #002984;
-          margin-bottom: 8px;
+          font-size: 22px;
+          font-weight: 800;
+          background: linear-gradient(135deg, #002984 0%, #0066cc 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          margin-bottom: 12px;
           line-height: 1.3;
+          letter-spacing: -0.3px;
         }
         .not-reservable-badge {
           display: inline-block;
@@ -542,24 +654,26 @@ const ChambresClient = () => {
           left: 0;
           right: 0;
           bottom: 0;
-          background: rgba(0, 0, 0, 0.9);
+          background: rgba(0, 0, 0, 0.92);
           z-index: 1000;
           display: flex;
           align-items: center;
           justify-content: center;
           padding: 20px;
           animation: fadeIn 0.3s ease;
+          backdrop-filter: blur(8px);
         }
         .room-modal {
           background: white;
-          border-radius: 24px;
-          max-width: 1000px;
+          border-radius: 28px;
+          max-width: 1100px;
           width: 100%;
-          max-height: 90vh;
+          max-height: 92vh;
           overflow-y: auto;
           position: relative;
-          animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+          animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+          border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .room-modal::-webkit-scrollbar {
           width: 8px;
@@ -588,22 +702,25 @@ const ChambresClient = () => {
           backdrop-filter: blur(10px);
         }
         .room-modal-close {
-          background: none;
-          border: none;
-          font-size: 28px;
+          background: rgba(239, 68, 68, 0.1);
+          border: 2px solid rgba(239, 68, 68, 0.3);
+          font-size: 24px;
           cursor: pointer;
-          color: #666;
-          width: 40px;
-          height: 40px;
+          color: #ef4444;
+          width: 44px;
+          height: 44px;
           display: flex;
           align-items: center;
           justify-content: center;
           border-radius: 50%;
           transition: all 0.3s ease;
+          font-weight: 700;
         }
         .room-modal-close:hover {
-          background: #f5f5f5;
-          color: #000;
+          background: rgba(239, 68, 68, 0.2);
+          border-color: rgba(239, 68, 68, 0.5);
+          color: #dc2626;
+          transform: scale(1.1) rotate(90deg);
         }
         .room-modal-content {
           padding: 28px;
@@ -616,36 +733,45 @@ const ChambresClient = () => {
         }
         .room-gallery-main {
           width: 100%;
-          height: 450px;
+          height: 500px;
+          min-height: 500px;
           object-fit: cover;
+          object-position: center;
           display: block;
-          transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
           cursor: zoom-in;
-          border-radius: 12px;
+          border-radius: 16px;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
         }
         .room-gallery-main:hover {
-          transform: scale(1.03);
+          transform: scale(1.05);
+          box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
         }
         .room-gallery-nav {
           position: absolute;
           top: 50%;
           transform: translateY(-50%);
-          background: rgba(255, 255, 255, 0.9);
-          border: none;
-          width: 40px;
-          height: 40px;
+          background: rgba(255, 255, 255, 0.95);
+          border: 2px solid rgba(0, 41, 132, 0.2);
+          width: 48px;
+          height: 48px;
           border-radius: 50%;
           cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 20px;
+          font-size: 24px;
+          font-weight: 700;
+          color: #002984;
           transition: all 0.3s ease;
           z-index: 5;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
         .room-gallery-nav:hover {
           background: white;
-          transform: translateY(-50%) scale(1.1);
+          border-color: #002984;
+          transform: translateY(-50%) scale(1.15);
+          box-shadow: 0 6px 20px rgba(0, 41, 132, 0.3);
         }
         .room-gallery-nav.prev {
           left: 15px;

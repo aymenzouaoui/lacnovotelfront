@@ -425,7 +425,6 @@ const ChambresPage = () => {
             </li>
             <li>
               <a href="#chambres" onClick={() => navigate("/chambres")}>
-                <span className={isDarkMode ? "nav-icon" : "light-nav-icon"}>🛏️</span>
                 <span>Chambres</span>
               </a>
             </li>
@@ -434,7 +433,7 @@ const ChambresPage = () => {
 
         <div className={isDarkMode ? "sidebar-footer" : "light-sidebar-footer"}>
           <button className={isDarkMode ? "theme-toggle" : "light-theme-toggle"} onClick={toggleTheme}>
-            {isDarkMode ? "☀️" : "🌙"}
+            {isDarkMode ? "Mode clair" : "Mode sombre"}
           </button>
           <button
             className={isDarkMode ? "logout-btn" : "light-logout-btn"}
@@ -475,21 +474,21 @@ const ChambresPage = () => {
         {chambres.length > 0 && (
           <div className="stats-cards-container">
             <div className={`stat-card ${isDarkMode ? "stat-card-dark" : "stat-card-light"}`}>
-              <div className="stat-icon">🛏️</div>
+              <div className="stat-icon"></div>
               <div className="stat-content">
                 <div className="stat-value">{chambres.length}</div>
                 <div className="stat-label">Total Chambres</div>
               </div>
             </div>
             <div className={`stat-card ${isDarkMode ? "stat-card-dark" : "stat-card-light"}`}>
-              <div className="stat-icon">✓</div>
+              <div className="stat-icon"></div>
               <div className="stat-content">
                 <div className="stat-value">{chambres.filter(c => c.reservable).length}</div>
                 <div className="stat-label">Réservables</div>
               </div>
             </div>
             <div className={`stat-card ${isDarkMode ? "stat-card-dark" : "stat-card-light"}`}>
-              <div className="stat-icon">📷</div>
+              <div className="stat-icon"></div>
               <div className="stat-content">
                 <div className="stat-value">{chambres.filter(c => c.images && c.images.length > 0).length}</div>
                 <div className="stat-label">Avec Galerie</div>
@@ -501,7 +500,7 @@ const ChambresPage = () => {
         {showForm && (
           <div className={isDarkMode ? "form-container" : "light-form-container"} style={{ animation: "slideDown 0.3s ease" }}>
             <div className={isDarkMode ? "form-header" : "light-form-header"}>
-              <h3>{editId ? "✏️ Modifier la chambre" : "➕ Ajouter une nouvelle chambre"}</h3>
+              <h3>{editId ? "Modifier la chambre" : "Ajouter une nouvelle chambre"}</h3>
             </div>
             <form onSubmit={handleSubmit} className={isDarkMode ? "offre-form" : "light-offre-form"}>
               {/* Language Tabs for Multilingual Fields */}
@@ -641,7 +640,7 @@ const ChambresPage = () => {
               </div>
 
               <div className="form-section">
-                <h4 className="form-section-title">🏷️ Détails de la chambre</h4>
+                <h4 className="form-section-title">Détails de la chambre</h4>
                 
                 <div className="form-section">
                   <h5 className="form-subsection-title">Type de chambre</h5>
@@ -680,7 +679,7 @@ const ChambresPage = () => {
                 </div>
 
                 <div className="input-group">
-                  <label className="input-label">👥 Capacité (personnes)</label>
+                  <label className="input-label">Capacité (personnes)</label>
                   <input
                     type="number"
                     name="capacite"
@@ -700,12 +699,12 @@ const ChambresPage = () => {
                     onChange={handleChange}
                     className="custom-checkbox"
                   />
-                  <span className="checkbox-text">✓ Chambre réservable</span>
+                  <span className="checkbox-text">Chambre réservable</span>
                 </label>
               </div>
 
               <div className="form-section">
-                <h4 className="form-section-title">🖼️ Images</h4>
+                <h4 className="form-section-title">Images</h4>
                 <div className="input-group">
                   <label className="input-label">Image principale *</label>
                   <div className="file-input-wrapper">
@@ -790,11 +789,11 @@ const ChambresPage = () => {
                     </>
                   ) : editId ? (
                     <>
-                      ✏️ Modifier la chambre
+                      Modifier la chambre
                     </>
                   ) : (
                     <>
-                      ➕ Créer la chambre
+                      Créer la chambre
                     </>
                   )}
                 </button>
@@ -810,53 +809,51 @@ const ChambresPage = () => {
           </div>
         )}
 
-        <div className={`filters-enhanced ${isDarkMode ? "filters-dark" : "filters-light"}`}>
-          <div className="search-wrapper">
+        <div className={isDarkMode ? "search-filter-container" : "light-search-filter-container"}>
+          <div className={isDarkMode ? "search-container" : "light-search-container"}>
             <span className="search-icon">🔍</span>
             <input
+              className={isDarkMode ? "search-input" : "light-search-input"}
               type="text"
-              placeholder="Rechercher par nom, type, description..."
+              placeholder="Rechercher une chambre..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className={isDarkMode ? "search-input-enhanced" : "light-search-input-enhanced"}
             />
-            {searchTerm && (
-              <button
-                className="clear-search-btn"
-                onClick={() => setSearchTerm("")}
-                title="Effacer la recherche"
-              >
-                ✕
-              </button>
-            )}
           </div>
-          <div className="filters-right">
-            <div className="filter-group">
-              <label className="filter-label">Trier par:</label>
-              <select
-                value={sortOrder}
-                onChange={(e) => setSortOrder(e.target.value)}
-                className={isDarkMode ? "sort-select-enhanced" : "light-sort-select-enhanced"}
+
+          <div className="view-sort-container">
+            <div className="view-toggle">
+              <button
+                className={`view-btn ${viewMode === "grid" ? "active" : ""}`}
+                onClick={() => setViewMode("grid")}
+                aria-label="Vue en grille"
               >
-                <option value="newest">📅 Plus récent</option>
-                <option value="oldest">📅 Plus ancien</option>
-                <option value="alphabetical">🔤 Alphabétique</option>
-              </select>
+                ▦
+              </button>
+              <button
+                className={`view-btn ${viewMode === "list" ? "active" : ""}`}
+                onClick={() => setViewMode("list")}
+                aria-label="Vue en liste"
+              >
+                ☰
+              </button>
             </div>
-            <button
-              onClick={() => setViewMode(viewMode === "grid" ? "list" : "grid")}
-              className={`view-toggle-enhanced ${isDarkMode ? "view-toggle-dark" : "view-toggle-light"}`}
-              title={viewMode === "grid" ? "Vue liste" : "Vue grille"}
+
+            <select
+              className={isDarkMode ? "sort-select" : "light-sort-select"}
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
             >
-              {viewMode === "grid" ? "📋" : "🔲"}
-              <span>{viewMode === "grid" ? "Liste" : "Grille"}</span>
-            </button>
+              <option value="newest">Plus récent</option>
+              <option value="oldest">Plus ancien</option>
+              <option value="alphabetical">Alphabétique</option>
+            </select>
           </div>
         </div>
 
         {filteredChambres.length === 0 ? (
           <div className={isDarkMode ? "empty-state" : "light-empty-state"}>
-            <div className="empty-icon">🛏️</div>
+            <div className="empty-icon"></div>
             <h3>Aucune chambre trouvée</h3>
             <p>Commencez par créer une nouvelle chambre</p>
             <button
@@ -867,66 +864,78 @@ const ChambresPage = () => {
             </button>
           </div>
         ) : (
-          <div
-            className={`${isDarkMode ? "offres-list" : "light-offres-list"} ${viewMode === "list" ? "list-view" : ""}`}
-          >
-            {filteredChambres.map((chambre, index) => (
-              <div 
-                key={chambre._id} 
-                className={`${isDarkMode ? "offre-card" : "light-offre-card"} chambre-card-enhanced`}
-                style={{ animationDelay: `${index * 0.05}s` }}
-              >
+          <div className={`${isDarkMode ? "boisson-list" : "light-boisson-list"} ${viewMode}`}>
+            {filteredChambres.map((chambre) => (
+              <div key={chambre._id} className={isDarkMode ? "boisson-card" : "light-boisson-card"}>
                 {chambre.imagePrincipale && (
-                  <div className="card-image-wrapper">
+                  <div className="boisson-image-wrapper">
                     <img
                       src={chambre.imagePrincipale}
-                      alt={chambre.name}
-                      className="card-image"
+                      alt={getName(chambre, displayLanguage) || "Chambre"}
+                      className="boisson-image"
                       onError={(e) => (e.target.src = "/placeholder.svg")}
                     />
-                    <div className="card-image-overlay">
-                      <span className="view-images-count">
-                        📷 {chambre.images?.length || 0} {chambre.images?.length === 1 ? "image" : "images"}
-                      </span>
-                    </div>
+                    {chambre.images && chambre.images.length > 0 && (
+                      <div className="boisson-badge">
+                        <span className="price-badge">{chambre.images.length} image{chambre.images.length > 1 ? "s" : ""}</span>
+                      </div>
+                    )}
                   </div>
                 )}
-                <div className="card-content">
-                  <h3 className="card-title">{getName(chambre, displayLanguage) || "Sans nom"}</h3>
-                  
-                  <div className="card-simple-info">
+                <div className={isDarkMode ? "boisson-details" : "light-boisson-details"}>
+                  <h4 className="boisson-title">{getName(chambre, displayLanguage) || "Sans nom"}</h4>
+                  <div className="boisson-meta">
                     {getType(chambre, displayLanguage) && (
-                      <span className="card-badge">🏷️ {getType(chambre, displayLanguage)}</span>
+                      <span className="quantity-info">
+                        <span className="quantity-icon">🏷️</span>
+                        Type: {getType(chambre, displayLanguage)}
+                      </span>
                     )}
                     {chambre.capacite && (
-                      <span className="card-badge">👥 {chambre.capacite}</span>
+                      <span className="quantity-info">
+                        <span className="quantity-icon">👥</span>
+                        Capacité: {chambre.capacite}
+                      </span>
                     )}
-                    <span className={`card-badge ${chambre.reservable ? "badge-success" : "badge-danger"}`}>
-                      {chambre.reservable ? "✓ Réservable" : "✗ Non réservable"}
+                    <span className="quantity-info">
+                      <span className="quantity-icon">{chambre.reservable ? "✓" : "✗"}</span>
+                      {chambre.reservable ? "Réservable" : "Non réservable"}
                     </span>
                   </div>
-
-                  <div className={isDarkMode ? "seminaire-card-actions" : "light-seminaire-card-actions"}>
+                  {getDescriptionCourte(chambre, displayLanguage) && (
+                    <p className="boisson-description">{getDescriptionCourte(chambre, displayLanguage)}</p>
+                  )}
+                  <div className={isDarkMode ? "boisson-card-actions" : "light-boisson-card-actions"}>
                     <button
                       onClick={() => {
                         setSelectedChambreDetails(chambre)
                         setShowDetailsModal(true)
                       }}
-                      className={`${isDarkMode ? "btn btn-primary" : "light-btn light-btn-primary"} action-btn`}
+                      className={
+                        isDarkMode
+                          ? "btn btn-primary btn-sm"
+                          : "light-btn light-btn-primary light-btn-sm"
+                      }
                     >
-                      👁️ Détails
+                      Détails
                     </button>
                     <button
                       onClick={() => handleEdit(chambre)}
-                      className={`${isDarkMode ? "edit-btn btn btn-secondary" : "light-btn light-btn-secondary"} action-btn`}
+                      className={
+                        isDarkMode
+                          ? "btn btn-secondary btn-sm"
+                          : "light-btn light-btn-secondary light-btn-sm"
+                      }
                     >
-                      ✏️ Modifier
+                      Modifier
                     </button>
                     <button
                       onClick={() => handleDelete(chambre._id)}
-                      className={`${isDarkMode ? "delete-btn btn btn-danger" : "light-btn light-btn-danger"} action-btn`}
+                      className={
+                        isDarkMode ? "btn btn-danger btn-sm" : "light-btn light-btn-danger light-btn-sm"
+                      }
                     >
-                      🗑️ Supprimer
+                      Supprimer
                     </button>
                   </div>
                 </div>
@@ -970,7 +979,7 @@ const ChambresPage = () => {
                 {/* Gallery */}
                 {selectedChambreDetails.images && selectedChambreDetails.images.length > 0 && (
                   <div className="details-gallery">
-                    <h3>📷 Galerie d'images ({selectedChambreDetails.images.length})</h3>
+                    <h3>Galerie d'images ({selectedChambreDetails.images.length})</h3>
                     <div className="details-gallery-grid">
                       {selectedChambreDetails.images.map((img, idx) => (
                         <div key={idx} className="details-gallery-item">
@@ -988,7 +997,7 @@ const ChambresPage = () => {
                 {/* Information Grid */}
                 <div className="details-info-grid">
                   <div className="details-info-section">
-                    <h3>📋 Informations générales</h3>
+                    <h3>Informations générales</h3>
                     <div className="details-info-item">
                       <span className="details-info-label">Nom (FR):</span>
                       <span className="details-info-value">{getName(selectedChambreDetails, "fr") || "N/A"}</span>
@@ -1020,7 +1029,7 @@ const ChambresPage = () => {
                     <div className="details-info-item">
                       <span className="details-info-label">Statut:</span>
                       <span className={`details-info-value ${selectedChambreDetails.reservable ? "reservable" : "not-reservable"}`}>
-                        {selectedChambreDetails.reservable ? "✓ Réservable" : "✗ Non réservable"}
+                        {selectedChambreDetails.reservable ? "Réservable" : "Non réservable"}
                       </span>
                     </div>
                   </div>
@@ -1092,7 +1101,7 @@ const ChambresPage = () => {
                     }}
                     className={`${isDarkMode ? "btn btn-secondary" : "light-btn light-btn-secondary"}`}
                   >
-                    ✏️ Modifier
+                    Modifier
                   </button>
                   <button
                     onClick={() => {
@@ -1103,7 +1112,7 @@ const ChambresPage = () => {
                     }}
                     className={`${isDarkMode ? "btn btn-danger" : "light-btn light-btn-danger"}`}
                   >
-                    🗑️ Supprimer
+                    Supprimer
                   </button>
                   <button
                     onClick={() => setShowDetailsModal(false)}
