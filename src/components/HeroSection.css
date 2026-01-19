@@ -1,0 +1,281 @@
+/* Hero section */
+.novotel-v2-hero {
+  height: 100vh;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.novotel-v2-hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.5) 100%);
+  opacity: 0.8;
+  z-index: 1;
+}
+
+.novotel-v2-hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5));
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  color: white;
+  z-index: 2;
+}
+
+.novotel-v2-hero-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.novotel-v2-hero-date-time {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.novotel-v2-hero-separator {
+  margin: 0 10px;
+  opacity: 0.7;
+}
+
+.novotel-v2-hero-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.novotel-v2-hero-logo {
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.novotel-v2-hero-text {
+  font-size: 18px;
+  opacity: 0.9;
+  font-weight: 300;
+  letter-spacing: 1px;
+}
+
+.novotel-v2-hero-scroll {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+  animation: bounce 2s infinite;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.novotel-v2-hero-scroll:hover {
+  transform: translateY(-5px);
+}
+
+.novotel-v2-hero-scroll:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+.novotel-v2-scroll-text {
+  font-size: 14px;
+  margin-bottom: 5px;
+  letter-spacing: 2px;
+  font-weight: 500;
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+.novotel-v2-hero-lang {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 5px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  position: relative;
+}
+
+.novotel-v2-hero-lang:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.novotel-v2-hero-lang:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
+}
+
+/* Hero slideshow */
+.novotel-v2-hero-slideshow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.novotel-v2-hero-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.novotel-v2-hero-slide.active {
+  opacity: 1;
+}
+
+.language-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 8px;
+  padding: 8px 0;
+  min-width: 150px;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  margin-top: 5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  gap: 8px;
+}
+
+.language-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.language-option.active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.flag-small {
+  width: 20px;
+  height: 15px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.language-option span {
+  color: white;
+  font-size: 14px;
+}
+
+.novotel-v2-flag {
+  width: 20px;
+  height: 15px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+/* RTL Support */
+.rtl .novotel-v2-hero-header {
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+
+.rtl .novotel-v2-hero-date-time {
+  order: 2;
+}
+
+.rtl .novotel-v2-hero-lang {
+  order: 1;
+}
+
+.rtl .language-dropdown {
+  left: 0;
+  right: auto;
+  text-align: right;
+}
+
+.rtl .novotel-v2-hero-content {
+  text-align: right;
+}
+
+.rtl .novotel-v2-hero-scroll {
+  text-align: right;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .novotel-v2-hero-logo {
+    font-size: 32px;
+  }
+  
+  .novotel-v2-hero-text {
+    font-size: 16px;
+  }
+  
+  .novotel-v2-hero-date-time {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .novotel-v2-hero-logo {
+    font-size: 28px;
+    letter-spacing: 2px;
+  }
+  
+  .novotel-v2-hero-text {
+    font-size: 14px;
+  }
+  
+  .novotel-v2-hero-date-time {
+    font-size: 11px;
+  }
+  
+  .novotel-v2-hero-separator {
+    margin: 0 5px;
+  }
+}

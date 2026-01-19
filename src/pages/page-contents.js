@@ -197,12 +197,12 @@ const PageContentsPage = () => {
     return (
       <div className={isDarkMode ? "loading-container" : "light-loading-container"}>
         <div className={isDarkMode ? "loading-logo" : "light-loading-logo"}>
-  <img
-    src={isDarkMode ? "/GUESTLY_LIGHT.jpg" : "/GUESTLY_DARK.jpg"} 
-    alt="Guestly Logo"
-    className="logo-image"
-  />
-</div>
+          <img
+            src={isDarkMode ? "/GUESTLY_LIGHT.jpg" : "/GUESTLY_DARK.jpg"}
+            alt="Guestly Logo"
+            className="logo-image"
+          />
+        </div>
 
         <div className={isDarkMode ? "loading-spinner" : "light-loading-spinner"}>
           <div className={isDarkMode ? "spinner-circle" : "light-spinner-circle"}></div>
@@ -223,17 +223,17 @@ const PageContentsPage = () => {
         </button>
         <div className={isDarkMode ? "mobile-logo" : "light-mobile-logo"}>
           <span style={{ display: "inline-block", verticalAlign: "middle" }}>
-  <img
-    src={isDarkMode ? "/GUESTLY_LIGHT.jpg" : "/GUESTLY_DARK.jpg"}
-    alt="Guestly Logo"
-    style={{
-      width: "180px",        // wide logo
-      height: "auto",        // maintain aspect ratio
-      objectFit: "contain",
-      transition: "opacity 0.3s ease"
-    }}
-  />
-</span>
+            <img
+              src={isDarkMode ? "/GUESTLY_LIGHT.jpg" : "/GUESTLY_DARK.jpg"}
+              alt="Guestly Logo"
+              style={{
+                width: "180px",        // wide logo
+                height: "auto",        // maintain aspect ratio
+                objectFit: "contain",
+                transition: "opacity 0.3s ease"
+              }}
+            />
+          </span>
 
         </div>
         <div className={isDarkMode ? "mobile-user" : "light-mobile-user"}>
@@ -245,17 +245,17 @@ const PageContentsPage = () => {
         <div className={isDarkMode ? "sidebar-header" : "light-sidebar-header"}>
           <div className={isDarkMode ? "logo" : "light-logo"}>
             <span style={{ display: "inline-block", verticalAlign: "middle" }}>
-  <img
-    src={isDarkMode ? "/GUESTLY_LIGHT.jpg" : "/GUESTLY_DARK.jpg"}
-    alt="Guestly Logo"
-    style={{
-      width: "180px",        // wide logo
-      height: "auto",        // maintain aspect ratio
-      objectFit: "contain",
-      transition: "opacity 0.3s ease"
-    }}
-  />
-</span>
+              <img
+                src={isDarkMode ? "/GUESTLY_LIGHT.jpg" : "/GUESTLY_DARK.jpg"}
+                alt="Guestly Logo"
+                style={{
+                  width: "180px",        // wide logo
+                  height: "auto",        // maintain aspect ratio
+                  objectFit: "contain",
+                  transition: "opacity 0.3s ease"
+                }}
+              />
+            </span>
 
           </div>
           <button className={isDarkMode ? "close-sidebar" : "light-close-sidebar"} onClick={toggleSidebar}>
@@ -414,35 +414,64 @@ const PageContentsPage = () => {
         {showForm && (
           <div className={isDarkMode ? "form-container" : "light-form-container"}>
             <form onSubmit={handleSubmit} className={isDarkMode ? "offre-form" : "light-offre-form"}>
-              <select
-                name="pageName"
-                value={formData.pageName}
-                onChange={handleChange}
-                required
-                className={isDarkMode ? "form-input" : "light-form-input"}
-              >
-                <option value="">Sélectionner une page</option>
-                <option value="Spa">Spa</option>
-                <option value="Restaurants">Restaurants</option>
-                <option value="Boissons">Boissons</option>
-                <option value="TerrassePiscine">Terrasse Piscine</option>
-                <option value="Seminaire">Séminaire</option>
-                <option value="Roomservice">Room Service</option>
-
-              </select>
+              <div style={{ marginBottom: "15px" }}>
+                <label style={{ display: "block", marginBottom: "8px", fontWeight: "600" }}>
+                  Page où le contenu sera affiché :
+                </label>
+                <select
+                  name="pageName"
+                  value={formData.pageName}
+                  onChange={handleChange}
+                  required
+                  className={isDarkMode ? "form-input" : "light-form-input"}
+                  style={{ width: "100%" }}
+                >
+                  <option value="">Sélectionner une page</option>
+                  <option value="Spa">Spa (affiché sur /spas-client)</option>
+                  <option value="Restaurants">Restaurants (affiché sur /RestaurantsMenus-client)</option>
+                  <option value="Boissons">Boissons (affiché sur /boissons-client)</option>
+                  <option value="TerrassePiscine">Terrasse Piscine (affiché sur /terrasse-piscine-client)</option>
+                  <option value="Seminaire">Séminaire (affiché sur /seminaires-client)</option>
+                  <option value="Roomservice">Room Service (affiché sur /roomservices-client)</option>
+                  <option value="Chambres">Chambres (affiché sur /chambres-client)</option>
+                </select>
+                {formData.pageName && (
+                  <div
+                    style={{
+                      marginTop: "8px",
+                      padding: "10px",
+                      backgroundColor: isDarkMode ? "rgba(0, 41, 132, 0.1)" : "rgba(0, 41, 132, 0.05)",
+                      borderRadius: "6px",
+                      fontSize: "13px",
+                      color: isDarkMode ? "#a0c4ff" : "#002984",
+                    }}
+                  >
+                    📍 Ce contenu sera visible sur la page client :{" "}
+                    <strong>
+                      {formData.pageName === "Spa" && "/spas-client"}
+                      {formData.pageName === "Restaurants" && "/RestaurantsMenus-client"}
+                      {formData.pageName === "Boissons" && "/boissons-client"}
+                      {formData.pageName === "TerrassePiscine" && "/terrasse-piscine-client"}
+                      {formData.pageName === "Seminaire" && "/seminaires-client"}
+                      {formData.pageName === "Roomservice" && "/roomservices-client"}
+                      {formData.pageName === "Chambres" && "/chambres-client"}
+                    </strong>
+                  </div>
+                )}
+              </div>
               <RichTextEditor
-  content={formData.description}
-  onChange={(html) => setFormData(prev => ({ ...prev, description: html }))}
-  isDarkMode={isDarkMode}
-/>
+                content={formData.description}
+                onChange={(html) => setFormData(prev => ({ ...prev, description: html }))}
+                isDarkMode={isDarkMode}
+              />
 
-           <CompressedFileInput
-  type="file"
-  name="image"
-  accept="image/*"
-  onChange={handleChange}
-  className={isDarkMode ? "form-input" : "light-form-input"}
-/>
+              <CompressedFileInput
+                type="file"
+                name="image"
+                accept="image/*"
+                onChange={handleChange}
+                className={isDarkMode ? "form-input" : "light-form-input"}
+              />
 
               {previewImage && <img src={previewImage || "/placeholder.svg"} alt="Aperçu" className="preview-img" />}
 
@@ -492,10 +521,29 @@ const PageContentsPage = () => {
                   />
                 )}
                 <h3>{pageContent.pageName}</h3>
-<div
-  className={isDarkMode ? "page-content-html" : "page-content-html-light"}
-  dangerouslySetInnerHTML={{ __html: pageContent.description }}
-/>
+                <div
+                  style={{
+                    marginBottom: "10px",
+                    padding: "8px 12px",
+                    backgroundColor: isDarkMode ? "rgba(0, 41, 132, 0.15)" : "rgba(0, 41, 132, 0.08)",
+                    borderRadius: "6px",
+                    fontSize: "12px",
+                    color: isDarkMode ? "#a0c4ff" : "#002984",
+                  }}
+                >
+                  🌐 <strong>Affiché sur:</strong>{" "}
+                  {pageContent.pageName === "Spa" && "/spas-client"}
+                  {pageContent.pageName === "Restaurants" && "/RestaurantsMenus-client"}
+                  {pageContent.pageName === "Boissons" && "/boissons-client"}
+                  {pageContent.pageName === "TerrassePiscine" && "/terrasse-piscine-client"}
+                  {pageContent.pageName === "Seminaire" && "/seminaires-client"}
+                  {pageContent.pageName === "Roomservice" && "/roomservices-client"}
+                  {pageContent.pageName === "Chambres" && "/chambres-client"}
+                </div>
+                <div
+                  className={isDarkMode ? "page-content-html" : "page-content-html-light"}
+                  dangerouslySetInnerHTML={{ __html: pageContent.description }}
+                />
                 <p>
                   📅 <strong>Créé le:</strong> {new Date(pageContent.createdAt).toLocaleDateString("fr-FR")}
                 </p>

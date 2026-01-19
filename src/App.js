@@ -13,6 +13,7 @@ import OffresPage from "./pages/OffresPage";
 import EvenementsPage from "./pages/EvenementsPage";
 import RoomServicePage from "./pages/RoomServicePage";
 import TerrassePiscinePage from "./pages/TerrassePiscinePage";
+import ChambresPage from "./pages/ChambresPage";
 import Statistiques from "./pages/Statistiques";
 import PageContents from "./pages/page-contents";
 import CommitmentPage from "./pages/CommitmentPage";
@@ -59,6 +60,7 @@ function App() {
         <Route path="/statistiques" element={<Statistiques />} />
 
         <Route path="/page-contents" element={<PageContents />} />
+        <Route path="/chambres" element={<ChambresPage />} />
         <Route path="/seminaires" element={<SeminairesPage />} />
         <Route path="/restaurants" element={<RestaurantsAndMenusPage />} />
         <Route path="/boissons" element={<BoissonsPage />} />

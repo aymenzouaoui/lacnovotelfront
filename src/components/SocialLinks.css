@@ -1,0 +1,54 @@
+/* Social icons */
+.novotel-v2-social {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.novotel-v2-social-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #002984;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #002984;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.novotel-v2-social-icon:hover {
+  background-color: #002984;
+  color: white;
+  transform: scale(1.1) translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 41, 132, 0.3);
+}
+
+.novotel-v2-social-icon:focus {
+  outline: 2px solid #002984;
+  outline-offset: 2px;
+}
+
+.novotel-v2-social-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 480px) {
+  .novotel-v2-social {
+    gap: 15px;
+  }
+  
+  .novotel-v2-social-icon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .novotel-v2-social-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+}

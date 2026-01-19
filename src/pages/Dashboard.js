@@ -185,6 +185,13 @@ const Dashboard = () => {
       path: "/page-contents",
       color: "#7191c9ff",
     },
+    {
+      icon: "🛏️",
+      title: "Chambres",
+      description: "Gérez les types de chambres",
+      path: "/chambres",
+      color: "#9b59b6ff",
+    },
            {
       icon: "❔",
       title: "Questionnaires",

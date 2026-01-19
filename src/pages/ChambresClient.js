@@ -4,6 +4,41 @@ import { useEffect, useState } from "react"
 import API from "../services/api"
 import "./client-image-fix-dark.css"
 
+// Helper functions for multilingual fields
+const getTranslatedText = (obj, field, lang = "fr", fallbackLang = "fr") => {
+  if (!obj || !obj[field]) return ""
+  
+  let fieldValue = obj[field]
+  
+  // If it's a JSON string, parse it
+  if (typeof fieldValue === "string") {
+    // Check if it's a JSON string (starts with { and ends with })
+    if (fieldValue.trim().startsWith("{") && fieldValue.trim().endsWith("}")) {
+      try {
+        fieldValue = JSON.parse(fieldValue)
+      } catch (e) {
+        // If parsing fails, return the string as is (backward compatibility)
+        return fieldValue
+      }
+    } else {
+      // Regular string (backward compatibility)
+      return fieldValue
+    }
+  }
+  
+  // Now fieldValue should be an object
+  if (typeof fieldValue === "object" && fieldValue !== null) {
+    return fieldValue[lang] || fieldValue[fallbackLang] || fieldValue.fr || ""
+  }
+  
+  return ""
+}
+
+const getName = (chambre, lang = "fr") => getTranslatedText(chambre, "name", lang)
+const getDescriptionCourte = (chambre, lang = "fr") => getTranslatedText(chambre, "descriptionCourte", lang)
+const getDescriptionDetaillee = (chambre, lang = "fr") => getTranslatedText(chambre, "descriptionDetaillee", lang) || getTranslatedText(chambre, "description", lang)
+const getType = (chambre, lang = "fr") => getTranslatedText(chambre, "type", lang)
+
 // Translation system
 const translations = {
   fr: {
@@ -20,6 +55,20 @@ const translations = {
     noDescription: "Pas de description disponible.",
     viewDetails: "Voir détails",
     reserveRoom: "Réserver une chambre",
+    capacity: "Capacité",
+    price: "Prix",
+    perNight: "par nuit",
+    type: "Type",
+    roomNumber: "Numéro",
+    reservable: "Réservable",
+    notReservable: "Non réservable",
+    close: "Fermer",
+    previous: "Précédent",
+    next: "Suivant",
+    images: "Images",
+    amenities: "Équipements",
+    person: "personne",
+    people: "personnes",
     // Footer
     contact: "Contact",
     address: "Adresse",
@@ -48,6 +97,18 @@ const translations = {
     noDescription: "No description available.",
     viewDetails: "View details",
     reserveRoom: "Reserve a room",
+    capacity: "Capacity",
+    price: "Price",
+    perNight: "per night",
+    type: "Type",
+    roomNumber: "Number",
+    reservable: "Reservable",
+    notReservable: "Not reservable",
+    close: "Close",
+    previous: "Previous",
+    next: "Next",
+    images: "Images",
+    amenities: "Amenities",
     // Footer
     contact: "Contact",
     address: "Address",
@@ -76,6 +137,20 @@ const translations = {
     noDescription: "لا يوجد وصف متاح.",
     viewDetails: "عرض التفاصيل",
     reserveRoom: "حجز غرفة",
+    capacity: "السعة",
+    price: "السعر",
+    perNight: "لليلة",
+    type: "النوع",
+    roomNumber: "الرقم",
+    reservable: "قابل للحجز",
+    notReservable: "غير قابل للحجز",
+    close: "إغلاق",
+    previous: "السابق",
+    next: "التالي",
+    images: "الصور",
+    amenities: "المرافق",
+    person: "شخص",
+    people: "أشخاص",
     // Footer
     contact: "اتصل بنا",
     address: "العنوان",
@@ -105,6 +180,8 @@ const ChambresClient = () => {
   const [currentLanguage, setCurrentLanguage] = useState("fr")
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false)
   const [pageContent, setPageContent] = useState(null)
+  const [selectedRoom, setSelectedRoom] = useState(null)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
   // Get translation function
   const t = (key) => translations[currentLanguage][key] || translations.fr[key] || key
@@ -112,9 +189,7 @@ const ChambresClient = () => {
   const fetchRooms = async () => {
     try {
       setIsLoading(true)
-      // Note: This endpoint might need to be created on the backend
-      // For now, we'll use a placeholder or empty array
-      const res = await API.get("/rooms").catch(() => ({ data: [] }))
+      const res = await API.get("/chambres").catch(() => ({ data: [] }))
       setRooms(res.data || [])
       setIsLoaded(true)
     } catch (error) {
@@ -130,9 +205,14 @@ const ChambresClient = () => {
     const fetchPageContent = async () => {
       try {
         const res = await API.get("/page-contents/page/Chambres")
-        setPageContent(res.data)
+        if (res.data) {
+          setPageContent(res.data)
+        }
       } catch (err) {
-        console.error("Error fetching rooms page content:", err)
+        // 404 is expected if page content doesn't exist yet - silently handle it
+        if (err.response?.status !== 404) {
+          console.error("Error fetching rooms page content:", err)
+        }
         setPageContent(null)
       }
     }
@@ -149,6 +229,34 @@ const ChambresClient = () => {
       clearTimeout(timer)
     }
   }, [])
+
+  // Keyboard navigation for modal
+  useEffect(() => {
+    if (!selectedRoom) return
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        setSelectedRoom(null)
+      } else if (e.key === "ArrowLeft") {
+        const allImages = selectedRoom.imagePrincipale
+          ? [selectedRoom.imagePrincipale, ...(selectedRoom.images || [])]
+          : selectedRoom.images || []
+        if (allImages.length > 1) {
+          setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length)
+        }
+      } else if (e.key === "ArrowRight") {
+        const allImages = selectedRoom.imagePrincipale
+          ? [selectedRoom.imagePrincipale, ...(selectedRoom.images || [])]
+          : selectedRoom.images || []
+        if (allImages.length > 1) {
+          setCurrentImageIndex((prev) => (prev + 1) % allImages.length)
+        }
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [selectedRoom, currentImageIndex])
 
   // Scroll to top on mount
   useEffect(() => {
@@ -271,6 +379,444 @@ const ChambresClient = () => {
           color: #444;
           line-height: 1.6;
         }
+        .room-card {
+          cursor: pointer;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          background: white;
+          border-radius: 16px;
+          overflow: hidden;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+          border: 1px solid rgba(0, 41, 132, 0.08);
+        }
+        .room-card:hover {
+          transform: translateY(-8px) scale(1.02);
+          box-shadow: 0 16px 40px rgba(0, 41, 132, 0.15);
+          border-color: rgba(0, 41, 132, 0.2);
+        }
+        .room-card-meta {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin: 12px 0;
+          align-items: center;
+        }
+        .content-item-image {
+          width: 100%;
+          height: 200px;
+          overflow: hidden;
+          position: relative;
+          background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+        }
+        .content-item-image img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .room-card:hover .content-item-image img {
+          transform: scale(1.1);
+        }
+        .content-item-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(135deg, rgba(0, 41, 132, 0.7) 0%, rgba(0, 102, 204, 0.7) 100%);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          opacity: 0;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          backdrop-filter: blur(2px);
+        }
+        .room-card:hover .content-item-overlay {
+          opacity: 1;
+        }
+        .view-details {
+          background: white;
+          color: #002984;
+          padding: 10px 20px;
+          border-radius: 25px;
+          font-weight: 600;
+          font-size: 14px;
+          transform: translateY(10px);
+          transition: transform 0.3s ease;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .room-card:hover .view-details {
+          transform: translateY(0);
+        }
+        .image-count-badge {
+          position: absolute;
+          top: 12px;
+          right: 12px;
+          background: rgba(255, 255, 255, 0.95);
+          color: #002984;
+          padding: 6px 10px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 700;
+          z-index: 3;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          backdrop-filter: blur(10px);
+        }
+        .room-type-badge {
+          display: inline-flex;
+          align-items: center;
+          background: linear-gradient(135deg, rgba(0, 41, 132, 0.1) 0%, rgba(0, 102, 204, 0.1) 100%);
+          color: #002984;
+          padding: 6px 12px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 600;
+          border: 1px solid rgba(0, 41, 132, 0.15);
+          transition: all 0.3s ease;
+        }
+        .room-capacity-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          background: linear-gradient(135deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 193, 7, 0.1) 100%);
+          color: #f57c00;
+          padding: 6px 12px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 600;
+          border: 1px solid rgba(255, 152, 0, 0.2);
+        }
+        .room-capacity-badge svg {
+          stroke: #f57c00;
+        }
+        .room-info-row {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+          margin: 10px 0;
+          font-size: 13px;
+          color: #666;
+        }
+        .room-info-item {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
+        .room-description-preview {
+          font-size: 14px;
+          color: #666;
+          line-height: 1.6;
+          margin-top: 12px;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+        .content-item-content {
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+        }
+        .content-item-content h3 {
+          font-size: 20px;
+          font-weight: 700;
+          color: #002984;
+          margin-bottom: 8px;
+          line-height: 1.3;
+        }
+        .not-reservable-badge {
+          display: inline-block;
+          background: rgba(255, 0, 0, 0.1);
+          color: #d32f2f;
+          padding: 4px 10px;
+          border-radius: 12px;
+          font-size: 11px;
+          font-weight: 600;
+          margin-top: 8px;
+        }
+        .room-modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.9);
+          z-index: 1000;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 20px;
+          animation: fadeIn 0.3s ease;
+        }
+        .room-modal {
+          background: white;
+          border-radius: 24px;
+          max-width: 1000px;
+          width: 100%;
+          max-height: 90vh;
+          overflow-y: auto;
+          position: relative;
+          animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        .room-modal::-webkit-scrollbar {
+          width: 8px;
+        }
+        .room-modal::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 4px;
+        }
+        .room-modal::-webkit-scrollbar-thumb {
+          background: #002984;
+          border-radius: 4px;
+        }
+        .room-modal::-webkit-scrollbar-thumb:hover {
+          background: #0066cc;
+        }
+        .room-modal-header {
+          position: sticky;
+          top: 0;
+          background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+          padding: 24px 28px;
+          border-bottom: 2px solid rgba(0, 41, 132, 0.1);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          z-index: 10;
+          backdrop-filter: blur(10px);
+        }
+        .room-modal-close {
+          background: none;
+          border: none;
+          font-size: 28px;
+          cursor: pointer;
+          color: #666;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          transition: all 0.3s ease;
+        }
+        .room-modal-close:hover {
+          background: #f5f5f5;
+          color: #000;
+        }
+        .room-modal-content {
+          padding: 28px;
+        }
+        .room-gallery {
+          position: relative;
+          margin-bottom: 20px;
+          border-radius: 12px;
+          overflow: hidden;
+        }
+        .room-gallery-main {
+          width: 100%;
+          height: 450px;
+          object-fit: cover;
+          display: block;
+          transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          cursor: zoom-in;
+          border-radius: 12px;
+        }
+        .room-gallery-main:hover {
+          transform: scale(1.03);
+        }
+        .room-gallery-nav {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          background: rgba(255, 255, 255, 0.9);
+          border: none;
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 20px;
+          transition: all 0.3s ease;
+          z-index: 5;
+        }
+        .room-gallery-nav:hover {
+          background: white;
+          transform: translateY(-50%) scale(1.1);
+        }
+        .room-gallery-nav.prev {
+          left: 15px;
+        }
+        .room-gallery-nav.next {
+          right: 15px;
+        }
+        .room-gallery-nav:disabled {
+          opacity: 0.3;
+          cursor: not-allowed;
+        }
+        .room-gallery-thumbnails {
+          display: flex;
+          gap: 8px;
+          margin-top: 10px;
+          overflow-x: auto;
+          padding: 10px 0;
+        }
+        .room-gallery-thumbnail {
+          width: 80px;
+          height: 80px;
+          object-fit: cover;
+          border-radius: 8px;
+          cursor: pointer;
+          border: 3px solid transparent;
+          transition: all 0.3s ease;
+        }
+        .room-gallery-thumbnail.active {
+          border-color: #002984;
+        }
+        .room-gallery-thumbnail:hover {
+          transform: scale(1.05);
+        }
+        .room-details-header {
+          margin-bottom: 20px;
+        }
+        .room-details-title {
+          font-size: 32px;
+          font-weight: 800;
+          color: #002984;
+          margin-bottom: 16px;
+          line-height: 1.2;
+          letter-spacing: -0.5px;
+        }
+        .room-details-meta {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 16px;
+          margin-bottom: 20px;
+        }
+        .room-meta-item {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          background: linear-gradient(135deg, rgba(0, 41, 132, 0.05) 0%, rgba(0, 102, 204, 0.05) 100%);
+          padding: 12px 16px;
+          border-radius: 12px;
+          border: 1px solid rgba(0, 41, 132, 0.1);
+          transition: all 0.3s ease;
+          min-width: 150px;
+        }
+        .room-meta-item:hover {
+          background: linear-gradient(135deg, rgba(0, 41, 132, 0.08) 0%, rgba(0, 102, 204, 0.08) 100%);
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 41, 132, 0.1);
+        }
+        .meta-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 40px;
+          height: 40px;
+          background: linear-gradient(135deg, #002984 0%, #0066cc 100%);
+          border-radius: 10px;
+          color: white;
+          flex-shrink: 0;
+        }
+        .meta-icon svg {
+          stroke: white;
+        }
+        .meta-content {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+        .meta-label {
+          font-size: 11px;
+          color: #888;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          font-weight: 600;
+        }
+        .meta-value {
+          font-size: 15px;
+          color: #002984;
+          font-weight: 700;
+        }
+        .room-details-description {
+          font-size: 16px;
+          line-height: 1.8;
+          color: #444;
+          margin-bottom: 24px;
+          padding: 20px;
+          background: linear-gradient(135deg, rgba(0, 41, 132, 0.02) 0%, rgba(0, 102, 204, 0.02) 100%);
+          border-radius: 12px;
+          border-left: 4px solid #002984;
+        }
+        .room-details-description p {
+          margin-bottom: 12px;
+        }
+        .room-details-description p:last-child {
+          margin-bottom: 0;
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes slideUp {
+          from {
+            transform: translateY(30px);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+        .room-gallery-thumbnails::-webkit-scrollbar {
+          height: 6px;
+        }
+        .room-gallery-thumbnails::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 3px;
+        }
+        .room-gallery-thumbnails::-webkit-scrollbar-thumb {
+          background: #002984;
+          border-radius: 3px;
+        }
+        .room-gallery-thumbnails::-webkit-scrollbar-thumb:hover {
+          background: #0066cc;
+        }
+        @media (max-width: 768px) {
+          .room-modal {
+            max-width: 100%;
+            max-height: 100vh;
+            border-radius: 0;
+          }
+          .room-gallery-main {
+            height: 280px;
+          }
+          .room-details-title {
+            font-size: 24px;
+          }
+          .room-details-meta {
+            flex-direction: column;
+            gap: 12px;
+          }
+          .room-meta-item {
+            min-width: 100%;
+          }
+          .room-card {
+            margin-bottom: 20px;
+          }
+          .content-item-image {
+            height: 180px;
+          }
+          .room-card-meta {
+            flex-direction: column;
+            align-items: flex-start;
+          }
+        }
       `}</style>
       {/* Language Selector */}
       <div className="language-selector">
@@ -357,34 +903,191 @@ const ChambresClient = () => {
             </div>
           ) : (
             <div className={`content-grid ${isLoaded ? "loaded" : ""}`}>
-              {rooms.map((room, index) => (
-                <div
-                  key={room._id || index}
-                  className="content-item"
-                  style={{ animationDelay: `${index * 0.05}s` }}
-                >
-                  <div className="content-item-image">
-                    <img
-                      src={room.image || "/placeholder.svg"}
-                      alt={room.name}
-                      onError={(e) => {
-                        e.target.src = `/placeholder.svg?height=120&width=300&text=${room.name}`
-                      }}
-                    />
-                    <div className="content-item-overlay">
-                      <span className="view-details">{t("viewDetails")}</span>
+              {rooms.map((room, index) => {
+                const roomImages = room.imagePrincipale
+                  ? [room.imagePrincipale, ...(room.images || [])]
+                  : room.images || []
+                const mainImage = room.imagePrincipale || room.images?.[0] || "/placeholder.svg"
+
+                return (
+                  <div
+                    key={room._id || index}
+                    className="content-item room-card"
+                    style={{ animationDelay: `${index * 0.05}s` }}
+                    onClick={() => {
+                      setSelectedRoom(room)
+                      setCurrentImageIndex(0)
+                    }}
+                  >
+                    <div className="content-item-image">
+                      <img
+                        src={mainImage}
+                        alt={getName(room, currentLanguage)}
+                        onError={(e) => {
+                          e.target.src = `/placeholder.svg?height=120&width=300&text=${getName(room, currentLanguage)}`
+                        }}
+                      />
+                      {roomImages.length > 1 && (
+                        <div className="image-count-badge">
+                          📷 {roomImages.length}
+                        </div>
+                      )}
+                      <div className="content-item-overlay">
+                        <span className="view-details">{t("viewDetails")}</span>
+                      </div>
+                    </div>
+                    <div className="content-item-content">
+                      <h3>{getName(room, currentLanguage) || t("noRoomsFound")}</h3>
+                      <div className="room-card-meta">
+                        {getType(room, currentLanguage) && (
+                          <div className="room-type-badge">{getType(room, currentLanguage)}</div>
+                        )}
+                        {room.capacite && (
+                          <div className="room-capacity-badge">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                              <circle cx="9" cy="7" r="4"></circle>
+                              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                            {room.capacite} {room.capacite === 1 ? t("person") : t("people")}
+                          </div>
+                        )}
+                      </div>
+                      {(getDescriptionCourte(room, currentLanguage) || getDescriptionDetaillee(room, currentLanguage)) && (
+                        <p className="room-description-preview">
+                          {(getDescriptionCourte(room, currentLanguage) || getDescriptionDetaillee(room, currentLanguage)).replace(/<[^>]*>/g, "").substring(0, 120)}
+                          {(getDescriptionCourte(room, currentLanguage) || getDescriptionDetaillee(room, currentLanguage)).replace(/<[^>]*>/g, "").length > 120 ? "..." : ""}
+                        </p>
+                      )}
                     </div>
                   </div>
-                  <div className="content-item-content">
-                    <h3>{room.name}</h3>
-                    <p>{room.description || t("noDescription")}</p>
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
         </div>
       </main>
+
+      {/* Room Detail Modal */}
+      {selectedRoom && (
+        <div className="room-modal-overlay" onClick={() => setSelectedRoom(null)}>
+          <div className="room-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="room-modal-header">
+              <h2 style={{ margin: 0, color: "#002984" }}>{getName(selectedRoom, currentLanguage) || t("noRoomsFound")}</h2>
+              <button className="room-modal-close" onClick={() => setSelectedRoom(null)}>
+                ×
+              </button>
+            </div>
+            <div className="room-modal-content">
+              {/* Image Gallery */}
+              {(() => {
+                const allImages = selectedRoom.imagePrincipale
+                  ? [selectedRoom.imagePrincipale, ...(selectedRoom.images || [])]
+                  : selectedRoom.images || []
+                const currentImage = allImages[currentImageIndex] || "/placeholder.svg"
+                const roomName = getName(selectedRoom, currentLanguage)
+
+                return allImages.length > 0 ? (
+                  <div className="room-gallery">
+                    <img
+                      src={currentImage}
+                      alt={roomName}
+                      className="room-gallery-main"
+                      onError={(e) => (e.target.src = "/placeholder.svg")}
+                    />
+                    {allImages.length > 1 && (
+                      <>
+                        <button
+                          className="room-gallery-nav prev"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setCurrentImageIndex((prev) => (prev - 1 + allImages.length) % allImages.length)
+                          }}
+                          disabled={allImages.length <= 1}
+                        >
+                          ‹
+                        </button>
+                        <button
+                          className="room-gallery-nav next"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setCurrentImageIndex((prev) => (prev + 1) % allImages.length)
+                          }}
+                          disabled={allImages.length <= 1}
+                        >
+                          ›
+                        </button>
+                        <div className="room-gallery-thumbnails">
+                          {allImages.map((img, idx) => (
+                            <img
+                              key={idx}
+                              src={img}
+                              alt={`${roomName} ${idx + 1}`}
+                              className={`room-gallery-thumbnail ${currentImageIndex === idx ? "active" : ""}`}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setCurrentImageIndex(idx)
+                              }}
+                              onError={(e) => (e.target.src = "/placeholder.svg")}
+                            />
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ) : null
+              })()}
+
+              {/* Room Details */}
+              <div className="room-details-header">
+                <h2 className="room-details-title">{getName(selectedRoom, currentLanguage) || t("noRoomsFound")}</h2>
+                <div className="room-details-meta">
+                  {getType(selectedRoom, currentLanguage) && (
+                    <div className="room-meta-item">
+                      <div className="meta-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                          <line x1="3" y1="9" x2="21" y2="9"></line>
+                          <line x1="9" y1="21" x2="9" y2="9"></line>
+                        </svg>
+                      </div>
+                      <div className="meta-content">
+                        <span className="meta-label">{t("type")}</span>
+                        <span className="meta-value">{getType(selectedRoom, currentLanguage)}</span>
+                      </div>
+                    </div>
+                  )}
+                  {selectedRoom.capacite && (
+                    <div className="room-meta-item">
+                      <div className="meta-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                          <circle cx="9" cy="7" r="4"></circle>
+                          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                      </div>
+                      <div className="meta-content">
+                        <span className="meta-label">{t("capacity")}</span>
+                        <span className="meta-value">{selectedRoom.capacite} {selectedRoom.capacite === 1 ? t("person") : t("people")}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {(getDescriptionCourte(selectedRoom, currentLanguage) || getDescriptionDetaillee(selectedRoom, currentLanguage)) && (
+                <div
+                  className="room-details-description"
+                  dangerouslySetInnerHTML={{ __html: getDescriptionDetaillee(selectedRoom, currentLanguage) || getDescriptionCourte(selectedRoom, currentLanguage) }}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       <footer className="app-footer">
         <div className="footer-content">
           <div className="footer-section">

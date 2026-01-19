@@ -4,6 +4,12 @@ import { useState, useEffect } from "react"
 import "./home-client-v21.css"
 import API from "../services/api"
 import OffersPopup from "../components/OffersPopup"
+import HeroSection from "../components/HeroSection"
+import FeatureCards from "../components/FeatureCards"
+import SlideshowBanner from "../components/SlideshowBanner"
+import SocialLinks from "../components/SocialLinks"
+import FooterNavigation from "../components/FooterNavigation"
+import Copyright from "../components/Copyright"
 
 const translations = {
   fr: {
@@ -179,14 +185,10 @@ const languages = [
 
 const HomeClient = () => {
   const [currentTime, setCurrentTime] = useState(new Date())
-  const [heroSlide, setHeroSlide] = useState(0)
-  const [commitmentSlide, setCommitmentSlide] = useState(0)
-  const [feedbackSlide, setFeedbackSlide] = useState(0)
   const [showPopup, setShowPopup] = useState(false)
   const [popupOffers, setPopupOffers] = useState([])
   const [popupOfferIndex, setPopupOfferIndex] = useState(0)
   const [currentLanguage, setCurrentLanguage] = useState("fr")
-  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false)
   const [weatherData, setWeatherData] = useState({ temp: "18°C", loading: true })
 
   // Get translation function
@@ -271,24 +273,8 @@ const HomeClient = () => {
       setCurrentTime(new Date())
     }, 60000)
 
-    // Auto-rotate hero images every 7 seconds
-    const heroSlideTimer = setInterval(() => {
-      setHeroSlide((prev) => (prev + 1) % 3)
-    }, 7000)
-
-    const feedbackSlideTimer = setInterval(() => {
-      setFeedbackSlide((prev) => (prev + 1) % 2)
-    }, 5000)
-
-    const commitmentSlideTimer = setInterval(() => {
-      setCommitmentSlide((prev) => (prev + 1) % 3)
-    }, 5000)
-
     return () => {
       clearInterval(timer)
-      clearInterval(heroSlideTimer)
-      clearInterval(feedbackSlideTimer)
-      clearInterval(commitmentSlideTimer)
     }
   }, [])
 
@@ -325,55 +311,11 @@ const HomeClient = () => {
     return () => clearInterval(interval)
   }, [showPopup, popupOffers.length])
 
-  useEffect(() => {
-    const scrollContainer = document.querySelector(".novotel-v2-feature-cards")
-    if (!scrollContainer) return
-
-    let isAutoScrolling = true
-    const autoScroll = () => {
-      if (!isAutoScrolling) return
-      scrollContainer.scrollLeft += 0.5
-      if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth - scrollContainer.clientWidth) {
-        setTimeout(() => {
-          scrollContainer.scrollLeft = 0
-        }, 2000)
-      }
-    }
-
-    const scrollInterval = setInterval(autoScroll, 20)
-
-    const handleMouseEnter = () => {
-      isAutoScrolling = false
-    }
-    const handleMouseLeave = () => {
-      isAutoScrolling = true
-    }
-    const handleScroll = () => {
-      isAutoScrolling = false
-      setTimeout(() => {
-        isAutoScrolling = true
-      }, 3000)
-    }
-
-    scrollContainer.addEventListener("mouseenter", handleMouseEnter)
-    scrollContainer.addEventListener("mouseleave", handleMouseLeave)
-    scrollContainer.addEventListener("scroll", handleScroll)
-
-    return () => {
-      clearInterval(scrollInterval)
-      if (scrollContainer) {
-        scrollContainer.removeEventListener("mouseenter", handleMouseEnter)
-        scrollContainer.removeEventListener("mouseleave", handleMouseLeave)
-        scrollContainer.removeEventListener("scroll", handleScroll)
-      }
-    }
-  }, [])
 
   // Language change handler
   const changeLanguage = (langCode) => {
     setCurrentLanguage(langCode)
     localStorage.setItem("novotel-language", langCode)
-    setShowLanguageDropdown(false)
 
     // Update document direction for Arabic
     document.documentElement.dir = langCode === "ar" ? "rtl" : "ltr"
@@ -399,34 +341,6 @@ const HomeClient = () => {
     })
   }
 
-  const scrollToContent = () => {
-    const mainContent = document.querySelector(".novotel-v2-main-content")
-    if (mainContent) {
-      mainContent.scrollIntoView({ behavior: "smooth" })
-    }
-  }
-
-  const handleCommitmentSlideClick = (index) => {
-    setCommitmentSlide(index)
-  }
-
-  const handleCommitmentBannerClick = () => {
-    const currentSlideData = commitmentSlides[commitmentSlide]
-    if (currentSlideData.external) {
-      window.open(currentSlideData.link, "_blank")
-    } else {
-      window.location.href = currentSlideData.link
-    }
-  }
-
-  const handleFeedbackSlideClick = (index) => {
-    setFeedbackSlide(index)
-  }
-
-  const handleFeedbackBannerClick = () => {
-    const currentSlideData = feedbackSlides[feedbackSlide]
-    window.location.href = currentSlideData.link
-  }
 
   const handleNextPopupOffer = () => {
     if (popupOffers.length <= 1) return
@@ -503,320 +417,43 @@ const HomeClient = () => {
     },
   ]
 
-  const getCurrentLanguage = () => languages.find((lang) => lang.code === currentLanguage)
-
   return (
     <div className={`novotel-v2-app ${currentLanguage === "ar" ? "rtl" : "ltr"}`}>
       {/* Hero Section with Background Slideshow */}
-      <div className="novotel-v2-hero">
-        <div className="novotel-v2-hero-slideshow">
-          {heroImages.map((image, index) => (
-            <div
-              key={index}
-              className={`novotel-v2-hero-slide ${heroSlide === index ? "active" : ""}`}
-              style={{ backgroundImage: `url("${image}")` }}
-            ></div>
-          ))}
-        </div>
-        <div className="novotel-v2-hero-overlay">
-          <div className="novotel-v2-hero-header">
-            <div className="novotel-v2-hero-date-time">
-              <div className="novotel-v2-hero-date">{formatDate(currentTime)}</div>
-              <div className="novotel-v2-hero-separator">|</div>
-              <div className="novotel-v2-hero-time">{formatTime(currentTime)}</div>
-              <div className="novotel-v2-hero-separator">|</div>
-              <div className="novotel-v2-hero-temp">{weatherData.temp}</div>
-            </div>
-            <div className="novotel-v2-hero-lang" onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}>
-              <span>{getCurrentLanguage()?.code.toUpperCase()}</span>
-              <img
-                src={getCurrentLanguage()?.flag || "/placeholder.svg"}
-                alt={getCurrentLanguage()?.name}
-                className="novotel-v2-flag"
-              />
-              {showLanguageDropdown && (
-                <div className="language-dropdown">
-                  {languages.map((lang) => (
-                    <div
-                      key={lang.code}
-                      className={`language-option ${currentLanguage === lang.code ? "active" : ""}`}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        changeLanguage(lang.code)
-                      }}
-                    >
-                      <img src={lang.flag || "/placeholder.svg"} alt={lang.name} className="flag-small" />
-                      <span>{lang.name}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-          <div className="novotel-v2-hero-content">
-            <div className="novotel-v2-hero-logo">NOVOTEL</div>
-            <div className="novotel-v2-hero-text">{t("welcome")}</div>
-          </div>
-          <div className="novotel-v2-hero-scroll" onClick={scrollToContent}>
-            <div className="novotel-v2-scroll-text">{t("scrollDown")}</div>
-            <div className="novotel-v2-scroll-arrow">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M12 5L12 19M12 19L19 12M12 19L5 12"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
-      </div>
+      <HeroSection
+        heroImages={heroImages}
+        welcomeText={t("welcome")}
+        scrollDownText={t("scrollDown")}
+        currentLanguage={currentLanguage}
+        onLanguageChange={changeLanguage}
+        languages={languages}
+        currentTime={currentTime}
+        weatherData={weatherData}
+        formatDate={formatDate}
+        formatTime={formatTime}
+      />
 
       <main className="novotel-v2-main">
         <div className="novotel-v2-main-content">
-           <div className="novotel-v2-commitment-slideshow-container">
-            <div className="novotel-v2-commitment-slideshow">
-              {feedbackSlides.map((slide, index) => (
-                <div
-                  key={slide.id}
-                  className={`novotel-v2-commitment-banner ${feedbackSlide === index ? "active" : ""}`}
-                  onClick={handleFeedbackBannerClick}
-                  style={{
-                    backgroundImage: `url("${slide.image}")`,
-                  }}
-                >
-                  <div className="novotel-v2-commitment-content">
-                    <h2>{slide.title}</h2>
-                    <p>{slide.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="novotel-v2-commitment-dots">
-              {feedbackSlides.map((_, index) => (
-                <div
-                  key={index}
-                  className={`novotel-v2-dot ${feedbackSlide === index ? "active" : ""}`}
-                  onClick={() => handleFeedbackSlideClick(index)}
-                />
-              ))}
-            </div>
-          </div>
+          {/* Feedback Slideshow */}
+          <SlideshowBanner slides={feedbackSlides} autoRotateInterval={5000} />
+
           {/* Feature Cards with Horizontal Scroll */}
-          <div className="novotel-v2-feature-cards-container">
-            <div className="novotel-v2-feature-cards">
-              {getAllFeatureCards().map((card) => (
-                <div
-                  key={card.id}
-                  className="novotel-v2-feature-card"
-                  onClick={() => {
-                    if (card.url) {
-                      window.open(card.url, "_blank")
-                    } else if (card.path) {
-                      window.location.href = card.path
-                    }
-                  }}
-                >
-                  <div className="novotel-v2-feature-image">
-                    <img
-                      loading="lazy" // ✅ Lazy load images
-                      decoding="async" // ✅ Render async
-                      src={card.image || card.fallback}
-                      alt={card.title}
-                      onError={(e) => {
-                        e.currentTarget.src =
-                          card.fallback ||
-                          `/placeholder.svg?height=300&width=200&text=${encodeURIComponent(card.title)}`
-                      }}
-                    />
-                  </div>
-                  <div className="novotel-v2-feature-title">{card.title}</div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <FeatureCards cards={getAllFeatureCards()} />
 
-         
+          {/* Commitment Slideshow */}
+          <SlideshowBanner slides={commitmentSlides} autoRotateInterval={5000} />
 
-          {/* Existing commitment slideshow */}
-          <div className="novotel-v2-commitment-slideshow-container">
-            <div className="novotel-v2-commitment-slideshow">
-              {commitmentSlides.map((slide, index) => (
-                <div
-                  key={slide.id}
-                  className={`novotel-v2-commitment-banner ${commitmentSlide === index ? "active" : ""}`}
-                  onClick={handleCommitmentBannerClick}
-                  style={{
-                    backgroundImage: `url("${slide.image}")`,
-                  }}
-                >
-                  <div className="novotel-v2-commitment-content">
-                    <h2>{slide.title}</h2>
-                    <p>{slide.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="novotel-v2-commitment-dots">
-              {commitmentSlides.map((_, index) => (
-                <div
-                  key={index}
-                  className={`novotel-v2-dot ${commitmentSlide === index ? "active" : ""}`}
-                  onClick={() => handleCommitmentSlideClick(index)}
-                />
-              ))}
-            </div>
-          </div>
+          {/* Social Links */}
+          <SocialLinks />
 
-          <div className="novotel-v2-social">
-            <a href="https://www.facebook.com/Novoteltunislac/" className="novotel-v2-social-icon" target="_blank" rel="noopener noreferrer">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </a>
-            <a href="https://tn.linkedin.com/company/novotel-tunis-lac" className="novotel-v2-social-icon" target="_blank" rel="noopener noreferrer">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <rect x="2" y="9" width="4" height="12" stroke="currentColor" strokeWidth="2" />
-                <circle cx="4" cy="4" r="2" stroke="currentColor" strokeWidth="2" />
-              </svg>
-            </a>
-            <a href="https://www.instagram.com/novotel_tunis_lac/" className="novotel-v2-social-icon" target="_blank" rel="noopener noreferrer">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="currentColor" strokeWidth="2" />
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" stroke="currentColor" strokeWidth="2" />
-                <line
-                  x1="17.5"
-                  y1="6.5"
-                  x2="17.51"
-                  y2="6.5"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </a>
-          </div>
-
-          <div className="copyright">
-            <p>
-              © {new Date().getFullYear()} Novotel Tunis Lac. {t("allRightsReserved")}.
-              <br />
-              Rue de la Feuille d'Érable - Cité Les Pins - Les Berges du Lac 2, 1053 Tunis, TN
-              <br />
-              {t("createdBy")}{" "}
-              <a href="https://www.itbafa.com" target="_blank" rel="noopener noreferrer">
-                <img
-                  src="/images/itbafa_logo_dark.png"
-                  alt="ITBAFA Logo"
-                  style={{ height: "20px", verticalAlign: "middle", marginLeft: "5px" }}
-                />
-              </a>
-            </p>
-          </div>
-          <br></br>
+          {/* Copyright */}
+          <Copyright translations={translations} currentLanguage={currentLanguage} />
+          <br />
         </div>
       </main>
 
-      <footer className="novotel-v2-footer">
-        <a href="/" className="novotel-v2-nav-item active">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <polyline
-              points="9 22 9 12 15 12 15 22"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span>{t("home")}</span>
-        </a>
-        <a href="/RestaurantsMenus-client" className="novotel-v2-nav-item">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3z"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span>{t("restaurants")}</span>
-        </a>
-        <a href="/boissons-client" className="novotel-v2-nav-item">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M5 12V7a1 1 0 0 1 1-1h4l2-3h2l2 3h4a1 1 0 0 1 1 1v5M5 12l1.5 6h11L19 12M5 12h14"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span>{t("bar")}</span>
-        </a>
-        <a href="/loisirs-client" className="novotel-v2-nav-item">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M12 2L2 7l10 5 10-5M2 17l10 5 10-5M2 12l10 5 10-5"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span>{t("services")}</span>
-        </a>
-        <a href="/spas-client" className="novotel-v2-nav-item">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M12 3a6.364 6.364 0 0 0 9 9 9 9 0 1 1-9-9Z"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span>{t("spa")}</span>
-        </a>
-        <button
-          type="button"
-          className="novotel-v2-nav-item"
-          onClick={() => window.open("https://tinyurl.com/28npzs5f", "_blank")}
-        >
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span>{t("feedback")}</span>
-        </button>
-      </footer>
+      <FooterNavigation translations={translations} currentLanguage={currentLanguage} />
 
       <OffersPopup
         show={showPopup}
@@ -829,101 +466,6 @@ const HomeClient = () => {
         descriptionFallback={t("discoverPromotions")}
       />
 
-      {/* Additional CSS for language dropdown */}
-      <style jsx>{`
-        .language-dropdown {
-          position: absolute;
-          top: 100%;
-          right: 0;
-          background: rgba(0, 0, 0, 0.9);
-          border-radius: 8px;
-          padding: 8px 0;
-          min-width: 150px;
-          z-index: 1000;
-          backdrop-filter: blur(10px);
-        }
-        
-        .language-option {
-          display: flex;
-          align-items: center;
-          padding: 8px 16px;
-          cursor: pointer;
-          transition: background-color 0.2s;
-          gap: 8px;
-        }
-        
-        .language-option:hover {
-          background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .language-option.active {
-          background: rgba(255, 255, 255, 0.2);
-        }
-        
-        .flag-small {
-          width: 20px;
-          height: 15px;
-          object-fit: cover;
-          border-radius: 2px;
-        }
-        
-        .language-option span {
-          color: white;
-          font-size: 14px;
-        }
-        
-        .novotel-v2-hero-lang {
-          position: relative;
-          cursor: pointer;
-        }
-        
-        .rtl {
-          direction: rtl;
-        }
-
-        .rtl .novotel-v2-hero-header {
-          flex-direction: row-reverse;
-          justify-content: space-between;
-        }
-
-        .rtl .novotel-v2-hero-date-time {
-          order: 2;
-        }
-
-        .rtl .novotel-v2-hero-lang {
-          order: 1;
-        }
-
-        .rtl .language-dropdown {
-          left: 0;
-          right: auto;
-          text-align: right;
-        }
-
-        .rtl .novotel-v2-hero-content {
-          text-align: right;
-        }
-
-        .rtl .novotel-v2-hero-scroll {
-          text-align: right;
-        }
-
-        .rtl .novotel-v2-banner-content {
-          text-align: right;
-        }
-
-        .rtl .novotel-v2-commitment-content {
-          text-align: right;
-        }
-
-        .rtl .novotel-v2-feature-cards {
-          direction: rtl;
-        }
-
-        .rtl .novotel-v2-footer {
-          direction: rtl;
-        }
-      `}</style>
     </div>
   )
 }

@@ -1,0 +1,85 @@
+/* Footer navigation */
+.novotel-v2-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: white;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.novotel-v2-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #777;
+  text-decoration: none;
+  font-size: 12px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 5px 10px;
+  gap: 3px;
+}
+
+.novotel-v2-nav-item svg {
+  width: 24px;
+  height: 24px;
+  transition: transform 0.3s ease;
+}
+
+.novotel-v2-nav-item:hover {
+  color: #002984;
+  transform: translateY(-2px);
+}
+
+.novotel-v2-nav-item:hover svg {
+  transform: scale(1.1);
+}
+
+.novotel-v2-nav-item.active {
+  color: #002984;
+}
+
+.novotel-v2-nav-item.active svg {
+  transform: scale(1.1);
+}
+
+.novotel-v2-nav-item:focus {
+  outline: 2px solid #002984;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.novotel-v2-nav-item span {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .novotel-v2-footer {
+    padding: 8px 0;
+  }
+  
+  .novotel-v2-nav-item {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+  
+  .novotel-v2-nav-item svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* RTL Support */
+.rtl .novotel-v2-footer {
+  direction: rtl;
+}

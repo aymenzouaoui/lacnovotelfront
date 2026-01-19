@@ -1,0 +1,174 @@
+/* Feature cards */
+.novotel-v2-feature-cards-container {
+  margin: 20px 10px;
+}
+
+.novotel-v2-feature-cards {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  will-change: transform;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 41, 132, 0.3) transparent;
+}
+
+.novotel-v2-feature-cards::-webkit-scrollbar {
+  height: 6px;
+}
+
+.novotel-v2-feature-cards::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.novotel-v2-feature-cards::-webkit-scrollbar-thumb {
+  background: rgba(0, 41, 132, 0.3);
+  border-radius: 3px;
+}
+
+.novotel-v2-feature-cards::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 41, 132, 0.5);
+}
+
+.novotel-v2-feature-card {
+  flex: 0 0 auto;
+  width: calc(33.333% - 7px);
+  border-radius: 15px;
+  overflow: hidden;
+  position: relative;
+  scroll-snap-align: start;
+  height: 200px;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+  will-change: transform;
+}
+
+.novotel-v2-feature-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.novotel-v2-feature-card:focus {
+  outline: 3px solid rgba(0, 41, 132, 0.5);
+  outline-offset: 2px;
+}
+
+.novotel-v2-feature-image {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.novotel-v2-feature-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.novotel-v2-feature-card:hover .novotel-v2-feature-image img {
+  transform: scale(1.1);
+}
+
+.novotel-v2-feature-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.6));
+  z-index: 1;
+  pointer-events: none;
+}
+
+.novotel-v2-feature-title {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  color: white;
+  font-size: 22px;
+  font-weight: 600;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  z-index: 2;
+  transition: transform 0.3s ease;
+}
+
+.novotel-v2-feature-card:hover .novotel-v2-feature-title {
+  transform: translateY(-5px);
+}
+
+.novotel-v2-feature-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 41, 132, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 3;
+}
+
+.novotel-v2-feature-card:hover .novotel-v2-feature-overlay {
+  opacity: 1;
+}
+
+.novotel-v2-feature-hover-text {
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  padding: 10px 20px;
+  border: 2px solid white;
+  border-radius: 25px;
+  transform: translateY(10px);
+  transition: transform 0.3s ease;
+}
+
+.novotel-v2-feature-card:hover .novotel-v2-feature-hover-text {
+  transform: translateY(0);
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+  .novotel-v2-feature-cards {
+    max-width: 620px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .novotel-v2-feature-card {
+    width: calc(50% - 5px);
+    height: 180px;
+  }
+  
+  .novotel-v2-feature-title {
+    font-size: 18px;
+    bottom: 10px;
+    left: 10px;
+  }
+  
+  .novotel-v2-feature-hover-text {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+}
+
+/* RTL Support */
+.rtl .novotel-v2-feature-cards {
+  direction: rtl;
+}
+
+.rtl .novotel-v2-feature-title {
+  left: auto;
+  right: 15px;
+}
+
+.rtl .novotel-v2-feature-card:hover .novotel-v2-feature-title {
+  transform: translateY(-5px);
+}
