@@ -1,15 +1,17 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo, lazy, Suspense } from "react"
 import "./home-client-v21.css"
 import API from "../services/api"
-import OffersPopup from "../components/OffersPopup"
 import HeroSection from "../components/HeroSection"
-import FeatureCards from "../components/FeatureCards"
-import SlideshowBanner from "../components/SlideshowBanner"
-import SocialLinks from "../components/SocialLinks"
-import FooterNavigation from "../components/FooterNavigation"
-import Copyright from "../components/Copyright"
+
+// Lazy load components that are not critical for initial render
+const OffersPopup = lazy(() => import("../components/OffersPopup"))
+const FeatureCards = lazy(() => import("../components/FeatureCards"))
+const SlideshowBanner = lazy(() => import("../components/SlideshowBanner"))
+const SocialLinks = lazy(() => import("../components/SocialLinks"))
+const FooterNavigation = lazy(() => import("../components/FooterNavigation"))
+const Copyright = lazy(() => import("../components/Copyright"))
 
 const translations = {
   fr: {
@@ -197,12 +199,13 @@ const HomeClient = () => {
   // Images du diaporama principal
   const heroImages = ["/images/hotel-lobby-v2.png", "/images/hotel-lobby2-v2.png", "/images/hotel-lobby3-v2.png"]
 
-  const feedbackSlides = [
+  // Memoize slides to avoid recalculation on every render
+  const feedbackSlides = useMemo(() => [
     {
       id: "questionnaire",
       title: "",
       description: "",
-  image: `/images/questionnaire_${currentLanguage}.png`,
+      image: `/images/questionnaire_${currentLanguage}.png`,
       link: "/questionnaire-client",
     },
     {
@@ -212,9 +215,9 @@ const HomeClient = () => {
       image: "/images/skipcleans.png",
       link: "/skipclean-client",
     },
-  ]
+  ], [currentLanguage])
 
-  const commitmentSlides = [
+  const commitmentSlides = useMemo(() => [
     {
       id: "environmental",
       title: t("environmentalPolicy"),
@@ -237,14 +240,22 @@ const HomeClient = () => {
       image: "/images/commitment2.png",
       link: "/commitment",
     },
-  ]
+  ], [currentLanguage])
 
-  // Function to fetch weather data for Tunis
+  // Function to fetch weather data for Tunis with timeout to avoid blocking
   const fetchWeatherData = async () => {
     try {
+      // Use AbortController for timeout
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 3000) // 3 second timeout
+      
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=Tunis,TN&appid=b56ce80f1e74973836f961ebb25d8704&units=metric`,
+        { signal: controller.signal }
       )
+      
+      clearTimeout(timeoutId)
+      
       if (response.ok) {
         const data = await response.json()
         setWeatherData({
@@ -255,14 +266,13 @@ const HomeClient = () => {
         setWeatherData({ temp: "22°C", loading: false })
       }
     } catch (error) {
+      // Set default value immediately if fetch fails
       setWeatherData({ temp: "22°C", loading: false })
     }
   }
 
   useEffect(() => {
-    fetchWeatherData()
-
-    // Load saved language from localStorage
+    // Load saved language from localStorage first (synchronous, fast)
     const savedLanguage = localStorage.getItem("novotel-language")
     if (savedLanguage && translations[savedLanguage]) {
       setCurrentLanguage(savedLanguage)
@@ -273,13 +283,20 @@ const HomeClient = () => {
       setCurrentTime(new Date())
     }, 60000)
 
+    // Fetch weather data with delay to not block initial render
+    const weatherTimeout = setTimeout(() => {
+      fetchWeatherData()
+    }, 500) // Wait 500ms before fetching weather
+
     return () => {
       clearInterval(timer)
+      clearTimeout(weatherTimeout)
     }
   }, [])
 
   useEffect(() => {
     let popupTimer
+    // Delay offers fetch to not block initial render
     const fetchActiveOffers = async () => {
       try {
         const res = await API.get("/offres")
@@ -295,11 +312,17 @@ const HomeClient = () => {
         console.error("Erreur chargement des offres pour le popup:", error)
       }
     }
-    fetchActiveOffers()
+    
+    // Fetch offers after initial render to improve perceived performance
+    const offersTimeout = setTimeout(() => {
+      fetchActiveOffers()
+    }, 1000) // Wait 1 second before fetching offers
+    
     return () => {
       if (popupTimer) {
         clearTimeout(popupTimer)
       }
+      clearTimeout(offersTimeout)
     }
   }, [])
 
@@ -351,7 +374,8 @@ const HomeClient = () => {
     if (popupOffers.length <= 1) return
     setPopupOfferIndex((prev) => (prev - 1 + popupOffers.length) % popupOffers.length)
   }
-  const getAllFeatureCards = () => [
+  // Memoize feature cards to avoid recalculation on every render
+  const getAllFeatureCards = useMemo(() => [
     {
       id: "restaurants",
       title: t("eat"),
@@ -415,7 +439,7 @@ const HomeClient = () => {
       fallback: "/placeholder.svg?height=300&width=200&text=Feedback",
       url: "https://tinyurl.com/ydpjnzt7",
     },
-  ]
+  ], [currentLanguage])
 
   return (
     <div className={`novotel-v2-app ${currentLanguage === "ar" ? "rtl" : "ltr"}`}>
@@ -435,36 +459,50 @@ const HomeClient = () => {
 
       <main className="novotel-v2-main">
         <div className="novotel-v2-main-content">
-          {/* Feedback Slideshow */}
-          <SlideshowBanner slides={feedbackSlides} autoRotateInterval={5000} />
+          {/* Feedback Slideshow - Lazy loaded */}
+          <Suspense fallback={<div style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Chargement...</div>}>
+            <SlideshowBanner slides={feedbackSlides} autoRotateInterval={5000} />
+          </Suspense>
 
-          {/* Feature Cards with Horizontal Scroll */}
-          <FeatureCards cards={getAllFeatureCards()} />
+          {/* Feature Cards with Horizontal Scroll - Lazy loaded */}
+          <Suspense fallback={<div style={{ minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Chargement...</div>}>
+            <FeatureCards cards={getAllFeatureCards} />
+          </Suspense>
 
-          {/* Commitment Slideshow */}
-          <SlideshowBanner slides={commitmentSlides} autoRotateInterval={5000} />
+          {/* Commitment Slideshow - Lazy loaded */}
+          <Suspense fallback={<div style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Chargement...</div>}>
+            <SlideshowBanner slides={commitmentSlides} autoRotateInterval={5000} />
+          </Suspense>
 
-          {/* Social Links */}
-          <SocialLinks />
+          {/* Social Links - Lazy loaded */}
+          <Suspense fallback={null}>
+            <SocialLinks />
+          </Suspense>
 
-          {/* Copyright */}
-          <Copyright translations={translations} currentLanguage={currentLanguage} />
+          {/* Copyright - Lazy loaded */}
+          <Suspense fallback={null}>
+            <Copyright translations={translations} currentLanguage={currentLanguage} />
+          </Suspense>
           <br />
         </div>
       </main>
 
-      <FooterNavigation translations={translations} currentLanguage={currentLanguage} />
+      <Suspense fallback={null}>
+        <FooterNavigation translations={translations} currentLanguage={currentLanguage} />
+      </Suspense>
 
-      <OffersPopup
-        show={showPopup}
-        offers={popupOffers}
-        currentIndex={popupOfferIndex}
-        onClose={() => setShowPopup(false)}
-        onNext={handleNextPopupOffer}
-        onPrev={handlePrevPopupOffer}
-        titleFallback={t("discoverOffers")}
-        descriptionFallback={t("discoverPromotions")}
-      />
+      <Suspense fallback={null}>
+        <OffersPopup
+          show={showPopup}
+          offers={popupOffers}
+          currentIndex={popupOfferIndex}
+          onClose={() => setShowPopup(false)}
+          onNext={handleNextPopupOffer}
+          onPrev={handlePrevPopupOffer}
+          titleFallback={t("discoverOffers")}
+          descriptionFallback={t("discoverPromotions")}
+        />
+      </Suspense>
 
     </div>
   )
