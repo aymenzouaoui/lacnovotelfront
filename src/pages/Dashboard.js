@@ -237,7 +237,7 @@ const filteredSections = sections.filter((section) => {
   const generateQR = async () => {
     try {
       setIsLoading(true)
-      const qrData = "https://novotel-tunis.com/Home"
+      const qrData = "https://lac.novotel-tunis.com/Home"
       const url = await QRCode.toDataURL(qrData)
       setQrCodeUrl(url)
       setShowQrDialog(true)
