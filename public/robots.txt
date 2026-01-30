@@ -1,3 +1,28 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /profile
+Disallow: /reservations
+Disallow: /nettoyage
+Disallow: /roomserviceorders
+Disallow: /historique
+Disallow: /statistiques
+Disallow: /page-contents
+Disallow: /chambres
+Disallow: /seminaires
+Disallow: /restaurants
+Disallow: /boissons
+Disallow: /loisirs
+Disallow: /spas
+Disallow: /evenements
+Disallow: /offres
+Disallow: /roomservices
+Disallow: /terrasse-piscine
+Disallow: /questionnaire-client
+Disallow: /skipclean-client
+Disallow: /questionnaires
+Disallow: /skipcleans
+
+# Sitemap
+Sitemap: https://lacbackend.novotel-tunis.com/sitemap.xml

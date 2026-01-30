@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Page d'accueil -->
+  <url>
+    <loc>https://lacbackend.novotel-tunis.com/home</loc>
+    <lastmod>2026-01-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Engagements -->
+  <url>
+    <loc>https://lacbackend.novotel-tunis.com/commitment</loc>
+    <lastmod>2026-01-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Chambres -->
+  <url>
+    <loc>https://lacbackend.novotel-tunis.com/chambres-client</loc>
+    <lastmod>2026-01-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Restaurants et Menus -->
+  <url>
+    <loc>https://lacbackend.novotel-tunis.com/RestaurantsMenus-client</loc>
+    <lastmod>2026-01-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Boissons -->
+  <url>
+    <loc>https://lacbackend.novotel-tunis.com/boissons-client</loc>
+    <lastmod>2026-01-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Spa -->
+  <url>
+    <loc>https://lacbackend.novotel-tunis.com/spas-client</loc>
+    <lastmod>2026-01-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Loisirs -->
+  <url>
+    <loc>https://lacbackend.novotel-tunis.com/loisirs-client</loc>
+    <lastmod>2026-01-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Événements -->
+  <url>
+    <loc>https://lacbackend.novotel-tunis.com/evenements-client</loc>
+    <lastmod>2026-01-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Offres -->
+  <url>
+    <loc>https://lacbackend.novotel-tunis.com/offres-client</loc>
+    <lastmod>2026-01-31</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Room Service -->
+  <url>
+    <loc>https://lacbackend.novotel-tunis.com/roomservices-client</loc>
+    <lastmod>2026-01-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Terrasse Piscine -->
+  <url>
+    <loc>https://lacbackend.novotel-tunis.com/terrasse-piscine-client</loc>
+    <lastmod>2026-01-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Séminaires -->
+  <url>
+    <loc>https://lacbackend.novotel-tunis.com/seminaires-client</loc>
+    <lastmod>2026-01-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Politique de confidentialité -->
+  <url>
+    <loc>https://lacbackend.novotel-tunis.com/policy-client</loc>
+    <lastmod>2026-01-31</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+</urlset>
