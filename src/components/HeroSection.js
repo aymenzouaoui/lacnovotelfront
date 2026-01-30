@@ -1,9 +1,25 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, memo } from "react"
 import "./HeroSection.css"
 
-const HeroSection = ({ heroImages, welcomeText, scrollDownText, currentLanguage, onLanguageChange, languages, currentTime, weatherData, formatDate, formatTime }) => {
+const HeroSection = memo(({ heroImages, welcomeText, scrollDownText, currentLanguage, onLanguageChange, languages, currentTime, weatherData, formatDate, formatTime }) => {
   const [heroSlide, setHeroSlide] = useState(0)
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false)
+  const [imagesLoaded, setImagesLoaded] = useState({})
+
+  // Preload hero images with priority
+  useEffect(() => {
+    heroImages.forEach((src, index) => {
+      const img = new Image()
+      img.onload = () => {
+        setImagesLoaded(prev => ({ ...prev, [index]: true }))
+      }
+      // First image has highest priority
+      if (index === 0) {
+        img.fetchPriority = "high"
+      }
+      img.src = src
+    })
+  }, [heroImages])
 
   useEffect(() => {
     const heroSlideTimer = setInterval(() => {
@@ -27,7 +43,7 @@ const HeroSection = ({ heroImages, welcomeText, scrollDownText, currentLanguage,
         {heroImages.map((image, index) => (
           <div
             key={index}
-            className={`novotel-v2-hero-slide ${heroSlide === index ? "active" : ""}`}
+            className={`novotel-v2-hero-slide ${heroSlide === index ? "active" : ""} ${imagesLoaded[index] ? "loaded" : ""}`}
             style={{ backgroundImage: `url("${image}")` }}
           />
         ))}
@@ -94,6 +110,8 @@ const HeroSection = ({ heroImages, welcomeText, scrollDownText, currentLanguage,
       </div>
     </div>
   )
-}
+})
+
+HeroSection.displayName = "HeroSection"
 
 export default HeroSection

@@ -1,0 +1,83 @@
+/* Progressive Image Component Styles */
+
+.progressive-image-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+/* Skeleton placeholder with shimmer effect */
+.progressive-image-skeleton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(200, 200, 200, 0.2) 0%,
+    rgba(200, 200, 200, 0.4) 50%,
+    rgba(200, 200, 200, 0.2) 100%
+  );
+  overflow: hidden;
+}
+
+.skeleton-shimmer {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+/* Actual image */
+.progressive-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.progressive-image.loaded {
+  opacity: 1;
+}
+
+/* Card variant */
+.progressive-image-container.card-image {
+  border-radius: 15px;
+}
+
+.progressive-image-container.card-image .progressive-image {
+  border-radius: 15px;
+}
+
+/* Banner variant */
+.progressive-image-container.banner-image {
+  min-height: 200px;
+}
+
+/* Hero variant */
+.progressive-image-container.hero-image {
+  min-height: 100vh;
+}

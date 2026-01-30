@@ -1,5 +1,40 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, memo } from "react"
 import "./FeatureCards.css"
+import ProgressiveImage from "./ProgressiveImage"
+
+// Memoize individual card to prevent unnecessary re-renders
+const FeatureCard = memo(({ card, onClick }) => {
+  return (
+    <div
+      className="novotel-v2-feature-card"
+      onClick={() => onClick(card)}
+      role="button"
+      tabIndex={0}
+      aria-label={card.title}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault()
+          onClick(card)
+        }
+      }}
+    >
+      <div className="novotel-v2-feature-image">
+        <ProgressiveImage
+          src={card.image}
+          alt={card.title}
+          fallbackSrc={card.fallback || `/placeholder.svg?height=300&width=200&text=${encodeURIComponent(card.title)}`}
+          placeholderColor="#1a1a2e"
+        />
+      </div>
+      <div className="novotel-v2-feature-title">{card.title}</div>
+      <div className="novotel-v2-feature-overlay">
+        <div className="novotel-v2-feature-hover-text">Cliquez pour découvrir</div>
+      </div>
+    </div>
+  )
+})
+
+FeatureCard.displayName = "FeatureCard"
 
 const FeatureCards = ({ cards }) => {
   const scrollContainerRef = useRef(null)
@@ -60,38 +95,11 @@ const FeatureCards = ({ cards }) => {
     <div className="novotel-v2-feature-cards-container">
       <div className="novotel-v2-feature-cards" ref={scrollContainerRef}>
         {cards.map((card) => (
-          <div
+          <FeatureCard
             key={card.id}
-            className="novotel-v2-feature-card"
-            onClick={() => handleCardClick(card)}
-            role="button"
-            tabIndex={0}
-            aria-label={card.title}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault()
-                handleCardClick(card)
-              }
-            }}
-          >
-            <div className="novotel-v2-feature-image">
-              <img
-                loading="lazy"
-                decoding="async"
-                src={card.image || card.fallback}
-                alt={card.title}
-                onError={(e) => {
-                  e.currentTarget.src =
-                    card.fallback ||
-                    `/placeholder.svg?height=300&width=200&text=${encodeURIComponent(card.title)}`
-                }}
-              />
-            </div>
-            <div className="novotel-v2-feature-title">{card.title}</div>
-            <div className="novotel-v2-feature-overlay">
-              <div className="novotel-v2-feature-hover-text">Cliquez pour découvrir</div>
-            </div>
-          </div>
+            card={card}
+            onClick={handleCardClick}
+          />
         ))}
       </div>
     </div>
