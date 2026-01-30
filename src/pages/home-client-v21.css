@@ -1,3 +1,212 @@
+/* ===== LOADING SCREEN STYLES ===== */
+.home-loading-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, #002984 0%, #001a4d 50%, #000d26 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.home-loading-container::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.03) 0%, transparent 50%);
+  animation: home-loading-bg-pulse 4s ease-in-out infinite;
+}
+
+@keyframes home-loading-bg-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+.home-loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  z-index: 1;
+}
+
+.home-loading-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: home-loading-fade-in 0.8s ease-out;
+}
+
+@keyframes home-loading-fade-in {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.home-loading-logo-text {
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: 8px;
+  color: white;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.home-loading-logo-subtitle {
+  font-size: 16px;
+  letter-spacing: 6px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 8px;
+  font-weight: 300;
+}
+
+.home-loading-spinner {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  animation: home-loading-spinner-appear 0.5s ease-out 0.3s backwards;
+}
+
+@keyframes home-loading-spinner-appear {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.home-spinner-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: #4dabf7;
+  border-right-color: rgba(77, 171, 247, 0.3);
+  animation: home-spinner-rotate 1.5s linear infinite;
+}
+
+.home-spinner-ring-inner {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: calc(100% - 24px);
+  height: calc(100% - 24px);
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-bottom-color: #74c0fc;
+  border-left-color: rgba(116, 192, 252, 0.3);
+  animation: home-spinner-rotate 2s linear infinite reverse;
+}
+
+.home-spinner-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(135deg, #4dabf7, #74c0fc);
+  border-radius: 50%;
+  animation: home-spinner-dot-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes home-spinner-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes home-spinner-dot-pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  50% { transform: translate(-50%, -50%) scale(1.3); opacity: 0.7; }
+}
+
+.home-loading-progress-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 200px;
+  animation: home-loading-fade-in 0.5s ease-out 0.5s backwards;
+}
+
+.home-loading-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.home-loading-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4dabf7, #74c0fc, #a5d8ff);
+  border-radius: 4px;
+  transition: width 0.3s ease-out;
+  position: relative;
+}
+
+.home-loading-progress-fill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: home-progress-shimmer 1.5s infinite;
+}
+
+@keyframes home-progress-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.home-loading-progress-text {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+.home-loading-text {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 1px;
+  animation: home-loading-text-pulse 2s ease-in-out infinite;
+}
+
+@keyframes home-loading-text-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Mobile adjustments for loading screen */
+@media (max-width: 480px) {
+  .home-loading-logo-text {
+    font-size: 36px;
+    letter-spacing: 6px;
+  }
+  
+  .home-loading-logo-subtitle {
+    font-size: 12px;
+    letter-spacing: 4px;
+  }
+  
+  .home-loading-spinner {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .home-loading-progress-container {
+    width: 160px;
+  }
+}
+
+/* ===== END LOADING SCREEN STYLES ===== */
+
 /* Base styles */
 .novotel-v2-app {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;

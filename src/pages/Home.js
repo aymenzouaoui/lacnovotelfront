@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo, lazy, Suspense } from "react"
+import { useState, useEffect, useMemo, lazy, Suspense, useCallback } from "react"
 import "./home-client-v21.css"
 import API from "../services/api"
 import HeroSection from "../components/HeroSection"
@@ -12,6 +12,38 @@ const SlideshowBanner = lazy(() => import("../components/SlideshowBanner"))
 const SocialLinks = lazy(() => import("../components/SocialLinks"))
 const FooterNavigation = lazy(() => import("../components/FooterNavigation"))
 const Copyright = lazy(() => import("../components/Copyright"))
+
+// Loading Screen Component
+const LoadingScreen = ({ progress }) => {
+  return (
+    <div className="home-loading-container">
+      <div className="home-loading-content">
+        <div className="home-loading-logo">
+          <span className="home-loading-logo-text">NOVOTEL</span>
+          <span className="home-loading-logo-subtitle">TUNIS LAC</span>
+        </div>
+        
+        <div className="home-loading-spinner">
+          <div className="home-spinner-ring"></div>
+          <div className="home-spinner-ring-inner"></div>
+          <div className="home-spinner-dot"></div>
+        </div>
+        
+        <div className="home-loading-progress-container">
+          <div className="home-loading-progress-bar">
+            <div 
+              className="home-loading-progress-fill" 
+              style={{ width: `${progress}%` }}
+            ></div>
+          </div>
+          <span className="home-loading-progress-text">{Math.round(progress)}%</span>
+        </div>
+        
+        <p className="home-loading-text">Chargement en cours...</p>
+      </div>
+    </div>
+  )
+}
 
 const translations = {
   fr: {
@@ -192,12 +224,80 @@ const HomeClient = () => {
   const [popupOfferIndex, setPopupOfferIndex] = useState(0)
   const [currentLanguage, setCurrentLanguage] = useState("fr")
   const [weatherData, setWeatherData] = useState({ temp: "18°C", loading: true })
+  
+  // Loading state
+  const [isLoading, setIsLoading] = useState(true)
+  const [loadingProgress, setLoadingProgress] = useState(0)
 
   // Get translation function
   const t = (key) => translations[currentLanguage][key] || translations.fr[key] || key
 
   // Images du diaporama principal
   const heroImages = ["/images/hotel-lobby-v2.png", "/images/hotel-lobby2-v2.png", "/images/hotel-lobby3-v2.png"]
+
+  // Critical images to preload
+  const criticalImages = useMemo(() => [
+    ...heroImages,
+    "/images/restaurant.jpg",
+    "/images/bar.jpg",
+    "/images/terrasse-piscine.jpg",
+    "/images/chambre.jpg",
+    "/images/seminaire.jpg",
+    "/images/roomservice.jpg",
+    "/images/loisir.jpg",
+    "/images/spa.jpg",
+    "/images/feedback.webp"
+  ], [])
+
+  // Preload images function
+  const preloadImages = useCallback(() => {
+    return new Promise((resolve) => {
+      let loadedCount = 0
+      const totalImages = criticalImages.length
+      
+      // Minimum loading time for better UX (1.5 seconds)
+      const minLoadingTime = 1500
+      const startTime = Date.now()
+      
+      const updateProgress = () => {
+        loadedCount++
+        const imageProgress = (loadedCount / totalImages) * 100
+        setLoadingProgress(imageProgress)
+        
+        if (loadedCount === totalImages) {
+          const elapsedTime = Date.now() - startTime
+          const remainingTime = Math.max(0, minLoadingTime - elapsedTime)
+          
+          setTimeout(() => {
+            setLoadingProgress(100)
+            setTimeout(() => resolve(), 300) // Small delay for smooth transition
+          }, remainingTime)
+        }
+      }
+      
+      criticalImages.forEach((src) => {
+        const img = new Image()
+        img.onload = updateProgress
+        img.onerror = updateProgress // Continue even if image fails to load
+        img.src = src
+      })
+      
+      // Fallback timeout in case images take too long
+      setTimeout(() => {
+        if (loadedCount < totalImages) {
+          setLoadingProgress(100)
+          resolve()
+        }
+      }, 8000) // 8 second maximum wait
+    })
+  }, [criticalImages])
+
+  // Preload images on mount
+  useEffect(() => {
+    preloadImages().then(() => {
+      setIsLoading(false)
+    })
+  }, [preloadImages])
 
   // Memoize slides to avoid recalculation on every render
   const feedbackSlides = useMemo(() => [
@@ -440,6 +540,11 @@ const HomeClient = () => {
       url: "https://tinyurl.com/ydpjnzt7",
     },
   ], [currentLanguage])
+
+  // Show loading screen while images are loading
+  if (isLoading) {
+    return <LoadingScreen progress={loadingProgress} />
+  }
 
   return (
     <div className={`novotel-v2-app ${currentLanguage === "ar" ? "rtl" : "ltr"}`}>
