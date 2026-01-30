@@ -42,6 +42,7 @@ import NettoyagePage from "./pages/NettoyagePage";
 import RoomServiceOrders from "./pages/RoomServiceOrders";
 import PrivacyClient from "./pages/PrivacyClient"
 import SkipCleanClient from "./pages/SkipcleanClient";
+import NotFoundPage from "./pages/NotFoundPage";
 
 
 function App() {
@@ -91,6 +92,8 @@ function App() {
         <Route path="/chambres-client" element={<ChambresClient />} />
         <Route path="/policy-client" element={<PrivacyClient />} />
 
+        {/* 404 - Catch all unmatched routes */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );
