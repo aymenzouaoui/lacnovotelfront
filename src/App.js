@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./styles/back-button-global.css";
 import "./styles/footer-global.css";
@@ -49,6 +49,12 @@ import NotFoundPage from "./pages/NotFoundPage";
 
 
 function App() {
+  // Remove initial HTML loading screen once React has mounted
+  useEffect(() => {
+    const loader = document.getElementById("app-loading")
+    if (loader) loader.remove()
+  }, [])
+
   return (
     <BrowserRouter basename="">
       <Routes>

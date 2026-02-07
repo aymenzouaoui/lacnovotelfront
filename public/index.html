@@ -92,6 +92,47 @@
 </head>
 
 <body>
+  <!-- Loading screen shown before React loads (replaces white screen) -->
+  <div id="app-loading" aria-hidden="true">
+    <style>
+      #app-loading {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+        background: linear-gradient(135deg, #002984 0%, #001a4d 50%, #000d26 100%);
+        display: flex; justify-content: center; align-items: center;
+        z-index: 99999; font-family: 'Inter', system-ui, sans-serif;
+      }
+      #app-loading .loading-content {
+        display: flex; flex-direction: column; align-items: center; gap: 24px; z-index: 1;
+      }
+      #app-loading .loading-logo { text-align: center; }
+      #app-loading .loading-logo-text {
+        font-size: 42px; font-weight: 700; letter-spacing: 6px;
+        color: white; text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      }
+      #app-loading .loading-logo-sub {
+        font-size: 14px; letter-spacing: 5px; color: rgba(255,255,255,0.8);
+        margin-top: 6px; font-weight: 300;
+      }
+      #app-loading .loading-spinner {
+        width: 60px; height: 60px; border-radius: 50%;
+        border: 3px solid rgba(255,255,255,0.2);
+        border-top-color: #4dabf7;
+        animation: app-load-spin 1s linear infinite;
+      }
+      @keyframes app-load-spin { to { transform: rotate(360deg); } }
+      #app-loading .loading-text {
+        font-size: 14px; color: rgba(255,255,255,0.8);
+      }
+    </style>
+    <div class="loading-content">
+      <div class="loading-logo">
+        <div class="loading-logo-text">NOVOTEL</div>
+        <div class="loading-logo-sub">TUNIS LAC</div>
+      </div>
+      <div class="loading-spinner"></div>
+      <p class="loading-text">Chargement en cours...</p>
+    </div>
+  </div>
   <noscript>
     <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
       <h1>JavaScript requis</h1>
