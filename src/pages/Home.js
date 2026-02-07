@@ -14,7 +14,19 @@ const FooterNavigation = lazy(() => import("../components/FooterNavigation"))
 const Copyright = lazy(() => import("../components/Copyright"))
 
 // Loading Screen Component
-const LoadingScreen = ({ progress }) => {
+const LoadingScreen = ({ progress, currentLanguage = "fr" }) => {
+  const loadingText =
+    progress < 100
+      ? currentLanguage === "fr"
+        ? "Chargement en cours..."
+        : currentLanguage === "ar"
+          ? "جاري التحميل..."
+          : "Loading..."
+      : currentLanguage === "fr"
+        ? "Prêt"
+        : currentLanguage === "ar"
+          ? "جاهز"
+          : "Ready"
   return (
     <div className="home-loading-container">
       <div className="home-loading-content">
@@ -39,7 +51,7 @@ const LoadingScreen = ({ progress }) => {
           <span className="home-loading-progress-text">{Math.round(progress)}%</span>
         </div>
         
-        <p className="home-loading-text">Chargement en cours...</p>
+        <p className="home-loading-text">{loadingText}</p>
       </div>
     </div>
   )
@@ -99,6 +111,13 @@ const translations = {
     // New translations for feedback slides
     giveUsFeedback: "Donnez nous votre avis",
     skipCleans: "Skip the clean",
+
+    // À propos de l'hôtel
+    aboutHotel: "À propos de l'hôtel",
+
+    // Loading
+    loadingInProgress: "Chargement en cours...",
+    loading: "Chargement...",
   },
 
   en: {
@@ -154,6 +173,13 @@ const translations = {
     // New translations for feedback slides
     giveUsFeedback: "Give us your feedback",
     skipCleans: "Skip the clean",
+
+    // About the hotel
+    aboutHotel: "About the hotel",
+
+    // Loading
+    loadingInProgress: "Loading...",
+    loading: "Loading...",
   },
 
   ar: {
@@ -208,6 +234,13 @@ const translations = {
     // New translations for feedback slides
     giveUsFeedback: "أعطنا رأيك",
     skipCleans: "تخطي التنظيف",
+
+    // À propos de l'hôtel
+    aboutHotel: "نبذة عن الفندق",
+
+    // Loading
+    loadingInProgress: "جاري التحميل...",
+    loading: "تحميل...",
   },
 }
 
@@ -483,9 +516,9 @@ const HomeClient = () => {
   const getAllFeatureCards = useMemo(() => [
     {
       id: "apropos",
-      title: t("A propos de l'hôtel"),
+      title: t("aboutHotel"),
       image: "/images/apropos.webp",
-      fallback: "/placeholder.svg?height=300&width=200&text=apropos",
+      fallback: "/images/apropos.jpg",
       path: "/livret-client",
     },
     {
@@ -556,7 +589,7 @@ const HomeClient = () => {
 
   // Show loading screen while images are loading
   if (isLoading) {
-    return <LoadingScreen progress={loadingProgress} />
+    return <LoadingScreen progress={loadingProgress} currentLanguage={currentLanguage} />
   }
 
   return (
@@ -578,17 +611,17 @@ const HomeClient = () => {
       <main className="novotel-v2-main">
         <div className="novotel-v2-main-content">
           {/* Feedback Slideshow - Lazy loaded */}
-          <Suspense fallback={<div style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Chargement...</div>}>
+          <Suspense fallback={<div style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{t("loading")}</div>}>
             <SlideshowBanner slides={feedbackSlides} autoRotateInterval={5000} />
           </Suspense>
 
           {/* Feature Cards with Horizontal Scroll - Lazy loaded */}
-          <Suspense fallback={<div style={{ minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Chargement...</div>}>
+          <Suspense fallback={<div style={{ minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{t("loading")}</div>}>
             <FeatureCards cards={getAllFeatureCards} />
           </Suspense>
 
           {/* Commitment Slideshow - Lazy loaded */}
-          <Suspense fallback={<div style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Chargement...</div>}>
+          <Suspense fallback={<div style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{t("loading")}</div>}>
             <SlideshowBanner slides={commitmentSlides} autoRotateInterval={5000} />
           </Suspense>
 
