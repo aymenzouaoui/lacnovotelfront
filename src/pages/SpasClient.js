@@ -803,7 +803,7 @@ const SpasClient = () => {
           text-align: right;
         }
         .rtl .copyright {
-          text-align: right;
+          text-align: center;
         }
         .rtl .copyright a {
           margin-left: 0;

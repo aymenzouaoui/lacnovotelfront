@@ -342,7 +342,7 @@ const OffresClient = () => {
         }
 
         .rtl .copyright {
-          text-align: right;
+          text-align: center;
         }
 
         .rtl .copyright a {

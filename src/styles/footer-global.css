@@ -121,11 +121,23 @@
   text-align: right;
 }
 
+/* Copyright reste centré en RTL (arabe) – priorité sur les styles inline des pages */
 .rtl .copyright,
 .rtl .copyright-new,
 .rtl .copyright-room-service,
 .rtl .copyright-drinks {
-  text-align: right;
+  text-align: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  direction: rtl;
+}
+
+.rtl .copyright p,
+.rtl .copyright-new p,
+.rtl .copyright-room-service p,
+.rtl .copyright-drinks p {
+  text-align: center !important;
 }
 
 .rtl .copyright a,

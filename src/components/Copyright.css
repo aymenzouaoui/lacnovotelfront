@@ -1,10 +1,20 @@
-/* Copyright */
+/* Copyright – centré LTR et RTL via flexbox (direction: ltr sur le conteneur = vrai centre) */
 .copyright {
+  width: 100%;
+  margin: 10px 0 20px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  direction: ltr;
+}
+
+.copyright-inner {
   text-align: center;
   color: #777;
   font-size: 14px;
-  margin: 10px 0 20px;
-  padding: 0 10px;
+  max-width: 100%;
 }
 
 .copyright p {
@@ -37,7 +47,7 @@
 }
 
 @media (max-width: 480px) {
-  .copyright {
+  .copyright-inner {
     font-size: 12px;
   }
   
@@ -46,12 +56,30 @@
   }
 }
 
-/* RTL Support */
+/* RTL – conteneur en ltr pour centrage visuel, texte en rtl à l’intérieur */
 .rtl .copyright {
-  text-align: center;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  direction: ltr !important;
+}
+
+.rtl .copyright-inner {
+  text-align: center !important;
+  direction: rtl;
+}
+
+.rtl .copyright p {
+  text-align: center !important;
 }
 
 .rtl .copyright a {
+  margin-left: 0;
+  margin-right: 5px;
+}
+
+.rtl .copyright-logo {
   margin-left: 0;
   margin-right: 5px;
 }

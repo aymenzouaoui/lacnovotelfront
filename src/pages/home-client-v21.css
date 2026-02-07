@@ -670,6 +670,39 @@ html {
   margin-left: 5px;
 }
 
+/* Copyright (composant) – toujours centré, y compris en arabe RTL */
+.novotel-v2-main-content .copyright {
+  text-align: center !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  direction: ltr !important;
+}
+
+.novotel-v2-app.rtl .novotel-v2-main-content .copyright,
+.novotel-v2-app.rtl .copyright {
+  text-align: center !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  direction: ltr !important;
+}
+
+.novotel-v2-app.rtl .copyright-inner {
+  direction: rtl;
+  text-align: center !important;
+}
+
+.novotel-v2-app.rtl .copyright p {
+  text-align: center !important;
+}
+
 /* Footer navigation */
 .novotel-v2-footer {
   position: fixed;

@@ -308,7 +308,7 @@ const PolicyClient = () => {
         }
 
         .rtl .copyright {
-          text-align: right;
+          text-align: center;
         }
 
         .rtl .copyright a {

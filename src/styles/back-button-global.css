@@ -111,3 +111,19 @@ button.header-back-link-drinks {
 .hotel-app-room-service .app-header-room-service .header-back-link-room-service:focus-visible {
   box-shadow: 0 0 0 3px rgba(15, 52, 96, 0.2);
 }
+
+/* RTL (arabe) : icône avant le texte (ordre visuel [icône, texte]) */
+.rtl .header-back-link,
+.rtl .header-back-link-new,
+.rtl .header-back-link-room-service,
+.rtl .header-back-link-drinks {
+  flex-direction: row !important;
+}
+
+.rtl .header-back-link svg,
+.rtl .header-back-link-new svg,
+.rtl .header-back-link-room-service svg,
+.rtl .header-back-link-drinks svg {
+  margin-left: 0 !important;
+  margin-right: 0.5rem !important;
+}

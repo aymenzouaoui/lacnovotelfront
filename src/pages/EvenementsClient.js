@@ -295,7 +295,7 @@ const EvenementsClient = () => {
         }
 
         .rtl .copyright {
-          text-align: right;
+          text-align: center;
         }
 
         .rtl .copyright a {
