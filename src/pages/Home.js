@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo, lazy, Suspense, useCallback } from "react"
+import { useState, useEffect, useMemo, lazy, Suspense } from "react"
 import "./home-client-v21.css"
 import API from "../services/api"
 import HeroSection from "../components/HeroSection"
@@ -12,50 +12,6 @@ const SlideshowBanner = lazy(() => import("../components/SlideshowBanner"))
 const SocialLinks = lazy(() => import("../components/SocialLinks"))
 const FooterNavigation = lazy(() => import("../components/FooterNavigation"))
 const Copyright = lazy(() => import("../components/Copyright"))
-
-// Loading Screen Component
-const LoadingScreen = ({ progress, currentLanguage = "fr" }) => {
-  const loadingText =
-    progress < 100
-      ? currentLanguage === "fr"
-        ? "Chargement en cours..."
-        : currentLanguage === "ar"
-          ? "جاري التحميل..."
-          : "Loading..."
-      : currentLanguage === "fr"
-        ? "Prêt"
-        : currentLanguage === "ar"
-          ? "جاهز"
-          : "Ready"
-  return (
-    <div className="home-loading-container">
-      <div className="home-loading-content">
-        <div className="home-loading-logo">
-          <span className="home-loading-logo-text">NOVOTEL</span>
-          <span className="home-loading-logo-subtitle">TUNIS LAC</span>
-        </div>
-        
-        <div className="home-loading-spinner">
-          <div className="home-spinner-ring"></div>
-          <div className="home-spinner-ring-inner"></div>
-          <div className="home-spinner-dot"></div>
-        </div>
-        
-        <div className="home-loading-progress-container">
-          <div className="home-loading-progress-bar">
-            <div 
-              className="home-loading-progress-fill" 
-              style={{ width: `${progress}%` }}
-            ></div>
-          </div>
-          <span className="home-loading-progress-text">{Math.round(progress)}%</span>
-        </div>
-        
-        <p className="home-loading-text">{loadingText}</p>
-      </div>
-    </div>
-  )
-}
 
 const translations = {
   fr: {
@@ -257,10 +213,6 @@ const HomeClient = () => {
   const [popupOfferIndex, setPopupOfferIndex] = useState(0)
   const [currentLanguage, setCurrentLanguage] = useState("fr")
   const [weatherData, setWeatherData] = useState({ temp: "18°C", loading: true })
-  
-  // Loading state
-  const [isLoading, setIsLoading] = useState(true)
-  const [loadingProgress, setLoadingProgress] = useState(0)
 
   // Get translation function
   const t = (key) => translations[currentLanguage][key] || translations.fr[key] || key
@@ -283,34 +235,12 @@ const HomeClient = () => {
   ], [])
 
   // Preload images in background (non-blocking - cache warming only)
-  const preloadImagesInBackground = useCallback(() => {
+  useEffect(() => {
     criticalImages.forEach((src) => {
       const img = new Image()
       img.src = src
     })
   }, [criticalImages])
-
-  // Display page after brief transition; do not wait for images to load
-  useEffect(() => {
-    const homeAlreadyLoaded = sessionStorage.getItem("novotel-home-loaded") === "true"
-
-    if (homeAlreadyLoaded) {
-      setIsLoading(false)
-      return
-    }
-
-    // Short branded loading (~300ms) then show content
-    const showContentTimer = setTimeout(() => {
-      setIsLoading(false)
-      setLoadingProgress(100)
-      sessionStorage.setItem("novotel-home-loaded", "true")
-    }, 300)
-
-    // Warm image cache in background (non-blocking)
-    preloadImagesInBackground()
-
-    return () => clearTimeout(showContentTimer)
-  }, [preloadImagesInBackground])
 
   // Memoize slides to avoid recalculation on every render
   const feedbackSlides = useMemo(() => [
@@ -561,11 +491,6 @@ const HomeClient = () => {
     },
    
   ], [currentLanguage])
-
-  // Show loading screen while images are loading
-  if (isLoading) {
-    return <LoadingScreen progress={loadingProgress} currentLanguage={currentLanguage} />
-  }
 
   return (
     <div className={`novotel-v2-app ${currentLanguage === "ar" ? "rtl" : "ltr"}`}>
