@@ -110,20 +110,7 @@ background-image: url("https://itbafa.com/images/people-taking-part-high-protoco
   align-items: center;
 }
 
-/* Style for the back button in header */
-.header-back-link {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--primary);
-  font-weight: 500;
-  transition: var(--transition-normal);
-  text-decoration: none;
-}
-
-.header-back-link:hover {
-  color: var(--primary-dark);
-}
+/* .header-back-link → voir styles/back-button-global.css */
 
 /* Main Content */
 .app-main {
@@ -297,65 +284,7 @@ background-image: url("https://itbafa.com/images/people-taking-part-high-protoco
   color: var(--dark-gray);
 }
 
-/* Footer */
-.app-footer {
-  background-color: var(--primary);
-  color: var(--white);
-  padding: var(--space-xl) var(--space-lg);
-  margin-top: var(--space-xxl);
-}
-
-.footer-content {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--space-xl);
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.footer-section h4 {
-  font-size: 1.2rem;
-  margin-bottom: var(--space-md);
-  font-weight: 600;
-}
-
-.footer-section p {
-  margin-bottom: var(--space-sm);
-  opacity: 0.8;
-  font-size: 0.95rem;
-}
-
-.social-links {
-  display: flex;
-  gap: var(--space-md);
-  margin-top: var(--space-sm);
-}
-
-.social-links a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: var(--white);
-  transition: background-color var(--transition-normal), transform var(--transition-normal);
-}
-
-.social-links a:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-3px);
-}
-
-.copyright {
-  text-align: center;
-  margin-top: var(--space-xl);
-  padding-top: var(--space-lg);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 0.875rem;
-  opacity: 0.7;
-}
+/* Footer: styles globaux dans src/styles/footer-global.css */
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
@@ -384,10 +313,6 @@ background-image: url("https://itbafa.com/images/people-taking-part-high-protoco
     font-size: 1.25rem;
   }
 
-  .footer-content {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .content-item-image {
     height: 140px;
   }
@@ -410,15 +335,6 @@ background-image: url("https://itbafa.com/images/people-taking-part-high-protoco
   .content-grid {
     grid-template-columns: 1fr;
     gap: var(--space-md);
-  }
-
-  .footer-content {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-
-  .social-links {
-    justify-content: center;
   }
 
   .content-item-image {

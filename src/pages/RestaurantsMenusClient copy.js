@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
+import { useNavigate } from "react-router-dom"
 import API from "../services/api"
  
 import "./RestaurantsMenusNew.css"
@@ -10,6 +11,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 
 
 const RestaurantsMenusClient = () => {
+  const navigate = useNavigate()
   const [restaurants, setRestaurants] = useState([])
   const [selectedRestaurant, setSelectedRestaurant] = useState(null)
   const [menus, setMenus] = useState([])
@@ -334,7 +336,7 @@ const RestaurantsMenusClient = () => {
               setCurrentMenuIndex(0)
               setCurrentImageIndex(0)
             } else {
-              window.location.href = "/Home"
+              navigate("/home")
             }
           }}
         >

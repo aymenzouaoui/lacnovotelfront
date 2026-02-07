@@ -1,0 +1,23 @@
+/* SkipcleanClient – bouton Retour style professionnel */
+
+.header-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #0f3460;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  text-decoration: none;
+}
+
+.header-back-link:hover {
+  color: #0a2642;
+  border-color: #0f3460;
+  background: #f0f4f8;
+}

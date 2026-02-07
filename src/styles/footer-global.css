@@ -1,0 +1,221 @@
+/**
+ * Footer client – UI globale partagée
+ * .app-footer, .footer-content, .footer-section, .copyright, .social-links
+ * + variantes .app-footer-room-service, .app-footer-drinks
+ */
+
+.app-footer,
+.app-footer-new,
+.app-footer-room-service,
+.app-footer-drinks {
+  background: #0f3460;
+  color: #fff;
+  padding: 2rem 1.5rem;
+  margin-top: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.footer-content,
+.footer-content-room-service,
+.footer-content-drinks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.footer-section,
+.footer-section-room-service,
+.footer-section-drinks {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.footer-section h4,
+.footer-section-room-service h4,
+.footer-section-drinks h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #fff;
+}
+
+.footer-section p,
+.footer-section-room-service p,
+.footer-section-drinks p {
+  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+  opacity: 0.9;
+  line-height: 1.45;
+}
+
+.social-links,
+.social-links-room-service,
+.social-links-drinks {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.social-links a,
+.social-links-room-service a,
+.social-links-drinks a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  transition: background 0.2s ease;
+}
+
+.social-links a:hover,
+.social-links-room-service a:hover,
+.social-links-drinks a:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.copyright,
+.copyright-new,
+.copyright-room-service,
+.copyright-drinks {
+  text-align: center;
+  padding-top: 1.5rem;
+  margin-top: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.875rem;
+  color: #fff;
+  line-height: 1.5;
+}
+
+.copyright a,
+.copyright-new a,
+.copyright-room-service a,
+.copyright-drinks a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.copyright a:hover,
+.copyright-new a:hover,
+.copyright-room-service a:hover,
+.copyright-drinks a:hover {
+  text-decoration: underline;
+}
+
+/* RTL */
+.rtl .footer-content,
+.rtl .footer-content-room-service,
+.rtl .footer-content-drinks {
+  text-align: right;
+}
+
+.rtl .footer-section,
+.rtl .footer-section-room-service,
+.rtl .footer-section-drinks {
+  text-align: right;
+}
+
+.rtl .copyright,
+.rtl .copyright-new,
+.rtl .copyright-room-service,
+.rtl .copyright-drinks {
+  text-align: right;
+}
+
+.rtl .copyright a,
+.rtl .copyright-new a,
+.rtl .copyright-room-service a,
+.rtl .copyright-drinks a {
+  margin-left: 0;
+  margin-right: 5px;
+}
+
+/* Livret (contexte .livret-app) */
+.livret-app .app-footer {
+  background: #0f3460;
+  border-top: none;
+  padding: 2rem 1rem 1rem;
+  margin-top: auto;
+}
+
+.livret-app .footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.livret-app .footer-section h4 {
+  color: #fff;
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.livret-app .footer-section p {
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.livret-app .copyright {
+  text-align: center;
+  padding-top: 1.5rem;
+  margin-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 0.875rem;
+}
+
+.livret-app .copyright a {
+  color: #fff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footer-content,
+  .footer-content-room-service,
+  .footer-content-drinks {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+    text-align: center;
+  }
+
+  .rtl .footer-content,
+  .rtl .footer-content-room-service,
+  .rtl .footer-content-drinks {
+    text-align: center;
+  }
+
+  .rtl .footer-section,
+  .rtl .footer-section-room-service,
+  .rtl .footer-section-drinks {
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-content,
+  .footer-content-room-service,
+  .footer-content-drinks {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .app-footer,
+  .app-footer-room-service,
+  .app-footer-drinks {
+    padding: 1.5rem 1rem;
+  }
+
+  .livret-app .footer-content {
+    grid-template-columns: 1fr;
+  }
+}

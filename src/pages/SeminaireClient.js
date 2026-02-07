@@ -4,14 +4,12 @@ import { useEffect, useState } from "react"
 import API from "../services/api"
 import "./SeminaireClient.css" // Keep the original CSS import
 import {
-  ArrowLeft,
   ChevronLeft,
   ChevronRight,
   Users,
   Maximize,
   Facebook,
   Instagram,
-
   Play,
   Pause,
   Wifi,
@@ -964,8 +962,12 @@ useEffect(() => {
 
       <header className="app-header">
         <a href="/Home" className="header-back-link">
-          <ArrowLeft className={currentLanguage === "ar" ? "transform scale-x-[-1]" : ""} width="24" height="24" />
-          {t("back")}
+          {currentLanguage === "ar" ? (
+            <ChevronRight size={20} strokeWidth={2} aria-hidden />
+          ) : (
+            <ChevronLeft size={20} strokeWidth={2} aria-hidden />
+          )}
+          <span>{t("back")}</span>
         </a>
         <div className="logo-container">
           <img src="/images/logo2.png" alt="Novotel Logo" className="logo" />

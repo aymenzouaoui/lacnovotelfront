@@ -1,5 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import "./styles/back-button-global.css";
+import "./styles/footer-global.css";
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import Dashboard from "./pages/Dashboard";
@@ -35,6 +37,7 @@ import EvenementsClient from "./pages/EvenementsClient";
 import RoomServiceClient from "./pages/RoomServiceClient";
 import TerrassePiscineClient from "./pages/TerrassePiscineClient";
 import ChambresClient from "./pages/ChambresClient";
+import LivretClient from "./pages/LivretClient";
 import SettingsPage from "./pages/SettingsPage";
 import ProfilePage from "./pages/ProfilePage";
 import ReservationsPage from "./pages/ReservationsPage";
@@ -90,6 +93,7 @@ function App() {
         <Route path="/roomservices-client" element={<RoomServiceClient />} />
         <Route path="/terrasse-piscine-client" element={<TerrassePiscineClient />} />
         <Route path="/chambres-client" element={<ChambresClient />} />
+        <Route path="/livret-client" element={<LivretClient />} />
         <Route path="/policy-client" element={<PrivacyClient />} />
 
         {/* 404 - Catch all unmatched routes */}

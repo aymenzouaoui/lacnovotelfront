@@ -298,19 +298,7 @@ background-image: url("https://itbafa.com/images/restaurants.png");
   color: var(--dark-gray);
 }
 
-/* Footer */
-.app-footer {
-  background-color: var(--primary);
-  color: var(--white);
-  padding: var(--space-md);
-  margin-top: var(--space-xxl);
-}
-
-.copyright {
-  text-align: center;
-  font-size: 0.875rem;
-  opacity: 0.7;
-}
+/* Footer: styles globaux dans src/styles/footer-global.css */
 
 /* Menu Display Container */
 .menu-display-container {

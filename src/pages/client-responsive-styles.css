@@ -509,24 +509,4 @@
   object-position: center;
 }
 
-/* Footer responsive */
-@media (max-width: 768px) {
-  .app-footer-new {
-    padding: 1.5rem 1rem;
-  }
-  
-  .copyright-new p {
-    font-size: 0.8rem;
-    line-height: 1.4;
-  }
-}
-
-@media (max-width: 480px) {
-  .app-footer-new {
-    padding: 1rem 0.75rem;
-  }
-  
-  .copyright-new p {
-    font-size: 0.75rem;
-  }
-}
+/* Footer responsive: padding et tailles gérés dans src/styles/footer-global.css */

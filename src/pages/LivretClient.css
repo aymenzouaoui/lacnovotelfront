@@ -1,0 +1,291 @@
+/* LivretClient - À propos de l'hôtel */
+.livret-app {
+  --primary: #0047ab;
+  --primary-dark: #003d96;
+  --surface: #0047ab;
+  --text: #333333;
+  --text-secondary: #666666;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #ffffff;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.livret-app .app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: #fff;
+  position: relative;
+  width: 100%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* .livret-app .header-back-link → voir styles/back-button-global.css */
+
+.livret-app .rtl .header-back-link {
+  flex-direction: row-reverse;
+}
+
+.livret-app .rtl .header-back-link svg {
+  margin-left: 8px;
+  margin-right: 0;
+}
+
+.livret-app .logo-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.livret-app .logo {
+  height: 40px;
+  width: auto;
+  max-width: 150px;
+  object-fit: contain;
+}
+
+.livret-app .language-selector {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: 20;
+}
+
+.livret-app .language-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.livret-app .language-toggle:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: scale(1.05);
+}
+
+.livret-app .language-flag {
+  width: 20px;
+  height: 15px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.livret-app .language-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 8px;
+  padding: 8px 0;
+  min-width: 150px;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  margin-top: 5px;
+}
+
+.livret-app .rtl .language-selector {
+  left: auto;
+  right: 15px;
+}
+
+.livret-app .rtl .language-dropdown {
+  left: auto;
+  right: 0;
+  text-align: right;
+}
+
+.livret-app .language-option {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  gap: 8px;
+  color: white;
+  font-size: 14px;
+}
+
+.livret-app .language-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.livret-app .language-option.active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.livret-app .flag-small {
+  width: 20px;
+  height: 15px;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.livret-app .livret-content {
+  flex: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  width: 100%;
+}
+
+.livret-app .livret-hero {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.livret-app .livret-hero img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  max-height: none;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
+}
+
+.livret-app .page-title {
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+  text-align: center;
+  word-wrap: break-word;
+}
+
+.livret-app .page-subtitle {
+  font-size: clamp(1rem, 3vw, 1.2rem);
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  text-align: center;
+  line-height: 1.8;
+  word-wrap: break-word;
+}
+
+.livret-app .intro-text {
+  color: var(--text-secondary);
+  line-height: 1.8;
+  text-align: center;
+  word-wrap: break-word;
+  font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+  margin-bottom: 2rem;
+}
+
+.livret-app .livret-section {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid var(--primary);
+  width: 100%;
+}
+
+.livret-app .rtl .livret-section {
+  border-left: none;
+  border-right: 4px solid var(--primary);
+}
+
+.livret-app .section-title {
+  font-size: clamp(1.1rem, 4vw, 1.35rem);
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 0.75rem;
+  word-wrap: break-word;
+}
+
+.livret-app .section-text {
+  color: var(--text-secondary);
+  line-height: 1.8;
+  word-wrap: break-word;
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+}
+
+.livret-app .section-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
+}
+
+.livret-app .section-list li {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  padding: 0.25rem 0;
+  padding-left: 1.25rem;
+  position: relative;
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+}
+
+.livret-app .rtl .section-list li {
+  padding-left: 0;
+  padding-right: 1.25rem;
+}
+
+.livret-app .section-list li::before {
+  content: "•";
+  color: var(--primary);
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+.livret-app .rtl .section-list li::before {
+  left: auto;
+  right: 0;
+}
+
+/* Footer Livret: styles globaux dans src/styles/footer-global.css (.livret-app .app-footer) */
+
+@media (max-width: 768px) {
+  .livret-app .app-header {
+    padding: 0.75rem;
+  }
+  .livret-app .livret-content {
+    padding: 1rem;
+  }
+  .livret-app .livret-section {
+    padding: 1rem;
+  }
+  .livret-app .language-selector {
+    top: 10px;
+    left: 10px;
+  }
+  .livret-app .rtl .language-selector {
+    right: 10px;
+  }
+}
+
+@media (max-width: 375px) {
+  .livret-app .livret-content {
+    padding: 0.75rem;
+  }
+  .livret-app .livret-section {
+    padding: 0.75rem;
+  }
+  .livret-app .logo {
+    height: 30px;
+    max-width: 120px;
+  }
+  .livret-app .language-toggle {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}

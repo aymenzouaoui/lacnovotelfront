@@ -1,6 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import API from "../services/api"
 import "./OffresClient.css"
 
@@ -126,6 +128,7 @@ const languages = [
 ]
 
 const OffresClient = () => {
+  const navigate = useNavigate()
   const [offres, setOffres] = useState([])
   const [selectedOffre, setSelectedOffre] = useState(null)
   const [isLoaded, setIsLoaded] = useState(false)
@@ -383,20 +386,16 @@ const OffresClient = () => {
             if (selectedOffre) {
               setSelectedOffre(null)
             } else {
-              window.location.href = "/Home"
+              navigate("/home")
             }
           }}
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d={currentLanguage === "ar" ? "M5 12H19M19 12L12 5M19 12L12 19" : "M19 12H5M5 12L12 19M5 12L12 5"}
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          {t("back")}
+          {currentLanguage === "ar" ? (
+            <ChevronRight size={20} strokeWidth={2} aria-hidden />
+          ) : (
+            <ChevronLeft size={20} strokeWidth={2} aria-hidden />
+          )}
+          <span>{t("back")}</span>
         </button>
         <div className="logo-container">
           <img src="/images/logo2.png" alt="Novotel Logo" className="logo" />

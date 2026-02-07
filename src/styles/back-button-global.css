@@ -1,0 +1,113 @@
+/**
+ * Bouton Retour – UI globale partagée (design pro, accessible)
+ * Appliqué à toutes les pages client (header-back-link, header-back-link-room-service, etc.)
+ */
+
+/* Reset pour <button> */
+button.header-back-link,
+button.header-back-link-new,
+button.header-back-link-room-service,
+button.header-back-link-drinks {
+  font-family: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* Bouton retour global – style pro */
+.header-back-link,
+.header-back-link-new,
+.header-back-link-room-service,
+.header-back-link-drinks {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.5rem 1rem 0.5rem 0.875rem;
+  color: #0f3460;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  letter-spacing: 0.01em;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+  text-decoration: none;
+}
+
+.header-back-link svg,
+.header-back-link-new svg,
+.header-back-link-room-service svg,
+.header-back-link-drinks svg {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  opacity: 0.9;
+}
+
+.header-back-link:hover,
+.header-back-link-new:hover,
+.header-back-link-room-service:hover,
+.header-back-link-drinks:hover {
+  color: #0a2642;
+  border-color: #0f3460;
+  background: #f0f4f8;
+  box-shadow: 0 2px 8px rgba(15, 52, 96, 0.12);
+}
+
+.header-back-link:active,
+.header-back-link-new:active,
+.header-back-link-room-service:active,
+.header-back-link-drinks:active {
+  transform: scale(0.98);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.header-back-link:focus-visible,
+.header-back-link-new:focus-visible,
+.header-back-link-room-service:focus-visible,
+.header-back-link-drinks:focus-visible {
+  outline: none;
+  border-color: #0f3460;
+  box-shadow: 0 0 0 3px rgba(15, 52, 96, 0.2);
+}
+
+/* Pages client – même UI globale (Room Service inclus) */
+.hotel-app .app-header .header-back-link,
+.hotel-app9 .app-header .header-back-link,
+.livret-app .app-header .header-back-link,
+.livret-app .header-back-link,
+.hotel-app0 .app-header .header-back-link,
+.hotel-app8 .app-header .header-back-link,
+.hotel-app4 .app-header .header-back-link,
+.hotel-app-room-service .app-header-room-service .header-back-link-room-service {
+  color: #0f3460;
+  background: #fff;
+  border-color: #e5e7eb;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+.hotel-app .app-header .header-back-link:hover,
+.hotel-app9 .app-header .header-back-link:hover,
+.livret-app .app-header .header-back-link:hover,
+.livret-app .header-back-link:hover,
+.hotel-app0 .app-header .header-back-link:hover,
+.hotel-app8 .app-header .header-back-link:hover,
+.hotel-app4 .app-header .header-back-link:hover,
+.hotel-app-room-service .app-header-room-service .header-back-link-room-service:hover {
+  color: #0a2642;
+  border-color: #0f3460;
+  background: #f0f4f8;
+  box-shadow: 0 2px 8px rgba(15, 52, 96, 0.12);
+}
+.hotel-app .app-header .header-back-link:focus-visible,
+.hotel-app9 .app-header .header-back-link:focus-visible,
+.livret-app .app-header .header-back-link:focus-visible,
+.livret-app .header-back-link:focus-visible,
+.hotel-app0 .app-header .header-back-link:focus-visible,
+.hotel-app8 .app-header .header-back-link:focus-visible,
+.hotel-app4 .app-header .header-back-link:focus-visible,
+.hotel-app-room-service .app-header-room-service .header-back-link-room-service:focus-visible {
+  box-shadow: 0 0 0 3px rgba(15, 52, 96, 0.2);
+}

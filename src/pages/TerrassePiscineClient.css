@@ -89,11 +89,13 @@ background-image: url("https://itbafa.com/images/Amsterdam-9978c730-e44b-47c2-89
   z-index: -1;
 }
 
-/* Header */
+/* Header – professional */
 .app-header {
-  background-color: var(--white);
-  box-shadow: var(--shadow-sm);
-  padding: var(--space-md);
+  background: #fff;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  padding: 1rem 1.5rem;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -111,20 +113,7 @@ background-image: url("https://itbafa.com/images/Amsterdam-9978c730-e44b-47c2-89
   align-items: center;
 }
 
-/* Style for the back button in header */
-.header-back-link {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--primary);
-  font-weight: 500;
-  transition: var(--transition-normal);
-  text-decoration: none;
-}
-
-.header-back-link:hover {
-  color: var(--primary-dark);
-}
+/* .header-back-link → voir styles/back-button-global.css */
 
 .logo {
   height: 50px;
@@ -140,28 +129,32 @@ background-image: url("https://itbafa.com/images/Amsterdam-9978c730-e44b-47c2-89
   width: 100%;
 }
 
-/* Welcome Banner */
 .welcome-banner {
   text-align: center;
-  margin-bottom: var(--space-xxl);
-  padding: var(--space-xl) 0;
+  margin-bottom: 2.5rem;
+  padding: 2rem 1rem;
 }
 
 .welcome-banner h1 {
-  font-size: 2.5rem;
-  font-weight: 300;
-  color: var(--dark-gray);
-  margin-bottom: var(--space-sm);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+  color: var(--primary);
 }
 
 .welcome-banner h1 span {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--primary);
 }
 
 .welcome-banner p {
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   color: var(--gray);
+  font-weight: 500;
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.6;
 }
 
 /* Content Container */
@@ -184,25 +177,24 @@ background-image: url("https://itbafa.com/images/Amsterdam-9978c730-e44b-47c2-89
   transform: translateY(0);
 }
 
-/* Content Items */
 .content-item {
-  background-color: var(--white);
-  border-radius: var(--radius-lg);
+  background: var(--white);
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: var(--shadow-md);
-  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  box-shadow: 0 4px 24px rgba(0, 71, 171, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
   position: relative;
   opacity: 1;
   transform: translateY(0);
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--light-gray);
+  border: 1px solid rgba(0, 71, 171, 0.06);
 }
 
 .content-item:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(0, 71, 171, 0.14);
 }
 
 .content-item:hover .content-item-arrow {
@@ -396,16 +388,103 @@ background-image: url("https://itbafa.com/images/Amsterdam-9978c730-e44b-47c2-89
   color: var(--dark-gray);
 }
 
-.feature-icon {
-  display: flex;
+.spa-feature-item .feature-icon {
+  flex-shrink: 0;
+  color: var(--primary);
+}
+
+/* Buttons with icons */
+.btn-with-icon {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  background-color: var(--primary);
-  color: white;
-  border-radius: 50%;
+  gap: 0.5rem;
+}
+
+.btn-with-icon svg {
+  flex-shrink: 0;
+}
+
+/* Empty state icon */
+.empty-icon .empty-state-icon {
+  color: var(--primary);
+  opacity: 0.85;
+}
+
+.view-toggle-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: rgba(0, 71, 171, 0.08);
+  color: var(--primary);
+  border: 1px solid rgba(0, 71, 171, 0.15);
+  transition: all 0.2s ease;
+}
+
+.view-toggle-with-icon:hover {
+  background: rgba(0, 71, 171, 0.12);
+  box-shadow: 0 2px 12px rgba(0, 71, 171, 0.12);
+}
+
+.view-toggle-label {
+  white-space: nowrap;
+}
+
+.dietary-badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  margin-right: 0.35rem;
+  margin-top: 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--primary);
+  background: rgba(0, 71, 171, 0.08);
+  border-radius: 4px;
+}
+
+.dietary-legend {
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: var(--white);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(0, 71, 171, 0.08);
+  box-shadow: 0 1px 4px rgba(0, 71, 171, 0.06);
+}
+
+.dietary-legend h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0 0 0.75rem 0;
+  letter-spacing: -0.01em;
+}
+
+.legend-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+}
+
+.legend-item {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
   font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--primary);
+  background: rgba(0, 71, 171, 0.08);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .view-toggle-label {
+    display: none;
+  }
 }
 
 .spa-detail-cta {
@@ -416,19 +495,20 @@ background-image: url("https://itbafa.com/images/Amsterdam-9978c730-e44b-47c2-89
 }
 
 .reserve-button {
-  padding: 0.75rem 1.5rem;
-  background-color: var(--primary);
-  color: white;
+  padding: 0.875rem 1.5rem;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: #fff;
   border-radius: var(--radius-md);
-  font-weight: 500;
-  transition: var(--transition-normal);
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   border: none;
   cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 71, 171, 0.25);
 }
 
 .reserve-button:hover {
-  background-color: var(--primary-dark);
   transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 71, 171, 0.35);
 }
 
 .info-button {
@@ -570,80 +650,36 @@ background-image: url("https://itbafa.com/images/Amsterdam-9978c730-e44b-47c2-89
 /* Empty State */
 .empty-state {
   text-align: center;
-  padding: 4rem 0;
-  color: var(--gray);
+  padding: 3rem 2rem;
+  max-width: 420px;
+  margin: 0 auto;
+  background: var(--white);
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(0, 71, 171, 0.08);
+  border: 1px solid rgba(0, 71, 171, 0.06);
 }
 
 .empty-icon {
   font-size: 3rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  justify-content: center;
 }
 
 .empty-state h3 {
-  font-size: 1.5rem;
+  font-size: 1.35rem;
+  font-weight: 700;
   margin-bottom: 0.5rem;
-  color: var(--dark-gray);
+  color: var(--primary);
 }
 
-/* Footer */
-.app-footer {
-  background-color: var(--primary);
-  color: var(--white);
-  padding: var(--space-xl) var(--space-lg);
-  margin-top: var(--space-xxl);
-}
-
-.footer-content {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--space-xl);
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.footer-section h4 {
-  font-size: 1.2rem;
-  margin-bottom: var(--space-md);
-  font-weight: 600;
-}
-
-.footer-section p {
-  margin-bottom: var(--space-sm);
-  opacity: 0.8;
+.empty-state p {
+  color: var(--gray);
   font-size: 0.95rem;
+  line-height: 1.5;
 }
 
-.social-links {
-  display: flex;
-  gap: var(--space-md);
-  margin-top: var(--space-sm);
-}
-
-.social-links a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: var(--white);
-  transition: background-color var(--transition-normal), transform var(--transition-normal);
-}
-
-.social-links a:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-3px);
-}
-
-.copyright {
-  text-align: center;
-  margin-top: var(--space-xl);
-  padding-top: var(--space-lg);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 0.875rem;
-  opacity: 0.7;
-}
+/* Footer: styles globaux dans src/styles/footer-global.css */
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
@@ -670,10 +706,6 @@ background-image: url("https://itbafa.com/images/Amsterdam-9978c730-e44b-47c2-89
 
   .content-item h3 {
     font-size: 1.25rem;
-  }
-
-  .footer-content {
-    grid-template-columns: repeat(2, 1fr);
   }
 
   .content-item-image {
@@ -707,15 +739,6 @@ background-image: url("https://itbafa.com/images/Amsterdam-9978c730-e44b-47c2-89
   .content-grid {
     grid-template-columns: 1fr;
     gap: var(--space-md);
-  }
-
-  .footer-content {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-
-  .social-links {
-    justify-content: center;
   }
 
   .content-item-image {

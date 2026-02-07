@@ -39,22 +39,7 @@
   z-index: 100;
 }
 
-.header-back-link-drinks {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #0047ab;
-  text-decoration: none;
-  font-weight: 500;
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.header-back-link-drinks:hover {
-  color: #003d96;
-}
+/* .header-back-link-drinks → voir styles/back-button-global.css */
 
 .logo-container-drinks {
   flex: 1;
@@ -268,68 +253,7 @@
   font-style: italic;
 }
 
-/* Footer */
-.app-footer-drinks {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-top: 1px solid rgba(0, 71, 171, 0.1);
-  padding: 2rem;
-  text-align: center;
-  margin-top: auto;
-  position: relative;
-  z-index: 1;
-}
-
-.footer-content-drinks {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2rem;
-  text-align: left;
-}
-
-.footer-section-drinks {
-  color: #666;
-}
-
-.footer-section-drinks h4 {
-  color: #0047ab;
-  margin-bottom: 1rem;
-  font-weight: 600;
-}
-
-.footer-section-drinks p {
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-}
-
-.social-links-drinks {
-  display: flex;
-  gap: 1rem;
-  margin-top: 0.5rem;
-}
-
-.social-links-drinks a {
-  color: #0047ab;
-  transition: color 0.3s ease;
-}
-
-.social-links-drinks a:hover {
-  color: #003d96;
-}
-
-.copyright-drinks {
-  color: #666;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  border-top: 1px solid rgba(0, 71, 171, 0.1);
-  padding-top: 2rem;
-}
-
-.copyright-drinks a {
-  color: #0047ab;
-  text-decoration: none;
-}
+/* Footer: styles globaux dans src/styles/footer-global.css */
 
 /* Responsive design */
 @media (max-width: 768px) {
@@ -339,12 +263,6 @@
 
   .app-main-drinks {
     padding: 1rem;
-  }
-
-  .footer-content-drinks {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1.5rem;
-    text-align: center;
   }
 
   /* Mobile menu layout - keep side by side but fix image and spacing */
@@ -427,11 +345,6 @@
 
   .logo-drinks {
     height: 32px;
-  }
-
-  .footer-content-drinks {
-    grid-template-columns: 1fr;
-    gap: 1rem;
   }
 
   /* Keep side by side layout with better proportions for very small screens */

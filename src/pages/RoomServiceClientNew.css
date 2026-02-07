@@ -1,12 +1,31 @@
-/* New CSS file for room service with unique class names */
+/* Room Service – UI professionnelle hôtelière */
 
-/* Global styles */
+.hotel-app-room-service {
+  --pro-primary: #0f3460;
+  --pro-primary-hover: #0a2642;
+  --pro-primary-soft: #f0f4f8;
+  --pro-primary-soft-hover: #e2e8f0;
+  --pro-radius: 8px;
+  --pro-radius-card: 12px;
+  --pro-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --pro-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --pro-border: 1px solid #e5e7eb;
+  --pro-text: #1f2937;
+  --pro-text-muted: #6b7280;
+  --pro-font: "Inter", system-ui, -apple-system, sans-serif;
+  --primary: var(--pro-primary);
+  --primary-dark: var(--pro-primary-hover);
+}
+
 .hotel-app-room-service {
   min-height: 100vh;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--pro-font);
   display: flex;
   flex-direction: column;
   position: relative;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #fafaf9;
 }
 
 .hotel-app-room-service::before {
@@ -20,40 +39,64 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  filter: blur(3px);
-  opacity: 0.25;
+  filter: blur(6px);
+  opacity: 0.06;
   z-index: -1;
 }
 
-/* Header styles */
 .app-header-room-service {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0, 71, 171, 0.1);
+  padding: 1rem 1.5rem;
+  background: #fff;
+  border-bottom: var(--pro-border);
   position: sticky;
   top: 0;
   z-index: 100;
 }
 
-.header-back-link-room-service {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #0047ab;
-  text-decoration: none;
-  font-weight: 500;
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: color 0.3s ease;
+/* .header-back-link-room-service → styles/back-button-global.css */
+
+/* Buttons with icons */
+.btn-with-icon svg {
+  flex-shrink: 0;
 }
 
-.header-back-link-room-service:hover {
-  color: #003d96;
+/* Empty state icon */
+.empty-icon-room-service .empty-state-icon {
+  color: #0047ab;
+  opacity: 0.85;
+}
+
+.view-toggle-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--pro-radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: #fff;
+  color: var(--pro-text);
+  border: var(--pro-border);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.view-toggle-with-icon:hover {
+  border-color: var(--pro-primary);
+  background: var(--pro-primary-soft);
+  color: var(--pro-primary);
+}
+
+.view-toggle-label {
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .view-toggle-label {
+    display: none;
+  }
 }
 
 .logo-container-room-service {
@@ -78,95 +121,148 @@
   z-index: 1;
 }
 
-/* Welcome banner */
 .welcome-banner-room-service {
   text-align: center;
-  margin-bottom: 3rem;
-  color: #0047ab;
+  margin-bottom: 2.5rem;
+  padding: 2rem 1rem;
 }
 
 .welcome-banner-room-service h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  text-shadow: 0 2px 4px rgba(0, 71, 171, 0.1);
+  font-size: clamp(1.625rem, 3.5vw, 2.25rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+  color: var(--pro-text);
 }
 
 .welcome-banner-room-service h1 span {
-  color: #0047ab;
+  color: var(--pro-primary);
 }
 
 .welcome-banner-room-service p {
-  font-size: 1.2rem;
-  color: #666;
+  font-size: 1rem;
+  color: var(--pro-text-muted);
   font-weight: 400;
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.65;
 }
 
-/* Service grid */
+/* Service grid – cartes de même taille */
 .services-grid-room-service {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 2rem;
   margin-bottom: 2rem;
+  align-items: stretch;
 }
 
-/* Service card - matching the white design */
 .service-card-room-service {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 71, 171, 0.12);
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
+  background: #fff;
+  border-radius: var(--pro-radius-card);
+  box-shadow: var(--pro-shadow);
   overflow: hidden;
   cursor: pointer;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(0, 71, 171, 0.08);
-  max-width: 320px;
-  margin: 0 auto;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  border: var(--pro-border);
+  width: 100%;
   position: relative;
   z-index: 2;
 }
 
 .service-card-room-service:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 16px 40px rgba(0, 71, 171, 0.2);
-  border-color: #0047ab;
+  box-shadow: var(--pro-shadow-hover);
+  border-color: #d1d5db;
 }
 
 .service-card-content-room-service {
-  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 1.5rem 1.5rem 1.75rem;
+  min-height: 0;
 }
 
 .service-card-title-room-service {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #0047ab;
-  margin-bottom: 0.75rem;
-  line-height: 1.3;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--pro-text);
+  margin-bottom: 0.5rem;
+  line-height: 1.35;
+  flex-shrink: 0;
 }
 
 .service-card-description-room-service {
-  color: #666;
-  font-size: 1rem;
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
+  color: var(--pro-text-muted);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  margin-bottom: 1.25rem;
+  flex: 1;
+  min-height: 3.5em;
+  max-height: 7.5em;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 4px;
+}
+.service-card-description-room-service::-webkit-scrollbar {
+  width: 4px;
+}
+.service-card-description-room-service::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 4px;
+}
+.service-card-description-room-service::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+.service-card-description-room-service::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+.service-card-actions {
+  margin-top: auto;
+  flex-shrink: 0;
 }
 
 .view-menu-button-room-service {
-  background: #0047ab;
-  color: white;
+  background: var(--pro-primary);
+  color: #fff;
   border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  font-weight: 600;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--pro-radius);
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 0.95rem;
+  transition: background 0.2s ease;
+  font-size: 0.9375rem;
   width: 100%;
+  margin-bottom: 0.75rem;
 }
 
 .view-menu-button-room-service:hover {
-  background: #003d96;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 71, 171, 0.3);
+  background: var(--pro-primary-hover);
+}
+
+.nettoyage-button-room-service {
+  background: #fff;
+  color: var(--pro-primary);
+  border: var(--pro-border);
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--pro-radius);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  font-size: 0.9375rem;
+  width: 100%;
+}
+
+.nettoyage-button-room-service:hover {
+  background: var(--pro-primary-soft);
+  border-color: var(--pro-primary);
 }
 
 /* Menu display container */
@@ -179,30 +275,30 @@
 
 /* Menu spread - book-like layout */
 .menu-spread-room-service {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 12px 32px rgba(0, 71, 171, 0.15);
+  background: #fff;
+  border-radius: var(--pro-radius-card);
+  box-shadow: var(--pro-shadow);
   overflow: hidden;
   margin-bottom: 2rem;
-  min-height: 600px;
+  min-height: 560px;
   position: relative;
   z-index: 2;
+  border: var(--pro-border);
 }
 
 .menu-content-room-service {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  min-height: 600px;
+  min-height: 560px;
 }
 
-/* Left side - Menu Image */
 .menu-image-side-room-service {
-  background: #f8f9fa;
+  background: #f9fafb;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  border-right: 2px solid #e9ecef;
+  border-right: var(--pro-border);
 }
 
 .menu-image-room-service {
@@ -217,105 +313,326 @@
   justify-content: center;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-  color: #0047ab;
-  font-size: 1.5rem;
-  font-weight: 600;
+  background: #f3f4f6;
+  color: var(--pro-text-muted);
+  font-size: 1.25rem;
+  font-weight: 500;
   text-align: center;
 }
 
-/* Right side - Menu Items */
+/* Right side - Menu Items – fluid scroll */
 .menu-items-side-room-service {
-  padding: 2rem;
+  padding: 1.5rem 2rem;
   overflow-y: auto;
+  overflow-x: hidden;
   max-height: 600px;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
 .menu-title-room-service {
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 700;
-  color: #0047ab;
-  margin-bottom: 2rem;
+  color: var(--pro-primary);
+  margin-bottom: 1.5rem;
   text-align: center;
-  border-bottom: 2px solid #e9ecef;
-  padding-bottom: 1rem;
+  border-bottom: 2px solid rgba(0, 71, 171, 0.1);
+  padding-bottom: 0.75rem;
 }
 
 .menu-items-list-room-service {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .menu-item-room-service {
-  padding: 1rem;
-  border-radius: 8px;
-  background: #f8f9fa;
-  border-left: 4px solid #0047ab;
-  transition: all 0.3s ease;
+  padding: 1rem 1.25rem;
+  border-radius: var(--pro-radius);
+  background: #fff;
+  border: 1px solid rgba(0, 71, 171, 0.06);
+  border-left: 4px solid var(--pro-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .menu-item-room-service:hover {
-  background: #e3f2fd;
-  transform: translateX(4px);
+  background: rgba(0, 71, 171, 0.04);
+  transform: translateX(2px);
+  box-shadow: 0 2px 8px rgba(0, 71, 171, 0.08);
 }
 
 .menu-item-header-room-service {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.35rem;
   gap: 1rem;
 }
 
 .menu-item-name-room-service {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  color: #333;
+  color: #1a1a1a;
   margin: 0;
   flex: 1;
+  line-height: 1.35;
 }
 
 .menu-item-price-room-service {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 700;
-  color: #0047ab;
+  color: var(--pro-primary);
   white-space: nowrap;
 }
 
 .menu-item-description-room-service {
-  color: #666;
-  font-size: 0.95rem;
+  color: #5a6575;
+  font-size: 0.9rem;
   line-height: 1.5;
   margin: 0;
 }
 
-/* Menu navigation */
+.dietary-badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  margin-right: 0.35rem;
+  margin-top: 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--pro-primary);
+  background: var(--pro-primary-soft);
+  border-radius: 4px;
+}
+
+/* Informations alimentaires */
+.dietary-legend {
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.25rem;
+  background: #fff;
+  border-radius: var(--pro-radius);
+  border: 1px solid rgba(0, 71, 171, 0.08);
+  box-shadow: 0 1px 4px rgba(0, 71, 171, 0.06);
+}
+
+.dietary-legend h4 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--pro-primary);
+  margin: 0 0 0.75rem 0;
+  letter-spacing: -0.01em;
+}
+
+.hotel-app-room-service .legend-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+}
+
+.hotel-app-room-service .legend-item {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--pro-primary);
+  background: var(--pro-primary-soft);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+/* Modal – Demander un service */
+.hotel-app-room-service .modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 71, 171, 0.25);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  animation: modalBackdropIn 0.25s ease;
+}
+
+@keyframes modalBackdropIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.hotel-app-room-service .modal {
+  background: #fff;
+  border-radius: var(--pro-radius-card);
+  width: 100%;
+  max-width: 440px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 48px rgba(0, 71, 171, 0.2);
+  border: 1px solid rgba(0, 71, 171, 0.1);
+  position: relative;
+  animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.hotel-app-room-service .modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(0, 71, 171, 0.08);
+  flex-shrink: 0;
+}
+
+.hotel-app-room-service .modal h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--pro-primary);
+  letter-spacing: -0.02em;
+}
+
+.hotel-app-room-service .modal-close {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: var(--pro-primary-soft);
+  color: var(--pro-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.hotel-app-room-service .modal-close:hover {
+  background: var(--pro-primary);
+  color: #fff;
+}
+
+.hotel-app-room-service .modal-body {
+  padding: 1.25rem 1.5rem 1.5rem;
+}
+
+.hotel-app-room-service .modal-form-group {
+  margin-bottom: 1rem;
+}
+
+.hotel-app-room-service .modal-form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.4rem;
+}
+
+.hotel-app-room-service .modal input {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 2px solid #e9ecef;
+  border-radius: var(--pro-radius);
+  background: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.hotel-app-room-service .modal input:focus {
+  outline: none;
+  border-color: var(--pro-primary);
+  box-shadow: 0 0 0 3px var(--pro-primary-soft);
+}
+
+.hotel-app-room-service .modal input::placeholder {
+  color: #999;
+}
+
+.hotel-app-room-service .modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 71, 171, 0.08);
+}
+
+.hotel-app-room-service .modal-actions button {
+  flex: 1;
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--pro-radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hotel-app-room-service .modal-actions button:first-child {
+  background: var(--pro-primary);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(0, 71, 171, 0.25);
+}
+
+.hotel-app-room-service .modal-actions button:first-child:hover {
+  background: var(--pro-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 71, 171, 0.3);
+}
+
+.hotel-app-room-service .modal-actions button:last-child {
+  background: #f1f3f5;
+  color: #495057;
+}
+
+.hotel-app-room-service .modal-actions button:last-child:hover {
+  background: #e9ecef;
+}
+
+/* Menu navigation – fluid, touch-friendly */
 .menu-navigation-room-service {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 1rem;
-  margin-top: 2rem;
+  margin-top: 1.5rem;
+  padding: 0.5rem 0;
 }
 
 .nav-button-room-service {
-  background: white;
-  border: 2px solid #0047ab;
-  color: #0047ab;
-  width: 50px;
-  height: 50px;
+  background: #fff;
+  border: 2px solid var(--pro-primary);
+  color: var(--pro-primary);
+  min-width: 48px;
+  min-height: 48px;
+  padding: 0.5rem;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
 
 .nav-button-room-service:hover:not(:disabled) {
-  background: #0047ab;
-  color: white;
-  transform: scale(1.1);
+  background: var(--pro-primary);
+  color: #fff;
+  transform: scale(1.05);
 }
 
 .nav-button-room-service:disabled {
@@ -323,24 +640,28 @@
   cursor: not-allowed;
 }
 
-/* Loading and empty states */
 .loading-container-room-service {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 4rem 2rem;
-  color: #0047ab;
+  color: var(--pro-primary);
+}
+
+.loading-container-room-service p {
+  font-weight: 500;
+  font-size: 0.95rem;
 }
 
 .loading-spinner-room-service {
-  width: 50px;
-  height: 50px;
-  border: 4px solid #e3f2fd;
-  border-top: 4px solid #0047ab;
+  width: 48px;
+  height: 48px;
+  border: 3px solid var(--pro-primary-soft);
+  border-top-color: var(--pro-primary);
   border-radius: 50%;
-  animation: spin-room-service 1s linear infinite;
-  margin-bottom: 1rem;
+  animation: spin-room-service 0.8s linear infinite;
+  margin-bottom: 1.25rem;
 }
 
 @keyframes spin-room-service {
@@ -354,90 +675,59 @@
 
 .empty-state-room-service {
   text-align: center;
-  padding: 4rem 2rem;
-  color: #666;
+  padding: 3rem 2rem;
+  max-width: 420px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: var(--pro-radius-card);
+  box-shadow: var(--pro-shadow);
+  border: 1px solid rgba(0, 71, 171, 0.06);
 }
 
 .empty-icon-room-service {
-  font-size: 4rem;
-  margin-bottom: 1rem;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1.25rem;
+  border-radius: 50%;
+  background: var(--pro-primary-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-icon-room-service::before {
+  content: "";
+  width: 24px;
+  height: 2px;
+  background: var(--pro-primary);
+  opacity: 0.6;
+  border-radius: 1px;
 }
 
 .empty-state-room-service h3 {
-  font-size: 1.5rem;
-  color: #0047ab;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--pro-primary);
   margin-bottom: 0.5rem;
+}
+
+.empty-state-room-service p {
+  color: #5a6575;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 .empty-menu-room-service {
   text-align: center;
-  padding: 2rem;
-  color: #666;
-  font-style: italic;
+  padding: 2.5rem 1.5rem;
+  color: #5a6575;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  background: rgba(0, 71, 171, 0.03);
+  border-radius: var(--pro-radius);
 }
 
-/* Footer */
-.app-footer-room-service {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-top: 1px solid rgba(0, 71, 171, 0.1);
-  padding: 2rem;
-  text-align: center;
-  margin-top: auto;
-  position: relative;
-  z-index: 1;
-}
-
-.footer-content-room-service {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2rem;
-  text-align: left;
-}
-
-.footer-section-room-service {
-  color: #666;
-}
-
-.footer-section-room-service h4 {
-  color: #0047ab;
-  margin-bottom: 1rem;
-  font-weight: 600;
-}
-
-.footer-section-room-service p {
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-}
-
-.social-links-room-service {
-  display: flex;
-  gap: 1rem;
-  margin-top: 0.5rem;
-}
-
-.social-links-room-service a {
-  color: #0047ab;
-  transition: color 0.3s ease;
-}
-
-.social-links-room-service a:hover {
-  color: #003d96;
-}
-
-.copyright-room-service {
-  color: #666;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  border-top: 1px solid rgba(0, 71, 171, 0.1);
-  padding-top: 2rem;
-}
-
-.copyright-room-service a {
-  color: #0047ab;
-  text-decoration: none;
-}
+/* Footer: styles globaux dans src/styles/footer-global.css */
 
 /* Responsive design */
 @media (max-width: 768px) {
@@ -460,19 +750,10 @@
   .services-grid-room-service {
     grid-template-columns: 1fr;
     gap: 1.5rem;
-    justify-items: center;
   }
 
   .service-card-room-service {
-    margin: 0 auto;
-    max-width: 320px;
-    width: 100%;
-  }
-
-  .footer-content-room-service {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1.5rem;
-    text-align: center;
+    min-height: 260px;
   }
 
   /* Mobile menu layout - keep side by side but fix image and spacing */
@@ -567,11 +848,6 @@
 
   .service-card-title-room-service {
     font-size: 1.25rem;
-  }
-
-  .footer-content-room-service {
-    grid-template-columns: 1fr;
-    gap: 1rem;
   }
 
   /* Keep side by side layout with better proportions for very small screens */

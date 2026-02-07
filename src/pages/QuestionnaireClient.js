@@ -1,6 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import API from "../services/api"
 import "./QuestionnaireClient.css"
 
@@ -131,6 +133,7 @@ const languages = [
 ]
 
 const QuestionnaireClient = () => {
+  const navigate = useNavigate()
   const [currentLanguage, setCurrentLanguage] = useState("fr")
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -512,17 +515,13 @@ const QuestionnaireClient = () => {
       </div>
 
       <header className="app-header">
-        <button className="header-back-link" onClick={() => (window.location.href = "/Home")}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d={currentLanguage === "ar" ? "M5 12H19M19 12L12 5M19 12L12 19" : "M19 12H5M5 12L12 19M5 12L12 5"}
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          {t("back")}
+        <button className="header-back-link" onClick={() => navigate("/home")}>
+          {currentLanguage === "ar" ? (
+            <ChevronRight size={20} strokeWidth={2} aria-hidden />
+          ) : (
+            <ChevronLeft size={20} strokeWidth={2} aria-hidden />
+          )}
+          <span>{t("back")}</span>
         </button>
         <div className="logo-container">
           <img src="/images/logo2.png" alt="Novotel Logo" className="logo" />

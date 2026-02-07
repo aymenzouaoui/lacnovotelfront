@@ -243,59 +243,64 @@ const HomeClient = () => {
     "/images/terrasse-piscine.jpg",
     "/images/chambre.jpg",
     "/images/seminaire.jpg",
-    "/images/roomservice.jpg",
+    "/images/roomservice.webp",
     "/images/loisir.jpg",
     "/images/spa.jpg",
     "/images/feedback.webp"
   ], [])
 
-  // Preload images function
+  // Preload images function (first visit only; return visits skip loading screen)
   const preloadImages = useCallback(() => {
     return new Promise((resolve) => {
       let loadedCount = 0
       const totalImages = criticalImages.length
-      
-      // Minimum loading time for better UX (1.5 seconds)
       const minLoadingTime = 1500
       const startTime = Date.now()
-      
+
       const updateProgress = () => {
         loadedCount++
         const imageProgress = (loadedCount / totalImages) * 100
         setLoadingProgress(imageProgress)
-        
+
         if (loadedCount === totalImages) {
           const elapsedTime = Date.now() - startTime
           const remainingTime = Math.max(0, minLoadingTime - elapsedTime)
-          
           setTimeout(() => {
             setLoadingProgress(100)
-            setTimeout(() => resolve(), 300) // Small delay for smooth transition
+            setTimeout(() => resolve(), 300)
           }, remainingTime)
         }
       }
-      
+
       criticalImages.forEach((src) => {
         const img = new Image()
         img.onload = updateProgress
-        img.onerror = updateProgress // Continue even if image fails to load
+        img.onerror = updateProgress
         img.src = src
       })
-      
-      // Fallback timeout in case images take too long
+
       setTimeout(() => {
         if (loadedCount < totalImages) {
           setLoadingProgress(100)
           resolve()
         }
-      }, 8000) // 8 second maximum wait
+      }, 8000)
     })
   }, [criticalImages])
 
-  // Preload images on mount
+  // Preload images on mount; skip full loading screen when user returns to home
   useEffect(() => {
+    const homeAlreadyLoaded = sessionStorage.getItem("novotel-home-loaded") === "true"
+
+    if (homeAlreadyLoaded) {
+      setIsLoading(false)
+      setLoadingProgress(100)
+      return
+    }
+
     preloadImages().then(() => {
       setIsLoading(false)
+      sessionStorage.setItem("novotel-home-loaded", "true")
     })
   }, [preloadImages])
 
@@ -477,6 +482,13 @@ const HomeClient = () => {
   // Memoize feature cards to avoid recalculation on every render
   const getAllFeatureCards = useMemo(() => [
     {
+      id: "apropos",
+      title: t("A propos de l'hôtel"),
+      image: "/images/apropos.webp",
+      fallback: "/placeholder.svg?height=300&width=200&text=apropos",
+      path: "/livret-client",
+    },
+    {
       id: "restaurants",
       title: t("eat"),
       image: "/images/restaurant.jpg",
@@ -514,7 +526,7 @@ const HomeClient = () => {
     {
       id: "roomservice",
       title: t("roomService"),
-      image: "/images/roomservice.jpg",
+      image: "/images/roomservice.webp",
       fallback: "/placeholder.svg?height=300&width=200&text=Room+Service",
       path: "/roomservices-client",
     },
@@ -539,6 +551,7 @@ const HomeClient = () => {
       fallback: "/placeholder.svg?height=300&width=200&text=Feedback",
       url: "https://tinyurl.com/ydpjnzt7",
     },
+   
   ], [currentLanguage])
 
   // Show loading screen while images are loading

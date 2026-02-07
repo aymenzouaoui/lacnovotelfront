@@ -1,10 +1,11 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
+import { useNavigate } from "react-router-dom"
 import API from "../services/api"
 import "./TerrassePiscineClient.css"
 import "./client-image-fix-dark.css"
-import { ChevronLeft, ChevronRight, LayoutGrid, Book } from "lucide-react"
+import { ChevronLeft, ChevronRight, ChevronUp, ChevronDown, LayoutGrid, BookOpen, UtensilsCrossed, Sun, CheckCircle, CalendarCheck } from "lucide-react"
 
 // Translation system
 const translations = {
@@ -55,6 +56,27 @@ const translations = {
     fillAllFields: "Veuillez remplir tous les champs",
     numberOfPeople: "Nombre de personnes",
     others: "Autres",
+
+    // Allergènes réglementaires
+    allergenLegendTitle: "Allergènes réglementaires",
+    allergenLegendSubtitle: "14 allergènes à déclaration obligatoire (UE)",
+    showAllergenList: "Afficher la liste des allergènes",
+    hideAllergenList: "Masquer la liste des allergènes",
+    allergieLabel: "ALLERGIE",
+    arachide: "ARACHIDE",
+    celeri: "CÉLERI",
+    crustaces: "CRUSTACÉS",
+    gluten: "GLUTEN (CÉRÉALES CONTENANT DU)",
+    fruitsACoque: "FRUITS À COQUE",
+    lait: "LAIT",
+    lupin: "LUPIN",
+    oeuf: "OEUF",
+    poisson: "POISSON",
+    mollusques: "MOLLUSQUES",
+    moutarde: "MOUTARDE",
+    sesame: "SÉSAME",
+    soja: "SOJA",
+    sulfites: "SULFITES",
 
     // Footer (re-use from previous components if consistent)
     contact: "Contact",
@@ -118,6 +140,27 @@ const translations = {
     numberOfPeople: "Number of people",
     others: "Others",
 
+    // Regulatory allergens
+    allergenLegendTitle: "Regulatory allergens",
+    allergenLegendSubtitle: "14 allergens requiring declaration (EU)",
+    showAllergenList: "Show allergen list",
+    hideAllergenList: "Hide allergen list",
+    allergieLabel: "ALLERGY",
+    arachide: "PEANUTS",
+    celeri: "CELERY",
+    crustaces: "CRUSTACEANS",
+    gluten: "GLUTEN (CEREALS CONTAINING)",
+    fruitsACoque: "TREE NUTS",
+    lait: "MILK",
+    lupin: "LUPIN",
+    oeuf: "EGG",
+    poisson: "FISH",
+    mollusques: "MOLLUSCS",
+    moutarde: "MUSTARD",
+    sesame: "SESAME",
+    soja: "SOYA",
+    sulfites: "SULPHITES",
+
     // Footer
     contact: "Contact",
     address: "Address",
@@ -180,6 +223,27 @@ const translations = {
     numberOfPeople: "عدد الأشخاص",
     others: "أخرى",
 
+    // مسببات الحساسية التنظيمية
+    allergenLegendTitle: "مسببات الحساسية التنظيمية",
+    allergenLegendSubtitle: "14 مسببات حساسية إلزامية الإعلان (الاتحاد الأوروبي)",
+    showAllergenList: "إظهار قائمة مسببات الحساسية",
+    hideAllergenList: "إخفاء قائمة مسببات الحساسية",
+    allergieLabel: "حساسية",
+    arachide: "فول سوداني",
+    celeri: "كرفس",
+    crustaces: "قشريات",
+    gluten: "غلوتين (حبوب تحتوي على)",
+    fruitsACoque: "فواكه ذات قشرة",
+    lait: "حليب",
+    lupin: "ترمس",
+    oeuf: "بيض",
+    poisson: "سمك",
+    mollusques: "رخويات",
+    moutarde: "خردل",
+    sesame: "سمسم",
+    soja: "صويا",
+    sulfites: "كبريتات",
+
     // Footer
     contact: "اتصل بنا",
     address: "العنوان",
@@ -205,15 +269,16 @@ const languages = [
 
 const renderDietaryBadges = (item) => (
   <>
-    {item.isVegetarian && <span className="dietary-badge">🌱</span>}
-    {item.isOrganic && <span className="dietary-badge">🌿</span>}
-    {item.isLocal && <span className="dietary-badge">🏠</span>}
-    {item.isGlutenFree && <span className="dietary-badge">🚫🌾</span>}
-    {item.isLactoseFree && <span className="dietary-badge">🚫🥛</span>}
+    {item.isVegetarian && <span className="dietary-badge">Vég.</span>}
+    {item.isOrganic && <span className="dietary-badge">Bio</span>}
+    {item.isLocal && <span className="dietary-badge">Local</span>}
+    {item.isGlutenFree && <span className="dietary-badge">Sans gluten</span>}
+    {item.isLactoseFree && <span className="dietary-badge">Sans lactose</span>}
   </>
 )
 
 const TerrassePiscineClient = () => {
+  const navigate = useNavigate()
   const [lounges, setLounges] = useState([])
   const [selectedLounge, setSelectedLounge] = useState(null)
   const [isLoaded, setIsLoaded] = useState(false)
@@ -238,6 +303,7 @@ const TerrassePiscineClient = () => {
   const [currentLanguage, setCurrentLanguage] = useState("fr")
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false)
   const [showVegetarianOnly] = useState(false)
+  const [showAllergenLegend, setShowAllergenLegend] = useState(true)
   // React state and fetch
 const [pageContent, setPageContent] = useState(null);
 
@@ -261,11 +327,11 @@ useEffect(() => {
   <div className="dietary-legend">
     <h4>{t("dietaryInformation")}</h4>
     <div className="legend-items">
-      <span className="legend-item">🌱 {t("vegetarian")}</span>
-      <span className="legend-item">🌿 {t("organic")}</span>
-      <span className="legend-item">🏠 {t("local")}</span>
-      <span className="legend-item">🚫🌾 {t("glutenFree")}</span>
-      <span className="legend-item">🚫🥛 {t("lactoseFree")}</span>
+      <span className="legend-item">{t("vegetarian")}</span>
+      <span className="legend-item">{t("organic")}</span>
+      <span className="legend-item">{t("local")}</span>
+      <span className="legend-item">{t("glutenFree")}</span>
+      <span className="legend-item">{t("lactoseFree")}</span>
     </div>
   </div>
 )
@@ -415,6 +481,40 @@ useEffect(() => {
     return showVegetarianOnly ? items.filter((item) => item.isVegetarian) : items
   }
 
+  // Ordre canonique des catégories (entrées → suites/pâtes → plats → desserts)
+  const CATEGORY_ORDER = [
+    "Entrées",
+    "Suites / Pâtes",
+    "Suites",
+    "Pâtes",
+    "Plats traditionnels",
+    "Plats",
+    "Desserts",
+    "Autres",
+    "Others",
+    "أخرى",
+  ]
+
+  const getSortedCategoryEntries = (items, othersLabel = "Autres") => {
+    const grouped = items.reduce((acc, item) => {
+      const category = item.category || othersLabel
+      if (!acc[category]) acc[category] = []
+      acc[category].push(item)
+      return acc
+    }, {})
+    const orderLower = CATEGORY_ORDER.map((c) => c.toLowerCase().trim())
+    return Object.entries(grouped).sort(([a], [b]) => {
+      const aNorm = a.trim().toLowerCase()
+      const bNorm = b.trim().toLowerCase()
+      const ia = orderLower.indexOf(aNorm)
+      const ib = orderLower.indexOf(bNorm)
+      if (ia === -1 && ib === -1) return a.localeCompare(b)
+      if (ia === -1) return 1
+      if (ib === -1) return -1
+      return ia - ib
+    })
+  }
+
   // Toggle between view modes
   const toggleViewMode = () => {
     setViewMode(viewMode === "book" ? "modern" : "book")
@@ -467,7 +567,48 @@ useEffect(() => {
 
   const getCurrentLanguage = () => languages.find((lang) => lang.code === currentLanguage)
 
-  // Allergen icons mapping (reserved for future use with legend)
+  // 14 allergènes réglementaires (UE) — pictogrammes sans cercle d'interdiction
+  const ALLERGENS_ORDER = [
+    "arachide", "celeri", "crustaces", "gluten", "fruitsACoque", "lait", "lupin",
+    "oeuf", "poisson", "mollusques", "moutarde", "sesame", "soja", "sulfites"
+  ]
+  const strokeAllergen = "#333333"
+  const allergenIcons = {
+    arachide: (<svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M18 32c0-4 4-12 14-12s14 8 14 12c0 6-4 14-14 18-10-4-14-12-14-18z" fill="none" stroke={strokeAllergen} strokeWidth="2.5" /><path d="M32 20c-2 0-6 4-6 12s4 12 6 12 6-4 6-12-4-12-6-12z" fill="none" stroke={strokeAllergen} strokeWidth="2" /></svg>),
+    celeri: (<svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M32 8v48M28 14h8M26 24h12M24 34h16M26 44h12" stroke={strokeAllergen} strokeWidth="2.5" fill="none" /><path d="M20 20l4-4 4 4M44 20l-4-4-4 4" stroke={strokeAllergen} strokeWidth="1.5" fill="none" /></svg>),
+    crustaces: (<svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M12 36c4-6 12-10 20-8 8 2 16 8 20 14M14 32c2-4 10-8 18-6M50 38c-2-4-10-8-18-6" stroke={strokeAllergen} strokeWidth="2" fill="none" /><path d="M20 28v16M28 24v20M36 26v18M44 30v12" stroke={strokeAllergen} strokeWidth="2" fill="none" /><ellipse cx="32" cy="42" rx="18" ry="8" fill="none" stroke={strokeAllergen} strokeWidth="2" /></svg>),
+    gluten: (<svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M32 8v48M32 8c-8 0-14 6-14 14v4c0 8 6 14 14 14M32 8c8 0 14 6 14 14v4c0 8-6 14-14 14" stroke={strokeAllergen} strokeWidth="2" fill="none" /><path d="M24 20h16M22 28h20M24 36h16M22 44h20" stroke={strokeAllergen} strokeWidth="1.5" fill="none" /></svg>),
+    fruitsACoque: (<svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M32 12c-10 0-18 10-18 20s8 20 18 20 18-10 18-20-8-20-18-20z" fill="none" stroke={strokeAllergen} strokeWidth="2" /><path d="M28 24c0-4 2-8 4-8s4 4 4 8-2 8-4 8-4-4-4-8z" fill="none" stroke={strokeAllergen} strokeWidth="1.5" /></svg>),
+    lait: (<svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M26 12h12v8l8 12v28H18V32l8-12v-8z" fill="none" stroke={strokeAllergen} strokeWidth="2" /><path d="M26 20h12M24 36h16" stroke={strokeAllergen} strokeWidth="1.5" fill="none" /></svg>),
+    lupin: (<svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><ellipse cx="32" cy="36" rx="12" ry="14" fill="none" stroke={strokeAllergen} strokeWidth="2" /><path d="M32 22v14M26 28h12M28 34h8" stroke={strokeAllergen} strokeWidth="1.5" fill="none" /></svg>),
+    oeuf: (<svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M32 10c-10 0-18 14-18 26 0 12 8 20 18 20s18-8 18-20c0-12-8-26-18-26z" fill="none" stroke={strokeAllergen} strokeWidth="2" /></svg>),
+    poisson: (<svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M12 32c0 0 12-16 20-16s20 16 20 16-12 16-20 16-20-16-20-16z" fill="none" stroke={strokeAllergen} strokeWidth="2" /><path d="M52 28v8M48 24v16M44 22v20" stroke={strokeAllergen} strokeWidth="1.5" fill="none" /><circle cx="28" cy="32" r="2" fill={strokeAllergen} /></svg>),
+    mollusques: (<svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M14 32c0-10 8-18 18-18s18 8 18 18c0 10-8 18-18 18-4 0-8-2-10-4" fill="none" stroke={strokeAllergen} strokeWidth="2" /><path d="M32 14v36M22 24c4 4 8 4 10 4s6 0 10-4" stroke={strokeAllergen} strokeWidth="1.5" fill="none" /></svg>),
+    moutarde: (<svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="36" r="10" fill="none" stroke={strokeAllergen} strokeWidth="2" /><path d="M32 16v20M28 26h8M32 46v6" stroke={strokeAllergen} strokeWidth="2" fill="none" /></svg>),
+    sesame: (<svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><ellipse cx="20" cy="28" rx="6" ry="8" fill="none" stroke={strokeAllergen} strokeWidth="1.5" /><ellipse cx="32" cy="32" rx="6" ry="8" fill="none" stroke={strokeAllergen} strokeWidth="1.5" /><ellipse cx="44" cy="28" rx="6" ry="8" fill="none" stroke={strokeAllergen} strokeWidth="1.5" /><ellipse cx="26" cy="42" rx="5" ry="7" fill="none" stroke={strokeAllergen} strokeWidth="1.5" /><ellipse cx="38" cy="42" rx="5" ry="7" fill="none" stroke={strokeAllergen} strokeWidth="1.5" /></svg>),
+    soja: (<svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><ellipse cx="32" cy="38" rx="10" ry="12" fill="none" stroke={strokeAllergen} strokeWidth="2" /><path d="M28 26c2-2 4-2 8 0M32 20v6M26 32h12M28 40h8" stroke={strokeAllergen} strokeWidth="1.5" fill="none" /></svg>),
+    sulfites: (<svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="M32 12c-6 0-12 6-12 14 0 8 6 14 12 14s12-6 12-14c0-8-6-14-12-14z" fill="none" stroke={strokeAllergen} strokeWidth="2" /><path d="M24 26c4 2 8 2 16 0M26 32c3 2 6 2 12 0" stroke={strokeAllergen} strokeWidth="1" fill="none" /><path d="M28 44h8v8h-8z" fill="none" stroke={strokeAllergen} strokeWidth="2" /></svg>),
+  }
+  const AllergenLegend = () => (
+    <div className="allergen-legend-regulatory">
+      <header className="allergen-legend-header">
+        <h4 className="allergen-legend-title">{t("allergenLegendTitle")}</h4>
+        <p className="allergen-legend-subtitle">{t("allergenLegendSubtitle")}</p>
+      </header>
+      <div className="modern-allergens" role="list">
+        {ALLERGENS_ORDER.map((key) => (
+          <div key={key} className="modern-allergen" role="listitem">
+            <span className="allergen-icon-wrap" aria-hidden="true">{allergenIcons[key]}</span>
+            <span className="allergen-label">
+              <span className="allergen-name">{t(key)}</span>
+              <span className="allergen-badge">{t("allergieLabel")}</span>
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+
   return (
     <div className={`hotel-app9 ${currentLanguage === "ar" ? "rtl" : "ltr"}`}>
       <style jsx>{`
@@ -521,21 +662,6 @@ useEffect(() => {
           border: 2px solid rgba(255, 255, 255, 0.3);
         }
 
-         /* Added styles for dietary legend */
-        .dietary-legend {
-          background: #f8f9fa;
-          border: 1px solid #e9ecef;
-          border-radius: 8px;
-          padding: 15px;
-          margin-bottom: 20px;
-        }
-
-        .dietary-legend h4 {
-          margin: 0 0 10px 0;
-          font-size: 16px;
-          font-weight: 600;
-          color: #333;
-        }
         .vegetarian-toggle-slider::before {
           content: '';
           position: absolute;
@@ -1049,26 +1175,149 @@ useEffect(() => {
           background: var(--primary);
           color: white;
         }
-        .modern-allergens {
+        .allergen-legend-wrapper {
+          margin-bottom: 16px;
+        }
+        .allergen-legend-toggle {
           display: flex;
-          flex-wrap: wrap;
-          gap: 15px;
-          padding: 15px;
-          background: #f8f9fa;
-          border-bottom: 1px solid #e9ecef;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+          padding: 12px 16px;
+          background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+          border: 1px solid #e2e8f0;
+          border-radius: 10px;
+          font-size: 0.9rem;
+          font-weight: 600;
+          color: #334155;
+          cursor: pointer;
+          transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .allergen-legend-toggle:hover {
+          background: #f1f5f9;
+          border-color: rgba(0, 71, 171, 0.25);
+          box-shadow: 0 2px 8px rgba(0, 71, 171, 0.06);
+        }
+        .allergen-legend-toggle-icon {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          margin-left: 8px;
+          width: 28px;
+          height: 28px;
+          border-radius: 6px;
+          background: rgba(0, 71, 171, 0.1);
+          color: var(--primary, #0047ab);
+          flex-shrink: 0;
+          transition: background 0.2s ease, color 0.2s ease;
+        }
+        .allergen-legend-toggle:hover .allergen-legend-toggle-icon {
+          background: rgba(0, 71, 171, 0.18);
+        }
+        .rtl .allergen-legend-toggle-icon {
+          margin-left: 0;
+          margin-right: 8px;
+        }
+        #allergen-legend-content-terrasse {
+          margin-top: 8px;
+        }
+        .allergen-legend-regulatory {
+          background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+          border-radius: 12px;
+          padding: 20px 18px;
+          margin-bottom: 0;
+          border: 1px solid #e2e8f0;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+        .allergen-legend-header {
+          margin-bottom: 16px;
+          padding-bottom: 12px;
+          border-bottom: 2px solid var(--primary, #0047ab);
+        }
+        .allergen-legend-title {
+          margin: 0 0 4px 0;
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: #1e293b;
+          letter-spacing: -0.02em;
+        }
+        .allergen-legend-subtitle {
+          margin: 0;
+          font-size: 0.8rem;
+          color: #64748b;
+          font-weight: 500;
+        }
+        .modern-allergens {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          gap: 12px;
+          padding: 0;
+          margin: 0;
+          list-style: none;
         }
         .modern-allergen {
           display: flex;
           align-items: center;
+          gap: 12px;
           font-size: 13px;
-          color: #495057;
+          color: #334155;
           background: white;
-          padding: 5px 10px;
-          border-radius: 4px;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+          padding: 12px 14px;
+          border-radius: 10px;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+          border: 1px solid #e2e8f0;
+          transition: box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        .modern-allergen:hover {
+          box-shadow: 0 4px 12px rgba(0, 71, 171, 0.08);
+          border-color: rgba(0, 71, 171, 0.2);
+        }
+        .allergen-icon-wrap {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 44px;
+          height: 44px;
+          min-width: 44px;
+          min-height: 44px;
+          background: #f1f5f9;
+          border-radius: 10px;
+          flex-shrink: 0;
         }
         .modern-allergen svg {
-          margin-right: 5px;
+          display: block;
+          margin: 0;
+        }
+        .allergen-legend-regulatory .allergen-label {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+          line-height: 1.35;
+          min-width: 0;
+        }
+        .allergen-legend-regulatory .allergen-name {
+          font-weight: 600;
+          font-size: 12px;
+          color: #1e293b;
+          word-break: break-word;
+        }
+        .allergen-legend-regulatory .allergen-badge {
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.04em;
+          color: var(--primary, #0047ab);
+          opacity: 0.95;
+        }
+        .rtl .allergen-legend-header {
+          text-align: right;
+        }
+        @media (max-width: 480px) {
+          .modern-allergens {
+            grid-template-columns: 1fr;
+          }
+          .allergen-legend-regulatory {
+            padding: 16px 14px;
+          }
         }
         .modern-menu-items {
           padding: 15px;
@@ -1275,20 +1524,16 @@ useEffect(() => {
             if (showMenus) {
               setShowMenus(false)
             } else {
-              window.location.href = "/Home"
+              navigate("/home")
             }
           }}
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d={currentLanguage === "ar" ? "M5 12H19M19 12L12 5M19 12L12 19" : "M19 12H5M5 12L12 19M5 12L12 5"}
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          {t("back")}
+          {currentLanguage === "ar" ? (
+            <ChevronRight size={20} strokeWidth={2} aria-hidden />
+          ) : (
+            <ChevronLeft size={20} strokeWidth={2} aria-hidden />
+          )}
+          <span>{t("back")}</span>
         </button>
         <div className="logo-container">
           <img src="/images/logo2.png" alt="Novotel Logo" className="logo" />
@@ -1333,25 +1578,21 @@ useEffect(() => {
                 </div>
               ) : lounges.length === 0 ? (
                 <div className="empty-state">
-                  <div className="empty-icon">🔍</div>
+                  <div className="empty-icon">
+                    <Sun size={56} strokeWidth={1.5} className="empty-state-icon" />
+                  </div>
                   <h3>{t("noSkyLoungeAvailable")}</h3>
                   <p>{t("comeBackSoonLounges")}</p>
                 </div>
               ) : selectedLounge ? (
                 <div className="spa-detail-view">
-                  <button className="back-to-list" onClick={() => setSelectedLounge(null)}>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d={
-                          currentLanguage === "ar" ? "M5 12H19M19 12L12 5M19 12L12 19" : "M19 12H5M5 12L12 19M5 12L12 5"
-                        }
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    {t("backToList")}
+                  <button className="back-to-list btn-with-icon" onClick={() => setSelectedLounge(null)}>
+                    {currentLanguage === "ar" ? (
+                      <ChevronRight size={20} strokeWidth={2} aria-hidden />
+                    ) : (
+                      <ChevronLeft size={20} strokeWidth={2} aria-hidden />
+                    )}
+                    <span>{t("backToList")}</span>
                   </button>
                   <div className="spa-detail-content">
                     <div className="spa-detail-image-container">
@@ -1370,39 +1611,41 @@ useEffect(() => {
                         <p>{selectedLounge.description || t("noDescriptionAvailable")}</p>
                       </div>
                       <button
-                        className="reserve-button"
+                        className="reserve-button btn-with-icon"
                         onClick={async () => {
                           await fetchMenus(selectedLounge._id)
                           setShowMenus(true)
                         }}
                       >
-                        {t("viewMenu")}
+                        <UtensilsCrossed size={18} strokeWidth={2} />
+                        <span>{t("viewMenu")}</span>
                       </button>
                       <div className="spa-features">
                         <div className="spa-feature-item">
-                          <span className="feature-icon">✓</span>
+                          <CheckCircle size={20} strokeWidth={2} className="feature-icon" />
                           <span>{t("panoramicView")}</span>
                         </div>
                         <div className="spa-feature-item">
-                          <span className="feature-icon">✓</span>
+                          <CheckCircle size={20} strokeWidth={2} className="feature-icon" />
                           <span>{t("signatureCocktails")}</span>
                         </div>
                         <div className="spa-feature-item">
-                          <span className="feature-icon">✓</span>
+                          <CheckCircle size={20} strokeWidth={2} className="feature-icon" />
                           <span>{t("relaxingAmbiance")}</span>
                         </div>
                         <div className="spa-feature-item">
-                          <span className="feature-icon">✓</span>
+                          <CheckCircle size={20} strokeWidth={2} className="feature-icon" />
                           <span>{t("personalizedService")}</span>
                         </div>
                       </div>
                       <div className="spa-detail-cta">
 {selectedLounge.reservable && (
   <button
-    className="reserve-button"
+    className="reserve-button btn-with-icon"
     onClick={() => setShowModal(true)}
   >
-    {t("reserveTable")}
+    <CalendarCheck size={18} strokeWidth={2} />
+    <span>{t("reserveTable")}</span>
   </button>
 )}
 
@@ -1467,7 +1710,9 @@ useEffect(() => {
               </div>
             ) : menus.length === 0 ? (
               <div className="empty-state">
-                <div className="empty-icon">🍽️</div>
+                <div className="empty-icon">
+                  <UtensilsCrossed size={56} strokeWidth={1.5} className="empty-state-icon" />
+                </div>
                 <h3>{t("noMenuAvailable")}</h3>
                 <p>{t("comeBackSoonMenus")}</p>
               </div>
@@ -1475,11 +1720,13 @@ useEffect(() => {
               <div className="menu-display-container-new" style={{ position: "relative" }}>
                 {/* View Toggle Button */}
                 <button
-                  className="view-toggle-button"
+                  className="view-toggle-button view-toggle-with-icon"
                   onClick={toggleViewMode}
                   aria-label={viewMode === "book" ? t("switchToModern") : t("switchToBook")}
+                  title={viewMode === "book" ? t("switchToModern") : t("switchToBook")}
                 >
-                  {viewMode === "book" ? <LayoutGrid size={20} /> : <Book size={20} />}
+                  {viewMode === "book" ? <LayoutGrid size={22} strokeWidth={2} /> : <BookOpen size={22} strokeWidth={2} />}
+                  <span className="view-toggle-label">{viewMode === "book" ? t("switchToModern") : t("switchToBook")}</span>
                 </button>
 
                 
@@ -1653,20 +1900,34 @@ useEffect(() => {
                       ))}
                     </div>
                     <DietaryLegend />
+                    <div className="allergen-legend-wrapper">
+                      <button
+                        type="button"
+                        className="allergen-legend-toggle"
+                        onClick={() => setShowAllergenLegend((v) => !v)}
+                        aria-expanded={showAllergenLegend}
+                        aria-controls="allergen-legend-content-terrasse"
+                      >
+                        <span className="allergen-legend-toggle-text">
+                          {showAllergenLegend ? t("hideAllergenList") : t("showAllergenList")}
+                        </span>
+                        <span className="allergen-legend-toggle-icon" aria-hidden="true">
+                          {showAllergenLegend ? <ChevronUp size={20} strokeWidth={2.5} /> : <ChevronDown size={20} strokeWidth={2.5} />}
+                        </span>
+                      </button>
+                      {showAllergenLegend && (
+                        <div id="allergen-legend-content-terrasse">
+                          <AllergenLegend />
+                        </div>
+                      )}
+                    </div>
 
                     {/* Menu Items */}
                     <div className="modern-menu-items">
                       {getCurrentMenuItems().length > 0 ? (
                         <>
-                          {/* Group items by category if they have categories */}
-                          {Object.entries(
-                            getCurrentMenuItems().reduce((acc, item) => {
-                              const category = item.category || t("others")
-                              if (!acc[category]) acc[category] = []
-                              acc[category].push(item)
-                              return acc
-                            }, {}),
-                          ).map(([category, items]) => (
+                          {/* Group items by category, ordered: Entrées → Suites/Pâtes → Plats → Desserts */}
+                          {getSortedCategoryEntries(getCurrentMenuItems(), t("others")).map(([category, items]) => (
                             <div key={category} className="modern-section">
                               {/* <h3 className="modern-section-title">{category}</h3> */}
                                   {items.map((item, idx) => (

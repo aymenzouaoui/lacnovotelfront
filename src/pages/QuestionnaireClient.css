@@ -1,5 +1,7 @@
 /* QuestionnaireClient.css - Beautiful form styling with white and blue theme */
 
+/* .header-back-link → voir styles/back-button-global.css */
+
 /* Form Container */
 .content-container form {
   max-width: 800px;

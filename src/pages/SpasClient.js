@@ -1,8 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import API from "../services/api"
-import { ArrowLeft, Facebook, Instagram, ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, Facebook, Instagram } from "lucide-react"
 
 // Translation system
 const translations = {
@@ -96,6 +97,7 @@ const languages = [
 ]
 
 const SpasClient = () => {
+  const navigate = useNavigate()
   const [spaCategories, setSpaCategories] = useState([])
   const [isLoaded, setIsLoaded] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -504,7 +506,7 @@ const SpasClient = () => {
           padding: 40px 20px;
           background: white;
           border-radius: 16px;
-          margin: 0 12px;
+          margin: 0 auto;
           box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
@@ -858,10 +860,14 @@ const SpasClient = () => {
       </div>
 
       <header className="app-header">
-        <a href="/Home" className="header-back-link">
-          <ArrowLeft className={currentLanguage === "ar" ? "transform scale-x-[-1]" : ""} width="24" height="24" />
-          {t("back")}
-        </a>
+        <button type="button" className="header-back-link" onClick={() => navigate("/home")}>
+          {currentLanguage === "ar" ? (
+            <ChevronRight size={20} strokeWidth={2} aria-hidden />
+          ) : (
+            <ChevronLeft size={20} strokeWidth={2} aria-hidden />
+          )}
+          <span>{t("back")}</span>
+        </button>
         <div className="logo-container">
           <img src="/images/logo2.png" alt="Novotel Logo" className="logo" />
         </div>
@@ -897,7 +903,7 @@ const SpasClient = () => {
 
    
 
-        <div className="content-container">
+        <div className={`content-container ${isLoading ? "content-container--loading" : !spaCategories.length ? "content-container--empty" : ""}`}>
           {isLoading ? (
             <div className="loading-container">
               <div className="loading-spinner"></div>
@@ -905,7 +911,11 @@ const SpasClient = () => {
             </div>
           ) : spaCategories.length === 0 ? (
             <div className="empty-state">
-              <div className="empty-icon">🔍</div>
+              <div className="empty-state-icon-wrap" aria-hidden>
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 22c4-4 8-8 8-14a6 6 0 0 0-12 0c0 6 4 10 8 14z" />
+                </svg>
+              </div>
               <h3>{t("noCategoriesFound")}</h3>
               <p>{t("comeBackSoon")}</p>
             </div>
