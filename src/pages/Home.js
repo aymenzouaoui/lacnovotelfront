@@ -282,60 +282,35 @@ const HomeClient = () => {
     "/images/feedback.webp"
   ], [])
 
-  // Preload images function (first visit only; return visits skip loading screen)
-  const preloadImages = useCallback(() => {
-    return new Promise((resolve) => {
-      let loadedCount = 0
-      const totalImages = criticalImages.length
-      const minLoadingTime = 1500
-      const startTime = Date.now()
-
-      const updateProgress = () => {
-        loadedCount++
-        const imageProgress = (loadedCount / totalImages) * 100
-        setLoadingProgress(imageProgress)
-
-        if (loadedCount === totalImages) {
-          const elapsedTime = Date.now() - startTime
-          const remainingTime = Math.max(0, minLoadingTime - elapsedTime)
-          setTimeout(() => {
-            setLoadingProgress(100)
-            setTimeout(() => resolve(), 300)
-          }, remainingTime)
-        }
-      }
-
-      criticalImages.forEach((src) => {
-        const img = new Image()
-        img.onload = updateProgress
-        img.onerror = updateProgress
-        img.src = src
-      })
-
-      setTimeout(() => {
-        if (loadedCount < totalImages) {
-          setLoadingProgress(100)
-          resolve()
-        }
-      }, 8000)
+  // Preload images in background (non-blocking - cache warming only)
+  const preloadImagesInBackground = useCallback(() => {
+    criticalImages.forEach((src) => {
+      const img = new Image()
+      img.src = src
     })
   }, [criticalImages])
 
-  // Preload images on mount; skip full loading screen when user returns to home
+  // Display page after brief transition; do not wait for images to load
   useEffect(() => {
     const homeAlreadyLoaded = sessionStorage.getItem("novotel-home-loaded") === "true"
 
     if (homeAlreadyLoaded) {
       setIsLoading(false)
-      setLoadingProgress(100)
       return
     }
 
-    preloadImages().then(() => {
+    // Short branded loading (~300ms) then show content
+    const showContentTimer = setTimeout(() => {
       setIsLoading(false)
+      setLoadingProgress(100)
       sessionStorage.setItem("novotel-home-loaded", "true")
-    })
-  }, [preloadImages])
+    }, 300)
+
+    // Warm image cache in background (non-blocking)
+    preloadImagesInBackground()
+
+    return () => clearTimeout(showContentTimer)
+  }, [preloadImagesInBackground])
 
   // Memoize slides to avoid recalculation on every render
   const feedbackSlides = useMemo(() => [
