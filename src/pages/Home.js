@@ -419,13 +419,14 @@ const HomeClient = () => {
   }
   // Memoize feature cards to avoid recalculation on every render
   const getAllFeatureCards = useMemo(() => [
-    {
-      id: "apropos",
-      title: t("aboutHotel"),
-      image: "/images/apropos.webp",
-      fallback: "/images/apropos.jpg",
-      path: "/livret-client",
-    },
+    // À propos – masqué pour le moment
+    // {
+    //   id: "apropos",
+    //   title: t("aboutHotel"),
+    //   image: "/images/apropos.webp",
+    //   fallback: "/images/apropos.jpg",
+    //   path: "/livret-client",
+    // },
     {
       id: "restaurants",
       title: t("eat"),
