@@ -848,9 +848,11 @@ useEffect(() => {
           <div className="menu-display-container-drinks" style={{ position: "relative" }}>
             {/* View Toggle Button */}
             <button
+              type="button"
               className="view-toggle-button"
               onClick={toggleViewMode}
               aria-label={viewMode === "book" ? t("switchToModern") : t("switchToBook")}
+              title={viewMode === "book" ? t("switchToModern") : t("switchToBook")}
             >
               {viewMode === "book" ? <LayoutGrid size={20} /> : <Book size={20} />}
             </button>

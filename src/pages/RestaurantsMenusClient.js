@@ -1773,13 +1773,13 @@ useEffect(() => {
             ) : (
               <div className="menu-display-container-new" style={{ position: "relative" }}>
                 <button
+                  type="button"
                   className="view-toggle-button view-toggle-with-icon"
                   onClick={toggleViewMode}
                   aria-label={viewMode === "book" ? t("switchToModern") : t("switchToBook")}
                   title={viewMode === "book" ? t("switchToModern") : t("switchToBook")}
                 >
                   {viewMode === "book" ? <LayoutGrid size={22} strokeWidth={2} /> : <BookOpen size={22} strokeWidth={2} />}
-                  <span className="view-toggle-label">{viewMode === "book" ? t("switchToModern") : t("switchToBook")}</span>
                 </button>
 
                 {/* Removed DietaryLegend from here - it will only show in modern view now */}

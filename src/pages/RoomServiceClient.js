@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import API from "../services/api"
 import "./RoomServiceClientNew.css"
-import { ChevronLeft, ChevronRight, ChevronUp, ChevronDown, X } from "lucide-react"
+import { ChevronLeft, ChevronRight, ChevronUp, ChevronDown, X, LayoutGrid, BookOpen } from "lucide-react"
 import { motion } from "framer-motion"
 import "./client-image-fix-dark.css"
 
@@ -1752,12 +1752,13 @@ useEffect(() => {
                         {selectedService.name && selectedService.name.toLowerCase().includes("restauration") && (
                           <>
                             <button
+                              type="button"
                               className="view-toggle-button view-toggle-with-icon"
                               onClick={toggleViewMode}
                               aria-label={viewMode === "book" ? t("switchToModern") : t("switchToBook")}
                               title={viewMode === "book" ? t("switchToModern") : t("switchToBook")}
                             >
-                              <span className="view-toggle-label">{viewMode === "book" ? t("switchToModern") : t("switchToBook")}</span>
+                              {viewMode === "book" ? <LayoutGrid size={22} strokeWidth={2} /> : <BookOpen size={22} strokeWidth={2} />}
                             </button>
 
                            

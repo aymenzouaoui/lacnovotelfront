@@ -71,6 +71,17 @@
   z-index: 2;
 }
 
+/* View toggle – Passer à la vue livre, always visible and clickable */
+.menu-display-container-drinks .view-toggle-button {
+  position: absolute;
+  top: 10px;
+  right: 0;
+  z-index: 20;
+  min-width: 44px;
+  min-height: 44px;
+  cursor: pointer;
+}
+
 /* Menu spread - book-like layout */
 .menu-spread-drinks {
   background: white;
