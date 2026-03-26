@@ -218,7 +218,7 @@ const HomeClient = () => {
   const t = (key) => translations[currentLanguage][key] || translations.fr[key] || key
 
   // Images du diaporama principal
-  const heroImages = ["/images/hotel-lobby-v2.png", "/images/hotel-lobby2-v2.png", "/images/hotel-lobby3-v2.png"]
+  const heroImages = ["/images/hotel-lobby4-v4.jpg"]
 
   // Critical images to preload
   const criticalImages = useMemo(() => [
