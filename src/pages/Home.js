@@ -226,9 +226,9 @@ const HomeClient = () => {
     "/images/restaurant.jpg",
     "/images/bar.jpg",
     "/images/terrasse-piscine.jpg",
-    "/images/chambre.jpg",
+    "/images/chambrehotel.jpg",
     "/images/seminaire.jpg",
-    "/images/roomservice.webp",
+    "/images/chambre.jpg",
     "/images/loisir.jpg",
     "/images/spa.jpg",
     "/images/feedback.webp"
@@ -451,7 +451,7 @@ const HomeClient = () => {
     {
       id: "chambre",
       title: t("room"),
-      image: "/images/chambre.jpg",
+      image: "/images/chambrehotel.jpg",
       fallback: "/placeholder.svg?height=300&width=200&text=Chambre",
       path: "/chambres-client",
     },
@@ -465,7 +465,7 @@ const HomeClient = () => {
     {
       id: "roomservice",
       title: t("roomService"),
-      image: "/images/roomservice.webp",
+      image: "/images/chambre.jpg",
       fallback: "/placeholder.svg?height=300&width=200&text=Room+Service",
       path: "/roomservices-client",
     },
