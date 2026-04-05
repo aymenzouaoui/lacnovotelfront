@@ -10,18 +10,21 @@ const SpaCategoriesPage = () => {
   const navigate = useNavigate()
   const [categories, setCategories] = useState([])
   const [showForm, setShowForm] = useState(false)
+  const defaultService = () => ({
+    name: "",
+    description: "",
+    reservable: true,
+    duration: "",
+    prices: { TND: 0, EUR: 0 },
+    translations: { fr: { name: "", description: "" }, ar: { name: "", description: "" } },
+  })
   const [formData, setFormData] = useState({
     title: "",
-    services: [
-      {
-        name: "",
-        description: "",
-        reservable: true,
-        duration: "",
-        prices: { TND: 0, EUR: 0 },
-      },
-    ],
+    translations: { fr: { title: "" }, ar: { title: "" } },
+    services: [defaultService()],
   })
+  const [activeCategoryLang, setActiveCategoryLang] = useState("fr")
+  const [activeServiceLang, setActiveServiceLang] = useState("fr")
   const [imageFile, setImageFile] = useState(null)
   const [editId, setEditId] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -100,10 +103,27 @@ const SpaCategoriesPage = () => {
     setFormData({ ...formData, title: value })
   }
 
+  const handleCategoryTrChange = (e) => {
+    const { name, value } = e.target
+    if (!name.startsWith("tr_")) return
+    const [, lang, field] = name.split("_")
+    setFormData((prev) => ({
+      ...prev,
+      translations: {
+        ...prev.translations,
+        [lang]: { ...(prev.translations || {})[lang], [field]: value },
+      },
+    }))
+  }
+
   const handleServiceChange = (serviceIndex, field, value) => {
     const updatedServices = [...formData.services]
     if (field === "prices") {
       updatedServices[serviceIndex].prices = value
+    } else if (field.startsWith("tr_")) {
+      const [, lang, f] = field.split("_")
+      if (!updatedServices[serviceIndex].translations) updatedServices[serviceIndex].translations = { fr: { name: "", description: "" }, ar: { name: "", description: "" } }
+      updatedServices[serviceIndex].translations[lang] = { ...updatedServices[serviceIndex].translations[lang], [f]: value }
     } else {
       updatedServices[serviceIndex][field] = value
     }
@@ -113,16 +133,7 @@ const SpaCategoriesPage = () => {
   const addService = () => {
     setFormData({
       ...formData,
-      services: [
-        ...formData.services,
-        {
-          name: "",
-          description: "",
-          reservable: true,
-          duration: "",
-          prices: { TND: 0, EUR: 0 },
-        },
-      ],
+      services: [...formData.services, defaultService()],
     })
   }
 
@@ -149,7 +160,14 @@ const SpaCategoriesPage = () => {
 
     try {
       const formDataToSend = new FormData()
-      formDataToSend.append("title", formData.title)
+      formDataToSend.append("title", formData.title ?? "")
+      formDataToSend.append(
+        "translations",
+        JSON.stringify({
+          fr: formData.translations?.fr || { title: "" },
+          ar: formData.translations?.ar || { title: "" },
+        }),
+      )
       formDataToSend.append("services", JSON.stringify(formData.services))
 
       if (imageFile) {
@@ -180,15 +198,8 @@ const SpaCategoriesPage = () => {
   const resetForm = () => {
     setFormData({
       title: "",
-      services: [
-        {
-          name: "",
-          description: "",
-          reservable: true,
-          duration: "",
-          prices: { TND: 0, EUR: 0 },
-        },
-      ],
+      translations: { fr: { title: "" }, ar: { title: "" } },
+      services: [defaultService()],
     })
     setImageFile(null)
     setEditId(null)
@@ -199,19 +210,29 @@ const SpaCategoriesPage = () => {
 
   const handleEdit = (category) => {
     resetForm()
+    const trCat = category.translations || {}
+    const services = (category.services || []).map((s) => {
+      const tr = s.translations || {}
+      return {
+        ...defaultService(),
+        ...s,
+        prices: s.prices || { TND: 0, EUR: 0 },
+        translations: {
+          fr: { name: (tr.fr && tr.fr.name) || "", description: (tr.fr && tr.fr.description) || "" },
+          ar: { name: (tr.ar && tr.ar.name) || "", description: (tr.ar && tr.ar.description) || "" },
+        },
+      }
+    })
+    if (services.length === 0) services.push(defaultService())
 
     setTimeout(() => {
       setFormData({
         title: category.title || "",
-        services: category.services || [
-          {
-            name: "",
-            description: "",
-            reservable: true,
-            duration: "",
-            prices: { TND: 0, EUR: 0 },
-          },
-        ],
+        translations: {
+          fr: { title: (trCat.fr && trCat.fr.title) || "" },
+          ar: { title: (trCat.ar && trCat.ar.title) || "" },
+        },
+        services,
       })
       setPreviewImage(category.image || null)
       setEditId(category._id)
@@ -284,7 +305,7 @@ const SpaCategoriesPage = () => {
   return (
     <div className={isDarkMode ? "dashboard" : "light-dashboard"}>
       <div className={isDarkMode ? "mobile-header" : "light-mobile-header"}>
-        <button className={isDarkMode ? "menu-toggle" : "light-menu-toggle"} onClick={toggleSidebar}>
+        <button className="light-menu-toggle" onClick={toggleSidebar}>
           <span></span>
           <span></span>
           <span></span>
@@ -480,7 +501,7 @@ const SpaCategoriesPage = () => {
                 <h3>Informations de la Catégorie</h3>
 
                 <div className="form-group">
-                  <label>Titre de la catégorie</label>
+                  <label>Titre de la catégorie (par défaut) *</label>
                   <input
                     type="text"
                     placeholder="Ex: FORFAITS / PACKAGE"
@@ -489,6 +510,14 @@ const SpaCategoriesPage = () => {
                     required
                     className={isDarkMode ? "category-title-input" : "light-form-input category-title-input"}
                   />
+                </div>
+                <div className="form-group">
+                  <label>Traductions catégorie (FR / AR)</label>
+                  <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                    <button type="button" className={activeCategoryLang === "fr" ? (isDarkMode ? "btn btn-primary" : "light-btn light-btn-primary") : (isDarkMode ? "btn btn-secondary" : "light-btn light-btn-secondary")} onClick={() => setActiveCategoryLang("fr")}>Français</button>
+                    <button type="button" className={activeCategoryLang === "ar" ? (isDarkMode ? "btn btn-primary" : "light-btn light-btn-primary") : (isDarkMode ? "btn btn-secondary" : "light-btn light-btn-secondary")} onClick={() => setActiveCategoryLang("ar")}>العربية</button>
+                  </div>
+                  <input type="text" name={`tr_${activeCategoryLang}_title`} value={formData.translations?.[activeCategoryLang]?.title ?? ""} onChange={handleCategoryTrChange} placeholder={activeCategoryLang === "fr" ? "Titre FR" : "العنوان"} className={isDarkMode ? "category-title-input" : "light-form-input"} style={{ marginBottom: "0.5rem" }} />
                 </div>
 
                 <div className="form-group">
@@ -544,6 +573,15 @@ const SpaCategoriesPage = () => {
                         onChange={(e) => handleServiceChange(serviceIndex, "description", e.target.value)}
                         className={isDarkMode ? "" : "light-form-input"}
                       />
+                      <div className="form-group" style={{ marginTop: "0.5rem" }}>
+                        <label>Traductions service (FR / AR)</label>
+                        <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.35rem" }}>
+                          <button type="button" className={activeServiceLang === "fr" ? (isDarkMode ? "btn btn-primary" : "light-btn light-btn-primary") : (isDarkMode ? "btn btn-secondary" : "light-btn light-btn-secondary")} style={{ padding: "0.35rem 0.75rem", fontSize: "0.9rem" }} onClick={() => setActiveServiceLang("fr")}>FR</button>
+                          <button type="button" className={activeServiceLang === "ar" ? (isDarkMode ? "btn btn-primary" : "light-btn light-btn-primary") : (isDarkMode ? "btn btn-secondary" : "light-btn light-btn-secondary")} style={{ padding: "0.35rem 0.75rem", fontSize: "0.9rem" }} onClick={() => setActiveServiceLang("ar")}>AR</button>
+                        </div>
+                        <input type="text" placeholder={activeServiceLang === "fr" ? "Nom FR" : "الاسم"} value={service.translations?.[activeServiceLang]?.name ?? ""} onChange={(e) => handleServiceChange(serviceIndex, "tr_" + activeServiceLang + "_name", e.target.value)} className={isDarkMode ? "" : "light-form-input"} style={{ marginBottom: "0.35rem", width: "100%" }} />
+                        <textarea placeholder={activeServiceLang === "fr" ? "Description FR" : "الوصف"} value={service.translations?.[activeServiceLang]?.description ?? ""} onChange={(e) => handleServiceChange(serviceIndex, "tr_" + activeServiceLang + "_description", e.target.value)} className={isDarkMode ? "" : "light-form-input"} rows={2} style={{ width: "100%" }} />
+                      </div>
 
                       <label className={`service-reservable-label ${isDarkMode ? "dark" : "light"}`}>
                         <input
@@ -722,14 +760,17 @@ const SpaCategoriesPage = () => {
 }
 
 .reservable-badge {
-  display: inline-block;
-  background: linear-gradient(45deg, #10b981, #059669);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
   color: white;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 500;
+  padding: 0.35rem 0.75rem;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
   margin: 0.5rem 0;
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.35);
 }
 
 /* Light Mode Styles for Spas Page */
@@ -920,27 +961,48 @@ const SpaCategoriesPage = () => {
 .service-reservable-label {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.6rem;
   cursor: pointer;
-  font-size: 16px;
-  margin-top: 5px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 10px;
   user-select: none;
-}
-
-.service-reservable-checkbox {
-  width: 18px;
-  height: 18px;
-  accent-color: #4CAF50;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.service-reservable-label.light {
-  color: #111;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .service-reservable-label.dark {
-  color: #eee;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #6ee7b7;
+}
+
+.service-reservable-label.dark:hover {
+  background: rgba(16, 185, 129, 0.25);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}
+
+.service-reservable-label.light {
+  color: #166534;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border: 1px solid #86efac;
+}
+
+.service-reservable-label.light:hover {
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  border-color: #4ade80;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.2);
+}
+
+.service-reservable-checkbox {
+  width: 20px;
+  height: 20px;
+  accent-color: #10b981;
+  cursor: pointer;
+  border-radius: 6px;
+  flex-shrink: 0;
 }
 
 .light-user-profile {

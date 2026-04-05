@@ -2,9 +2,54 @@
 
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import {
+  CircleDot,
+  LeafyGreen,
+  Shrimp,
+  Wheat,
+  Nut,
+  Milk,
+  Leaf,
+  Egg,
+  Fish,
+  Shell,
+  Circle,
+  Bean,
+  Wine,
+  Pencil,
+  Trash2,
+  ImagePlus,
+  ListOrdered,
+  Plus,
+} from "lucide-react"
 import API from "../services/api"
+import "./MenusPage.css"
 import "./RoomServicePage.css"
 import CompressedFileInput from "../components/CompressedFileInput"
+
+const ALLERGENS_LIST = [
+  { key: "allergenArachide", label: "Arachide", Icon: CircleDot },
+  { key: "allergenCeleri", label: "Céleri", Icon: LeafyGreen },
+  { key: "allergenCrustaces", label: "Crustacés", Icon: Shrimp },
+  { key: "allergenGluten", label: "Gluten", Icon: Wheat },
+  { key: "allergenFruitsANoque", label: "Fruits à coque", Icon: Nut },
+  { key: "allergenLait", label: "Lait", Icon: Milk },
+  { key: "allergenLupin", label: "Lupin", Icon: Leaf },
+  { key: "allergenOeuf", label: "Œuf", Icon: Egg },
+  { key: "allergenPoisson", label: "Poisson", Icon: Fish },
+  { key: "allergenMollusques", label: "Mollusques", Icon: Shell },
+  { key: "allergenMoutarde", label: "Moutarde", Icon: Circle },
+  { key: "allergenSesame", label: "Sésame", Icon: Circle },
+  { key: "allergenSoja", label: "Soja", Icon: Bean },
+  { key: "allergenSulfites", label: "Sulfites", Icon: Wine },
+]
+
+// Gabarit commun pour les traductions de services (FR / EN / AR)
+const EMPTY_SERVICE_TRANSLATIONS = {
+  fr: { name: "", description: "" },
+  en: { name: "", description: "" },
+  ar: { name: "", description: "" },
+}
 
 const RoomServicePage = () => {
   const navigate = useNavigate()
@@ -13,12 +58,47 @@ const RoomServicePage = () => {
   const [menus, setMenus] = useState([])
   const [showForm, setShowForm] = useState(false)
   const [showServiceForm, setShowServiceForm] = useState(false)
-  const [serviceFormData, setServiceFormData] = useState({ name: "", description: "" })
+  const [serviceFormData, setServiceFormData] = useState({
+    name: "",
+    description: "",
+    translations: EMPTY_SERVICE_TRANSLATIONS,
+  })
+  const defaultMenuItem = () => ({
+    name: "",
+    description: "",
+    price: "",
+    // Traductions item (FR / AR) comme sur les pages Restaurants / SkyLounge / Spas
+    translations: { fr: { name: "", description: "" }, ar: { name: "", description: "" } },
+    isVegetarian: false,
+    isOrganic: false,
+    isLocal: false,
+    allergenArachide: false,
+    allergenCeleri: false,
+    allergenCrustaces: false,
+    allergenGluten: false,
+    allergenFruitsANoque: false,
+    allergenLait: false,
+    allergenLupin: false,
+    allergenOeuf: false,
+    allergenPoisson: false,
+    allergenMollusques: false,
+    allergenMoutarde: false,
+    allergenSesame: false,
+    allergenSoja: false,
+    allergenSulfites: false,
+    isAvailable24_7: false,
+    commandable: true,
+  })
   const [formData, setFormData] = useState({
     title: "",
+    order: 0,
     images: [],
-    items: [{ name: "", description: "", price: "", isVegetarian: false,  isOrganic: false, isLocal: false, isGlutenFree: false, isLactoseFree: false, commandable: true, isAvailable24_7: false }],
+    items: [defaultMenuItem()],
+    // Traductions menu (FR / AR) comme sur RestaurantsAndMenusPage / SkyLoungePage
+    translations: { fr: { title: "" }, ar: { title: "" } },
   })
+  const [activeMenuLang, setActiveMenuLang] = useState("fr")
+  const [activeItemLang, setActiveItemLang] = useState("fr")
   const [editId, setEditId] = useState(null)
   const [previewImages, setPreviewImages] = useState([])
   const [isLoading, setIsLoading] = useState(true)
@@ -38,7 +118,28 @@ const RoomServicePage = () => {
 
   const handleEditService = (service) => {
     setEditingServiceId(service._id)
-    setServiceFormData({ name: service.name, description: service.description })
+    const tr = service.translations || {}
+    // Utiliser les traductions EN si disponibles, sinon le champ par défaut
+    const enName = tr.en?.name || service.name || ""
+    const enDescription = tr.en?.description || service.description || ""
+    setServiceFormData({
+      name: enName,
+      description: enDescription,
+      translations: {
+        fr: {
+          name: tr.fr?.name || "",
+          description: tr.fr?.description || "",
+        },
+        en: {
+          name: enName,
+          description: enDescription,
+        },
+        ar: {
+          name: tr.ar?.name || "",
+          description: tr.ar?.description || "",
+        },
+      },
+    })
     setShowServiceForm(true)
   }
 
@@ -59,9 +160,9 @@ const RoomServicePage = () => {
     setIsLoading(true)
     try {
       const res = await API.get("/menus")
-      const filteredMenus = res.data.filter(
-        (menu) => menu.roomService?._id === serviceId || menu.roomService === serviceId,
-      )
+      const filteredMenus = res.data
+        .filter((menu) => menu.roomService?._id === serviceId || menu.roomService === serviceId)
+        .sort((a, b) => (a.order ?? 999) - (b.order ?? 999))
       setMenus(filteredMenus)
     } catch (error) {
       console.error("Erreur chargement menus:", error)
@@ -111,11 +212,11 @@ const handleChange = (e) => {
   if (name === "images" && files && files.length > 0) {
     // Handle multiple image files
     const imageFiles = Array.from(files)
-    
+
     // Combine existing images with new ones when editing
-    const currentImages = formData.images || [];
-    const updatedImages = [...currentImages, ...imageFiles];
-    
+    const currentImages = formData.images || []
+    const updatedImages = [...currentImages, ...imageFiles]
+
     setFormData((prev) => ({ ...prev, images: updatedImages }))
 
     // Create preview URLs for all NEW selected images only
@@ -131,6 +232,20 @@ const handleChange = (e) => {
       }
       reader.readAsDataURL(file)
     })
+  } else if (name === "order") {
+    const raw = value.trim() === "" ? 0 : value
+    const num = parseInt(raw, 10)
+    setFormData((prev) => ({ ...prev, order: Number.isNaN(num) ? 0 : num }))
+  } else if (name.startsWith("tr_")) {
+    // Gestion des traductions du menu (FR / AR) comme sur RestaurantsAndMenusPage
+    const [, lang, field] = name.split("_")
+    setFormData((prev) => ({
+      ...prev,
+      translations: {
+        ...prev.translations,
+        [lang]: { ...(prev.translations || {})[lang], [field]: value },
+      },
+    }))
   } else {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
@@ -143,14 +258,26 @@ const removePreviewImage = (index) => {
 };
   const handleItemChange = (index, field, value) => {
     const updatedItems = [...formData.items]
-    updatedItems[index][field] = value
+    if (field.startsWith("tr_")) {
+      // Gestion des traductions item (FR / AR)
+      const [, lang, f] = field.split("_")
+      if (!updatedItems[index].translations) {
+        updatedItems[index].translations = { fr: { name: "", description: "" }, ar: { name: "", description: "" } }
+      }
+      updatedItems[index].translations[lang] = {
+        ...updatedItems[index].translations[lang],
+        [f]: value,
+      }
+    } else {
+      updatedItems[index][field] = value
+    }
     setFormData((prev) => ({ ...prev, items: updatedItems }))
   }
 
   const addItem = () => {
     setFormData((prev) => ({
       ...prev,
-      items: [...prev.items, { name: "", description: "", price: "", isVegetarian: false, isOrganic: false, isLocal: false, isGlutenFree: false, isLactoseFree: false, commandable: true, isAvailable24_7: false }],
+      items: [...prev.items, defaultMenuItem()],
     }))
   }
 
@@ -166,7 +293,16 @@ const handleSubmit = async (e) => {
   try {
     setIsLoading(true)
     const form = new FormData()
-    form.append("title", formData.title)
+    form.append("title", formData.title ?? "")
+    form.append("order", String(Number(formData.order ?? 0)))
+    // Ajout des traductions du menu (FR / AR) comme sur RestaurantsAndMenusPage / SkyLoungePage
+    form.append(
+      "translations",
+      JSON.stringify({
+        fr: formData.translations?.fr || { title: "" },
+        ar: formData.translations?.ar || { title: "" },
+      }),
+    )
     form.append("items", JSON.stringify(formData.items))
     form.append("roomService", selectedService._id)
 
@@ -244,24 +380,37 @@ const handleSubmit = async (e) => {
 }
 
 const handleEdit = (menu) => {
-  console.log("Editing menu:", menu);
-  
-  setFormData({
-    title: menu.title,
-    images: menu.images || [], // This contains URL strings
-    items: menu.items || [],
-  });
-  setEditId(menu._id);
-  setShowForm(true);
+  console.log("Editing menu:", menu)
+  const trMenu = menu.translations || {}
+  const normalizedItems = (menu.items || []).map((item) => {
+    const it = { ...defaultMenuItem(), ...item, price: item.price ?? "" }
+    const tr = item.translations || {}
+    it.translations = {
+      fr: { name: (tr.fr && tr.fr.name) || "", description: (tr.fr && tr.fr.description) || "" },
+      ar: { name: (tr.ar && tr.ar.name) || "", description: (tr.ar && tr.ar.description) || "" },
+    }
+    return it
+  })
 
-  // Set existing images as previews - these are URLs
+  setFormData({
+    title: menu.title ?? "",
+    order: Number(menu.order) || 0,
+    images: menu.images || [],
+    items: normalizedItems,
+    translations: {
+      fr: { title: (trMenu.fr && trMenu.fr.title) || "" },
+      ar: { title: (trMenu.ar && trMenu.ar.title) || "" },
+    },
+  })
+  setEditId(menu._id)
+  setShowForm(true)
+
   if (menu.images && menu.images.length > 0) {
-    console.log("Setting preview images:", menu.images);
-    setPreviewImages(menu.images);
+    setPreviewImages(menu.images)
   } else {
-    setPreviewImages([]);
+    setPreviewImages([])
   }
-};
+}
 
   const handleDelete = async (menuId) => {
     try {
@@ -292,8 +441,10 @@ const handleEdit = (menu) => {
   const resetForm = () => {
     setFormData({
       title: "",
+      order: 0,
       images: [],
-      items: [{ name: "", description: "", price: "", isVegetarian: false, isOrganic: false, isLocal: false, isGlutenFree: false, isLactoseFree: false, commandable: true, isAvailable24_7: false }],
+      items: [defaultMenuItem()],
+      translations: { fr: { title: "" }, ar: { title: "" } },
     })
     setPreviewImages([])
     setEditId(null)
@@ -304,18 +455,34 @@ const handleEdit = (menu) => {
     try {
       setIsLoading(true)
 
+      // S'assurer que les traductions EN sont synchronisées avec les champs par défaut
+      const dataToSubmit = {
+        ...serviceFormData,
+        translations: {
+          ...serviceFormData.translations,
+          en: {
+            name: serviceFormData.name || serviceFormData.translations?.en?.name || "",
+            description: serviceFormData.description || serviceFormData.translations?.en?.description || "",
+          },
+        },
+      }
+
       if (editingServiceId) {
-        await API.put(`/room-services/${editingServiceId}`, serviceFormData)
+        await API.put(`/room-services/${editingServiceId}`, dataToSubmit)
         alert("Service modifié avec succès")
       } else {
-        await API.post("/room-services", serviceFormData)
+        await API.post("/room-services", dataToSubmit)
         alert("Service créé avec succès")
       }
 
       fetchServices()
       setShowServiceForm(false)
       setEditingServiceId(null)
-      setServiceFormData({ name: "", description: "" })
+      setServiceFormData({
+        name: "",
+        description: "",
+        translations: EMPTY_SERVICE_TRANSLATIONS,
+      })
     } catch (error) {
       console.error("Erreur soumission service:", error)
       alert("Erreur lors de la soumission")
@@ -414,25 +581,17 @@ const handleEdit = (menu) => {
   return (
     <div className={isDarkMode ? "dashboard" : "light-dashboard"}>
       <div className={isDarkMode ? "mobile-header" : "light-mobile-header"}>
-        <button className={isDarkMode ? "menu-toggle" : "light-menu-toggle"} onClick={toggleSidebar}>
+        <button className="light-menu-toggle" onClick={toggleSidebar}>
           <span></span>
           <span></span>
           <span></span>
         </button>
         <div className={isDarkMode ? "mobile-logo" : "light-mobile-logo"}>
-          <span style={{ display: "inline-block", verticalAlign: "middle" }}>
-  <img
-    src={isDarkMode ? "/GUESTLY_LIGHT.jpg" : "/GUESTLY_DARK.jpg"}
-    alt="Guestly Logo"
-    style={{
-      width: "180px",        // wide logo
-      height: "auto",        // maintain aspect ratio
-      objectFit: "contain",
-      transition: "opacity 0.3s ease"
-    }}
-  />
-</span>
-
+          <img
+            src={isDarkMode ? "/GUESTLY_LIGHT.jpg" : "/GUESTLY_DARK.jpg"}
+            alt="Guestly Logo"
+            style={{ objectFit: "contain", transition: "opacity 0.3s ease" }}
+          />
         </div>
         <div className={isDarkMode ? "mobile-user" : "light-mobile-user"}>
           <div className={isDarkMode ? "user-avatar" : "light-user-avatar"}>{user.username.charAt(0)}</div>
@@ -615,22 +774,114 @@ const handleEdit = (menu) => {
             {showServiceForm && (
               <div className={isDarkMode ? "form-container" : "light-form-container"}>
                 <form onSubmit={handleServiceSubmit} className={isDarkMode ? "service-form" : "light-service-form"}>
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Nom du service"
-                    value={serviceFormData.name}
-                    onChange={(e) => setServiceFormData((prev) => ({ ...prev, name: e.target.value }))}
-                    required
-                    className={isDarkMode ? "form-input" : "light-form-input"}
-                  />
-                  <textarea
-                    name="description"
-                    placeholder="Description"
-                    value={serviceFormData.description}
-                    onChange={(e) => setServiceFormData((prev) => ({ ...prev, description: e.target.value }))}
-                    className={isDarkMode ? "form-input" : "light-form-input"}
-                  />
+                  <div className={isDarkMode ? "form-section" : "light-form-section"}>
+                    <label className={isDarkMode ? "form-label" : "light-form-label"}>
+                      English (Default) *
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Service name"
+                      value={serviceFormData.name}
+                      onChange={(e) => setServiceFormData((prev) => ({ ...prev, name: e.target.value }))}
+                      required
+                      className={isDarkMode ? "form-input" : "light-form-input"}
+                    />
+                    <textarea
+                      name="description"
+                      placeholder="Service description"
+                      value={serviceFormData.description}
+                      onChange={(e) => setServiceFormData((prev) => ({ ...prev, description: e.target.value }))}
+                      className={isDarkMode ? "form-input" : "light-form-input"}
+                      rows={3}
+                    />
+                  </div>
+
+                  <div className={isDarkMode ? "form-section" : "light-form-section"}>
+                    <label className={isDarkMode ? "form-label" : "light-form-label"}>
+                      Français
+                    </label>
+                    <input
+                      type="text"
+                      value={serviceFormData.translations?.fr?.name ?? ""}
+                      onChange={(e) =>
+                        setServiceFormData((prev) => ({
+                          ...prev,
+                          translations: {
+                            ...(prev.translations || {}),
+                            fr: {
+                              ...(prev.translations?.fr || {}),
+                              name: e.target.value,
+                            },
+                          },
+                        }))
+                      }
+                      placeholder="Nom du service"
+                      className={isDarkMode ? "form-input" : "light-form-input"}
+                    />
+                    <textarea
+                      value={serviceFormData.translations?.fr?.description ?? ""}
+                      onChange={(e) =>
+                        setServiceFormData((prev) => ({
+                          ...prev,
+                          translations: {
+                            ...(prev.translations || {}),
+                            fr: {
+                              ...(prev.translations?.fr || {}),
+                              description: e.target.value,
+                            },
+                          },
+                        }))
+                      }
+                      placeholder="Description du service"
+                      className={isDarkMode ? "form-input" : "light-form-input"}
+                      rows={3}
+                    />
+                  </div>
+
+                  <div className={isDarkMode ? "form-section" : "light-form-section"}>
+                    <label className={isDarkMode ? "form-label" : "light-form-label"}>
+                      العربية
+                    </label>
+                    <input
+                      type="text"
+                      value={serviceFormData.translations?.ar?.name ?? ""}
+                      onChange={(e) =>
+                        setServiceFormData((prev) => ({
+                          ...prev,
+                          translations: {
+                            ...(prev.translations || {}),
+                            ar: {
+                              ...(prev.translations?.ar || {}),
+                              name: e.target.value,
+                            },
+                          },
+                        }))
+                      }
+                      placeholder="اسم الخدمة"
+                      className={isDarkMode ? "form-input" : "light-form-input"}
+                      dir="rtl"
+                    />
+                    <textarea
+                      value={serviceFormData.translations?.ar?.description ?? ""}
+                      onChange={(e) =>
+                        setServiceFormData((prev) => ({
+                          ...prev,
+                          translations: {
+                            ...(prev.translations || {}),
+                            ar: {
+                              ...(prev.translations?.ar || {}),
+                              description: e.target.value,
+                            },
+                          },
+                        }))
+                      }
+                      placeholder="وصف الخدمة"
+                      className={isDarkMode ? "form-input" : "light-form-input"}
+                      rows={3}
+                      dir="rtl"
+                    />
+                  </div>
                   <div className={isDarkMode ? "form-actions" : "light-form-actions"}>
                     <button
                       type="submit"
@@ -645,7 +896,11 @@ const handleEdit = (menu) => {
                       onClick={() => {
                         setShowServiceForm(false)
                         setEditingServiceId(null)
-                        setServiceFormData({ name: "", description: "" })
+                        setServiceFormData({
+                          name: "",
+                          description: "",
+                          translations: EMPTY_SERVICE_TRANSLATIONS,
+                        })
                       }}
                       disabled={isLoading}
                     >
@@ -671,32 +926,40 @@ const handleEdit = (menu) => {
             ) : (
               <div className={`${isDarkMode ? "services-list" : "light-services-list"} ${viewMode}`}>
                 {filteredServices.map((service) => (
-                  <div key={service._id} className={isDarkMode ? "service-card" : "light-service-card"}>
-                    <h2 onClick={() => handleSelectService(service)} style={{ cursor: "pointer" }}>
-                      {service.name}
-                    </h2>
-                    <p onClick={() => handleSelectService(service)} style={{ cursor: "pointer" }}>
-                      {service.description}
-                    </p>
-                    <div className={isDarkMode ? "service-card-actions" : "light-service-card-actions"}>
-                      <button
-                        onClick={() => handleEditService(service)}
-                        className={isDarkMode ? "btn btn-secondary" : "light-btn light-btn-secondary"}
-                      >
-                        ✏️ Modifier
-                      </button>
-                      <button
-                        onClick={() => handleDeleteService(service._id)}
-                        className={isDarkMode ? "btn btn-danger" : "light-btn light-btn-danger"}
-                      >
-                        🗑️ Supprimer
-                      </button>
-                      <button
-                        onClick={() => handleSelectService(service)}
-                        className={isDarkMode ? "view-menus-btn" : "light-view-menus-btn"}
-                      >
-                        🍽️ Gérer les menus
-                      </button>
+                  <div
+                    key={service._id}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => handleSelectService(service)}
+                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleSelectService(service); } }}
+                    className={isDarkMode ? "service-card" : "light-service-card"}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <div className={isDarkMode ? "service-card-body" : "light-service-card-body"}>
+                      <h2>{service.name}</h2>
+                      <div className={isDarkMode ? "service-card-description-wrap" : "light-service-card-description-wrap"}>
+                        <p>{service.description || "—"}</p>
+                      </div>
+                      <div className={isDarkMode ? "service-card-actions" : "light-service-card-actions"} onClick={(e) => e.stopPropagation()}>
+                        <button
+                          type="button"
+                          onClick={() => handleEditService(service)}
+                          className={isDarkMode ? "btn btn-secondary" : "light-btn light-btn-secondary"}
+                          aria-label="Modifier le service"
+                        >
+                          <Pencil size={16} aria-hidden />
+                          <span>Modifier</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteService(service._id)}
+                          className={isDarkMode ? "btn btn-danger" : "light-btn light-btn-danger"}
+                          aria-label="Supprimer le service"
+                        >
+                          <Trash2 size={16} aria-hidden />
+                          <span>Supprimer</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -729,6 +992,9 @@ const handleEdit = (menu) => {
             {showForm && (
               <div className={isDarkMode ? "form-container" : "light-form-container"}>
                 <form onSubmit={handleSubmit} className={isDarkMode ? "menu-form" : "light-menu-form"}>
+                  <label className={isDarkMode ? "form-label" : "light-form-label"}>
+                    Titre du menu (par défaut) *
+                  </label>
                   <input
                     type="text"
                     name="title"
@@ -738,14 +1004,93 @@ const handleEdit = (menu) => {
                     required
                     className={isDarkMode ? "form-input" : "light-form-input"}
                   />
-                <CompressedFileInput
-  type="file"
-  name="images"
-  accept="image/*"
-  multiple
-  onChange={handleChange}
-  className={isDarkMode ? "form-input" : "light-form-input"}
-/>
+                  <div
+                    className={isDarkMode ? "form-label" : "light-form-label"}
+                    style={{ marginTop: "0.5rem" }}
+                  >
+                    Traductions menu (FR / AR)
+                  </div>
+                  <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                    <button
+                      type="button"
+                      className={
+                        activeMenuLang === "fr"
+                          ? isDarkMode
+                            ? "btn btn-primary"
+                            : "light-btn light-btn-primary"
+                          : isDarkMode
+                          ? "btn btn-secondary"
+                          : "light-btn light-btn-secondary"
+                      }
+                      onClick={() => setActiveMenuLang("fr")}
+                    >
+                      Français
+                    </button>
+                    <button
+                      type="button"
+                      className={
+                        activeMenuLang === "ar"
+                          ? isDarkMode
+                            ? "btn btn-primary"
+                            : "light-btn light-btn-primary"
+                          : isDarkMode
+                          ? "btn btn-secondary"
+                          : "light-btn light-btn-secondary"
+                      }
+                      onClick={() => setActiveMenuLang("ar")}
+                    >
+                      العربية
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    name={`tr_${activeMenuLang}_title`}
+                    value={formData.translations?.[activeMenuLang]?.title ?? ""}
+                    onChange={handleChange}
+                    placeholder={activeMenuLang === "fr" ? "Titre FR" : "العنوان"}
+                    className={isDarkMode ? "form-input" : "light-form-input"}
+                  />
+                  <label className={isDarkMode ? "form-label" : "light-form-label"} style={{ display: "block", marginTop: "0.5rem", marginBottom: "0.25rem" }}>
+                    Ordre d'affichage
+                  </label>
+                  <input
+                    type="number"
+                    name="order"
+                    min={0}
+                    placeholder="0"
+                    value={Number(formData.order ?? 0)}
+                    onChange={handleChange}
+                    className={isDarkMode ? "form-input" : "light-form-input"}
+                    style={{ maxWidth: "120px" }}
+                    title="Plus le nombre est bas, plus le menu s'affiche en premier"
+                  />
+                  <small className="image-upload-hint" style={{ display: "block", marginBottom: "1rem" }}>0 = premier, 1 = deuxième, etc.</small>
+                  <div className={isDarkMode ? "image-upload-section" : "light-image-upload-section"}>
+                    <span className={isDarkMode ? "form-label" : "light-form-label"}>
+                      <ImagePlus size={20} aria-hidden />
+                      Images du menu (max 5)
+                    </span>
+                    <label htmlFor="images" className="image-upload-zone">
+                      <CompressedFileInput
+                        type="file"
+                        name="images"
+                        id="images"
+                        accept="image/*"
+                        multiple
+                        onChange={handleChange}
+                        className="image-upload-zone-input"
+                      />
+                      <span className="image-upload-zone-icon" aria-hidden>
+                        <ImagePlus size={32} strokeWidth={1.5} />
+                      </span>
+                      <span className="image-upload-zone-text">
+                        {previewImages.length > 0
+                          ? `${previewImages.length} image${previewImages.length > 1 ? "s" : ""} sélectionnée${previewImages.length > 1 ? "s" : ""}`
+                          : "Cliquez pour choisir des images (max 5)"}
+                      </span>
+                    </label>
+                    <small className="image-upload-hint">Vous pouvez sélectionner plusieurs images (maximum 5)</small>
+                  </div>
 
                {previewImages.length > 0 && (
   <div className="preview-images">
@@ -767,158 +1112,152 @@ const handleEdit = (menu) => {
     ))}
   </div>
 )}
-                  <h3 className={isDarkMode ? "form-subtitle" : "light-form-subtitle"}>Éléments du menu</h3>
-                  {formData.items.map((item, index) => (
+                  <h3 className={isDarkMode ? "form-subtitle" : "light-form-subtitle"}>
+                    <ListOrdered size={22} strokeWidth={2} className="form-subtitle-icon" aria-hidden />
+                    Éléments du menu
+                  </h3>
+                  {formData.items.map((item, index) => {
+                    return (
                     <div key={index} className={isDarkMode ? "menu-item" : "light-menu-item"}>
+                      <div className="menu-item-header">
+                        <span className="menu-item-title">
+                          <ListOrdered size={16} className="menu-item-title-icon" aria-hidden />
+                          Item N° {index + 1}
+                        </span>
+                        <button type="button" onClick={() => removeItem(index)} className="menu-item-remove-btn" aria-label={`Supprimer l'item ${index + 1}`}>
+                          <Trash2 size={16} aria-hidden />
+                          <span>Supprimer</span>
+                        </button>
+                      </div>
+                      <div className="menu-item-fields-row">
+                        <input
+                          type="text"
+                          placeholder="Nom de l'item"
+                          value={item.name}
+                          onChange={(e) => handleItemChange(index, "name", e.target.value)}
+                          required
+                          className={isDarkMode ? "form-input" : "light-form-input"}
+                        />
+                        <input
+                          type="number"
+                          placeholder="Prix (TND)"
+                          value={item.price}
+                          onChange={(e) => handleItemChange(index, "price", e.target.value)}
+                          required
+                          className={isDarkMode ? "form-input" : "light-form-input"}
+                        />
+                      </div>
+                      <div className="menu-item-description-row">
+                        <textarea
+                          placeholder="Description"
+                          value={item.description}
+                          onChange={(e) => handleItemChange(index, "description", e.target.value)}
+                          className={isDarkMode ? "form-input" : "light-form-input"}
+                        />
+                      </div>
+                      <div
+                        className={isDarkMode ? "form-label" : "light-form-label"}
+                        style={{ marginTop: "0.5rem", marginBottom: "0.25rem" }}
+                      >
+                        Traductions item (FR / AR)
+                      </div>
+                      <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                        <button
+                          type="button"
+                          className={
+                            activeItemLang === "fr"
+                              ? isDarkMode
+                                ? "btn btn-primary"
+                                : "light-btn light-btn-primary"
+                              : isDarkMode
+                              ? "btn btn-secondary"
+                              : "light-btn light-btn-secondary"
+                          }
+                          style={{ padding: "0.35rem 0.75rem", fontSize: "0.9rem" }}
+                          onClick={() => setActiveItemLang("fr")}
+                        >
+                          FR
+                        </button>
+                        <button
+                          type="button"
+                          className={
+                            activeItemLang === "ar"
+                              ? isDarkMode
+                                ? "btn btn-primary"
+                                : "light-btn light-btn-primary"
+                              : isDarkMode
+                              ? "btn btn-secondary"
+                              : "light-btn light-btn-secondary"
+                          }
+                          style={{ padding: "0.35rem 0.75rem", fontSize: "0.9rem" }}
+                          onClick={() => setActiveItemLang("ar")}
+                        >
+                          AR
+                        </button>
+                      </div>
                       <input
                         type="text"
-                        placeholder="Nom de l'item"
-                        value={item.name}
-                        onChange={(e) => handleItemChange(index, "name", e.target.value)}
-                        required
+                        placeholder={activeItemLang === "fr" ? "Nom FR" : "الاسم"}
+                        value={item.translations?.[activeItemLang]?.name ?? ""}
+                        onChange={(e) =>
+                          handleItemChange(index, "tr_" + activeItemLang + "_name", e.target.value)
+                        }
                         className={isDarkMode ? "form-input" : "light-form-input"}
-                      />
-                      <input
-                        type="number"
-                        placeholder="Prix"
-                        value={item.price}
-                        onChange={(e) => handleItemChange(index, "price", e.target.value)}
-                        required
-                        className={isDarkMode ? "form-input" : "light-form-input"}
+                        style={{ marginBottom: "0.35rem" }}
                       />
                       <textarea
-                        placeholder="Description"
-                        value={item.description}
-                        onChange={(e) => handleItemChange(index, "description", e.target.value)}
+                        placeholder={activeItemLang === "fr" ? "Description FR" : "الوصف"}
+                        value={item.translations?.[activeItemLang]?.description ?? ""}
+                        onChange={(e) =>
+                          handleItemChange(index, "tr_" + activeItemLang + "_description", e.target.value)
+                        }
                         className={isDarkMode ? "form-input" : "light-form-input"}
+                        rows={2}
                       />
-                    <div className={isDarkMode ? "checkbox-container" : "light-checkbox-container"}>
-  {/* Vegetarian */}
-  <label className={isDarkMode ? "checkbox-label" : "light-checkbox-label"}>
-    <input
-      type="checkbox"
-      checked={item.isVegetarian || false}
-      onChange={(e) => handleItemChange(index, "isVegetarian", e.target.checked)}
-      className={isDarkMode ? "checkbox-input" : "light-checkbox-input"}
-    />
-    <span className={`${isDarkMode ? "checkbox-text" : "light-checkbox-text"} inline-block relative -mt-1`}>
-      Vegetarian
-    </span>
-  </label>
-</div>
-
-<div className={isDarkMode ? "checkbox-container" : "light-checkbox-container"}>
-  {/* Organic */}
-  <label className={isDarkMode ? "checkbox-label" : "light-checkbox-label"}>
-    <input
-      type="checkbox"
-      checked={item.isOrganic || false}
-      onChange={(e) => handleItemChange(index, "isOrganic", e.target.checked)}
-      className={isDarkMode ? "checkbox-input" : "light-checkbox-input"}
-    />
-    <span className={`${isDarkMode ? "checkbox-text" : "light-checkbox-text"} inline-block relative -mt-1`}>
-      Organic
-    </span>
-  </label>
-</div>
-
-<div className={isDarkMode ? "checkbox-container" : "light-checkbox-container"}>
-  {/* Local */}
-  <label className={isDarkMode ? "checkbox-label" : "light-checkbox-label"}>
-    <input
-      type="checkbox"
-      checked={item.isLocal || false}
-      onChange={(e) => handleItemChange(index, "isLocal", e.target.checked)}
-      className={isDarkMode ? "checkbox-input" : "light-checkbox-input"}
-    />
-    <span className={`${isDarkMode ? "checkbox-text" : "light-checkbox-text"} inline-block relative -mt-1`}>
-      Local
-    </span>
-  </label>
-</div>
-
-<div className={isDarkMode ? "checkbox-container" : "light-checkbox-container"}>
-  {/* Gluten Free */}
-  <label className={isDarkMode ? "checkbox-label" : "light-checkbox-label"}>
-    <input
-      type="checkbox"
-      checked={item.isGlutenFree || false}
-      onChange={(e) => handleItemChange(index, "isGlutenFree", e.target.checked)}
-      className={isDarkMode ? "checkbox-input" : "light-checkbox-input"}
-    />
-    <span className={`${isDarkMode ? "checkbox-text" : "light-checkbox-text"} inline-block relative -mt-1`}>
-      Gluten Free
-    </span>
-  </label>
-</div>
-
-<div className={isDarkMode ? "checkbox-container" : "light-checkbox-container"}>
-  {/* Lactose Free */}
-  <label className={isDarkMode ? "checkbox-label" : "light-checkbox-label"}>
-    <input
-      type="checkbox"
-      checked={item.isLactoseFree || false}
-      onChange={(e) => handleItemChange(index, "isLactoseFree", e.target.checked)}
-      className={isDarkMode ? "checkbox-input" : "light-checkbox-input"}
-    />
-    <span className={`${isDarkMode ? "checkbox-text" : "light-checkbox-text"} inline-block relative -mt-1`}>
-      Lactose Free
-    </span>
-  </label>
-</div>
-
-
-
-<div className={isDarkMode ? "checkbox-container" : "light-checkbox-container"}>
-  {/* Lactose Free */}
-  <label className={isDarkMode ? "checkbox-label" : "light-checkbox-label"}>
-    <input
-      type="checkbox"
-      checked={item.isAvailable24_7 || false}
-      onChange={(e) => handleItemChange(index, "isAvailable24_7", e.target.checked)}
-      className={isDarkMode ? "checkbox-input" : "light-checkbox-input"}
-    />
-    <span className={`${isDarkMode ? "checkbox-text" : "light-checkbox-text"} inline-block relative -mt-1`}>
-      Disponible 24/7
-    </span>
-  </label>
-</div>
-
-
-<div className={isDarkMode ? "checkbox-container" : "light-checkbox-container"}>
-  {/* commandable */}
-  <label className={isDarkMode ? "checkbox-label" : "light-checkbox-label"}>
-    <input
-      type="checkbox"
-      checked={item.commandable || false}
-      onChange={(e) => handleItemChange(index, "commandable", e.target.checked)}
-      className={isDarkMode ? "checkbox-input" : "light-checkbox-input"}
-    />
-    <span className={`${isDarkMode ? "checkbox-text" : "light-checkbox-text"} inline-block relative -mt-1`}>
-      Commandable
-    </span>
-  </label>
-</div>
-
-
-
-                      <button
-                        type="button"
-                        onClick={() => removeItem(index)}
-                        className={isDarkMode ? "remove-item-btn" : "light-remove-item-btn"}
-                      >
-                        ❌ Supprimer
-                      </button>
+                      <span className="menu-item-options-label">Options</span>
+                      <div className="menu-item-options-row">
+                        <label className={isDarkMode ? "checkbox-label" : "light-checkbox-label"}>
+                          <input type="checkbox" checked={item.isVegetarian || false} onChange={(e) => handleItemChange(index, "isVegetarian", e.target.checked)} className={isDarkMode ? "checkbox-input" : "light-checkbox-input"} />
+                          <span className={isDarkMode ? "checkbox-text" : "light-checkbox-text"}>Végétarien</span>
+                        </label>
+                        <label className={isDarkMode ? "checkbox-label" : "light-checkbox-label"}>
+                          <input type="checkbox" checked={item.isOrganic || false} onChange={(e) => handleItemChange(index, "isOrganic", e.target.checked)} className={isDarkMode ? "checkbox-input" : "light-checkbox-input"} />
+                          <span className={isDarkMode ? "checkbox-text" : "light-checkbox-text"}>Bio</span>
+                        </label>
+                        <label className={isDarkMode ? "checkbox-label" : "light-checkbox-label"}>
+                          <input type="checkbox" checked={item.isLocal || false} onChange={(e) => handleItemChange(index, "isLocal", e.target.checked)} className={isDarkMode ? "checkbox-input" : "light-checkbox-input"} />
+                          <span className={isDarkMode ? "checkbox-text" : "light-checkbox-text"}>Local</span>
+                        </label>
+                        <label className={isDarkMode ? "checkbox-label" : "light-checkbox-label"}>
+                          <input type="checkbox" checked={item.isAvailable24_7 || false} onChange={(e) => handleItemChange(index, "isAvailable24_7", e.target.checked)} className={isDarkMode ? "checkbox-input" : "light-checkbox-input"} />
+                          <span className={isDarkMode ? "checkbox-text" : "light-checkbox-text"}>Disponible 24/7</span>
+                        </label>
+                        <label className={isDarkMode ? "checkbox-label" : "light-checkbox-label"}>
+                          <input type="checkbox" checked={item.commandable !== false} onChange={(e) => handleItemChange(index, "commandable", e.target.checked)} className={isDarkMode ? "checkbox-input" : "light-checkbox-input"} />
+                          <span className={isDarkMode ? "checkbox-text" : "light-checkbox-text"}>Commandable</span>
+                        </label>
+                      </div>
+                      <span className="menu-item-options-label">Allergènes (contient)</span>
+                      <div className="menu-item-options-row menu-item-allergens-row">
+                        {ALLERGENS_LIST.map(({ key, label, Icon }) => (
+                          <label key={key} className={isDarkMode ? "checkbox-label" : "light-checkbox-label"}>
+                            <input type="checkbox" checked={item[key] || false} onChange={(e) => handleItemChange(index, key, e.target.checked)} className={isDarkMode ? "checkbox-input" : "light-checkbox-input"} />
+                            <span className={isDarkMode ? "checkbox-text" : "light-checkbox-text"}><Icon size={16} strokeWidth={2} className="allergen-option-icon" aria-hidden /> {label}</span>
+                          </label>
+                        ))}
+                      </div>
                     </div>
-                  ))}
+                  )})}
                   <button
                     type="button"
                     onClick={addItem}
                     className={
                       isDarkMode ? "btn btn-secondary add-item-btn" : "light-btn light-btn-secondary light-add-item-btn"
                     }
+                    aria-label="Ajouter un item au menu"
                   >
-                    ➕ Ajouter un item
+                    <Plus size={18} aria-hidden />
+                    <span>Ajouter un item</span>
                   </button>
 
                   <div className={isDarkMode ? "form-actions" : "light-form-actions"}>
@@ -970,8 +1309,11 @@ const handleEdit = (menu) => {
                             className="card-image main-image"
                             onError={(e) => (e.target.src = "/images/placeholder.png")}
                           />
-                          {menu.images.length > 1 && (
-                            <div className="image-count-badge">+{menu.images.length - 1} images</div>
+                          {menu.images && menu.images.length >= 1 && (
+                            <div className={isDarkMode ? "image-count-badge" : "light-image-count-badge"} title={`${menu.images.length} image${menu.images.length > 1 ? "s" : ""} pour ce plat`}>
+                              <span className="image-count-icon" aria-hidden>📷</span>
+                              <span>{menu.images.length} image{menu.images.length > 1 ? "s" : ""}</span>
+                            </div>
                           )}
                         </div>
                       ) : (
@@ -980,18 +1322,30 @@ const handleEdit = (menu) => {
                     </div>
                     <div className={isDarkMode ? "menu-content" : "light-menu-content"}>
                       <h3>{menu.title}</h3>
-                      <div className="menu-card-actions">
+                      <span className={isDarkMode ? "menu-card-order" : "light-menu-card-order"} title="Ordre d'affichage côté client">
+                        Ordre : {Number(menu.order) ?? 0}
+                      </span>
+                      <div
+                        className={isDarkMode ? "menu-card-actions" : "light-menu-card-actions"}
+                        style={isDarkMode ? { display: "flex", visibility: "visible", opacity: 1, gap: "8px", flexShrink: 0 } : undefined}
+                      >
                         <button
                           onClick={() => handleEdit(menu)}
                           className={isDarkMode ? "btn btn-secondary" : "light-btn light-btn-secondary"}
+                          aria-label="Modifier le menu"
+                          style={isDarkMode ? { background: "rgba(148, 163, 184, 0.35)", color: "#f1f5f9", border: "1px solid rgba(148, 163, 184, 0.6)", opacity: 1, visibility: "visible" } : undefined}
                         >
-                          ✏️ Modifier
+                          <Pencil size={16} aria-hidden />
+                          <span>Modifier</span>
                         </button>
                         <button
                           onClick={() => handleDelete(menu._id)}
                           className={isDarkMode ? "btn btn-danger" : "light-btn light-btn-danger"}
+                          aria-label="Supprimer le menu"
+                          style={isDarkMode ? { background: "#dc2626", color: "#ffffff", border: "1px solid rgba(248, 113, 113, 0.6)", opacity: 1, visibility: "visible" } : undefined}
                         >
-                          🗑️ Supprimer
+                          <Trash2 size={16} aria-hidden />
+                          <span>Supprimer</span>
                         </button>
                       </div>
                     </div>
@@ -1006,10 +1360,40 @@ const handleEdit = (menu) => {
       <style jsx>{`
 /* Light Mode Styles for Room Service Page */
 .light-dashboard {
-  background: linear-gradient(135deg, #ffffff 0%, #fdf2f8 50%, #f8fafc 100%);
+  background: #f8fafc;
+  background-image: linear-gradient(180deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%);
   color: #1e293b;
   min-height: 100vh;
   font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.light-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: #334155;
+  font-size: 0.9rem;
+}
+
+.light-checkbox-input {
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 4px;
+  background: #ffffff;
+  cursor: pointer;
+  accent-color: #8b5cf6;
+  flex-shrink: 0;
+}
+
+.light-checkbox-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.25);
+}
+
+.light-checkbox-text {
+  color: #475569;
 }
 .preview-image-container {
   position: relative;
@@ -1628,11 +2012,16 @@ const handleEdit = (menu) => {
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
+  min-height: 44px;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 500;
   box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .light-back-button:hover {
@@ -1796,26 +2185,38 @@ const handleEdit = (menu) => {
 
 .light-empty-state {
   text-align: center;
-  padding: 3rem 2rem;
-  background: linear-gradient(135deg, #ffffff 0%, #fdf2f8 100%);
+  padding: 56px 32px;
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
   border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.light-empty-state .empty-icon {
+  font-size: 56px;
+  margin-bottom: 20px;
+  opacity: 0.9;
 }
 
 .light-empty-state h3 {
   color: #1e293b;
-  margin-bottom: 0.5rem;
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-bottom: 10px;
 }
 
 .light-empty-state p {
   color: #64748b;
-  margin-bottom: 2rem;
+  margin-bottom: 28px;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 .light-services-list.grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
   gap: 24px;
 }
 
@@ -1826,45 +2227,129 @@ const handleEdit = (menu) => {
 }
 
 .light-service-card {
-  background: linear-gradient(135deg, #ffffff 0%, #fdf2f8 100%);
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
+  background: linear-gradient(160deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 20px;
+  padding: 22px 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06), 0 2px 12px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.28s ease, border-color 0.2s ease;
   height: 100%;
   display: flex;
   flex-direction: column;
+  min-height: 260px;
 }
 
 .light-service-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(236, 72, 153, 0.15);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.1), 0 8px 20px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 1);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+.light-service-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
 }
 
 .light-service-card h2 {
-  color: #1e293b;
-  margin-bottom: 1rem;
-  font-size: 1.25rem;
+  color: #0f172a;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
   font-weight: 600;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  letter-spacing: 0.01em;
+}
+
+.light-service-card-description-wrap {
+  flex: 1;
+  min-height: 3.5em;
+  max-height: 10em;
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  align-items: flex-start;
+  -webkit-overflow-scrolling: touch;
+}
+
+.light-service-card-description-wrap::-webkit-scrollbar {
+  width: 6px;
+}
+
+.light-service-card-description-wrap::-webkit-scrollbar-track {
+  background: rgba(148, 163, 184, 0.15);
+  border-radius: 3px;
+}
+
+.light-service-card-description-wrap::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.4);
+  border-radius: 3px;
+}
+
+.light-service-card-description-wrap::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.6);
+}
+
+.light-service-card:hover .light-service-card-description-wrap {
+  background: #e2e8f0;
+  border-color: #94a3b8;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .light-service-card p {
-  color: #64748b;
-  margin-bottom: 1.5rem;
+  color: #334155;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  word-break: break-word;
+  text-align: left;
+  width: 100%;
   flex: 1;
+  min-width: 0;
+}
+
+/* Grid: hauteur de zone défilable */
+.light-services-list.grid .light-service-card .light-service-card-description-wrap {
+  min-height: 5.5em;
+  max-height: 11em;
 }
 
 .light-service-card-actions {
-  display: flex;
-  gap: 0.5rem;
+  display: flex !important;
+  gap: 8px;
   margin-top: auto;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.light-service-card-actions .light-btn,
+.light-service-card-actions button {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.light-service-card-actions .light-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  font-size: 0.875rem;
 }
 
 .light-menus-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
@@ -1876,8 +2361,8 @@ const handleEdit = (menu) => {
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
-  height: 400px;
-  min-height: 400px;
+  height: 460px;
+  min-height: 460px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -1889,7 +2374,7 @@ const handleEdit = (menu) => {
 }
 
 .light-menu-card .card-image {
-  height: 200px;
+  height: 240px;
   object-fit: cover;
 }
 
@@ -1899,9 +2384,47 @@ const handleEdit = (menu) => {
 
 .light-menu-content h3 {
   color: #1e293b;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   font-size: 1.25rem;
   font-weight: 600;
+}
+
+.menu-card-order,
+.light-menu-card-order {
+  display: inline-block;
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-bottom: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 6px;
+}
+
+.menu-card-order {
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.light-menu-card-actions {
+  display: flex !important;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.light-menu-card-actions .light-btn,
+.light-menu-card-actions button {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.light-menu-card-actions .light-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 /* Enhanced menu card actions styling to ensure visibility */

@@ -16,7 +16,7 @@ const BoissonsPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [currentTime, setCurrentTime] = useState(new Date())
   const [searchTerm, setSearchTerm] = useState("")
-  const [sortOrder, setSortOrder] = useState("newest")
+  const [sortOrder, setSortOrder] = useState("order")
   const [viewMode, setViewMode] = useState("grid")
   const [categoryViewMode, setCategoryViewMode] = useState("grid")
 
@@ -30,18 +30,29 @@ const BoissonsPage = () => {
   const [categoryFormData, setCategoryFormData] = useState({
     name: "",
     image: null,
+    translations: {
+      fr: { name: "" },
+      ar: { name: "" },
+    },
   })
+  const [activeCategoryLang, setActiveCategoryLang] = useState("fr")
   const [editCategoryId, setEditCategoryId] = useState(null)
   const [categoryPreviewImage, setCategoryPreviewImage] = useState(null)
 
   const [showBoissonForm, setShowBoissonForm] = useState(false)
   const [boissonFormData, setBoissonFormData] = useState({
     title: "",
+    order: 0,
     price: "",
     quantity: "",
     description: "",
     image: null,
+    translations: {
+      fr: { title: "", description: "" },
+      ar: { title: "", description: "" },
+    },
   })
+  const [activeLang, setActiveLang] = useState("fr")
   const [editBoissonId, setEditBoissonId] = useState(null)
   const [previewImage, setPreviewImage] = useState(null)
 
@@ -62,9 +73,9 @@ const BoissonsPage = () => {
     setIsLoading(true)
     try {
       const res = await API.get("/boissons")
-      const filtered = res.data.filter((b) => {
-        return b.category?._id === categoryId || b.category === categoryId
-      })
+      const filtered = res.data
+        .filter((b) => b.category?._id === categoryId || b.category === categoryId)
+        .sort((a, b) => (a.order ?? 999) - (b.order ?? 999))
       setBoissons(filtered)
     } catch (error) {
       console.error("Error fetching boissons:", error)
@@ -107,6 +118,15 @@ const BoissonsPage = () => {
       const reader = new FileReader()
       reader.onloadend = () => setCategoryPreviewImage(reader.result)
       reader.readAsDataURL(files[0])
+    } else if (name.startsWith("tr_")) {
+      const [, lang, field] = name.split("_")
+      setCategoryFormData((prev) => ({
+        ...prev,
+        translations: {
+          ...prev.translations,
+          [lang]: { ...prev.translations[lang], [field]: value },
+        },
+      }))
     } else {
       setCategoryFormData((prev) => ({ ...prev, [name]: value }))
     }
@@ -116,7 +136,14 @@ const BoissonsPage = () => {
     e.preventDefault()
     try {
       const form = new FormData()
-      form.append("name", categoryFormData.name)
+      form.append("name", categoryFormData.name ?? "")
+      form.append(
+        "translations",
+        JSON.stringify({
+          fr: categoryFormData.translations?.fr || { name: "" },
+          ar: categoryFormData.translations?.ar || { name: "" },
+        }),
+      )
       if (categoryFormData.image) {
         form.append("image", categoryFormData.image)
       }
@@ -132,7 +159,7 @@ const BoissonsPage = () => {
         })
         alert("Catégorie créée")
       }
-      setCategoryFormData({ name: "", image: null })
+      setCategoryFormData({ name: "", image: null, translations: { fr: { name: "" }, ar: { name: "" } } })
       setCategoryPreviewImage(null)
       setEditCategoryId(null)
       setShowCategoryForm(false)
@@ -144,9 +171,14 @@ const BoissonsPage = () => {
   }
 
   const handleEditCategory = (cat) => {
+    const tr = cat.translations || {}
     setCategoryFormData({
-      name: cat.name,
+      name: cat.name ?? "",
       image: null,
+      translations: {
+        fr: { name: (tr.fr && tr.fr.name) || "" },
+        ar: { name: (tr.ar && tr.ar.name) || "" },
+      },
     })
     setEditCategoryId(cat._id)
     setShowCategoryForm(true)
@@ -176,8 +208,20 @@ const BoissonsPage = () => {
 
     try {
       const form = new FormData()
-      for (const key in boissonFormData) {
-        form.append(key, boissonFormData[key])
+      form.append("title", boissonFormData.title ?? "")
+      form.append("description", boissonFormData.description ?? "")
+      form.append("order", String(Number(boissonFormData.order ?? 0)))
+      form.append("price", boissonFormData.price ?? "")
+      form.append("quantity", boissonFormData.quantity ?? "")
+      form.append(
+        "translations",
+        JSON.stringify({
+          fr: boissonFormData.translations?.fr || { title: "", description: "" },
+          ar: boissonFormData.translations?.ar || { title: "", description: "" },
+        }),
+      )
+      if (boissonFormData.image) {
+        form.append("image", boissonFormData.image)
       }
       form.append("category", activeCategory._id)
 
@@ -193,7 +237,15 @@ const BoissonsPage = () => {
         alert("Boisson ajoutée")
       }
 
-      setBoissonFormData({ title: "", price: "", quantity: "", description: "", image: null })
+      setBoissonFormData({
+        title: "",
+        order: 0,
+        price: "",
+        quantity: "",
+        description: "",
+        image: null,
+        translations: { fr: { title: "", description: "" }, ar: { title: "", description: "" } },
+      })
       setEditBoissonId(null)
       setShowBoissonForm(false)
       setPreviewImage(null)
@@ -211,18 +263,37 @@ const BoissonsPage = () => {
       const reader = new FileReader()
       reader.onloadend = () => setPreviewImage(reader.result)
       reader.readAsDataURL(files[0])
+    } else if (name === "order") {
+      const raw = value.trim() === "" ? 0 : value
+      const num = parseInt(raw, 10)
+      setBoissonFormData((prev) => ({ ...prev, order: Number.isNaN(num) ? 0 : num }))
+    } else if (name.startsWith("tr_")) {
+      const [, lang, field] = name.split("_")
+      setBoissonFormData((prev) => ({
+        ...prev,
+        translations: {
+          ...prev.translations,
+          [lang]: { ...prev.translations[lang], [field]: value },
+        },
+      }))
     } else {
       setBoissonFormData((prev) => ({ ...prev, [name]: value }))
     }
   }
 
   const handleEditBoisson = (boisson) => {
+    const tr = boisson.translations || {}
     setBoissonFormData({
       title: boisson.title,
+      order: Number(boisson.order) || 0,
       price: boisson.price,
       quantity: boisson.quantity,
       description: boisson.description || "",
       image: null,
+      translations: {
+        fr: { title: (tr.fr && tr.fr.title) || "", description: (tr.fr && tr.fr.description) || "" },
+        ar: { title: (tr.ar && tr.ar.title) || "", description: (tr.ar && tr.ar.description) || "" },
+      },
     })
     setEditBoissonId(boisson._id)
     setShowBoissonForm(true)
@@ -267,7 +338,9 @@ const BoissonsPage = () => {
         b.description?.toLowerCase().includes(searchTerm.toLowerCase()),
     )
     .sort((a, b) => {
-      if (sortOrder === "newest") {
+      if (sortOrder === "order") {
+        return (a.order ?? 999) - (b.order ?? 999)
+      } else if (sortOrder === "newest") {
         return new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
       } else if (sortOrder === "oldest") {
         return new Date(a.createdAt || 0) - new Date(b.createdAt || 0)
@@ -304,7 +377,7 @@ const BoissonsPage = () => {
   return (
     <div className={isDarkMode ? "dashboard" : "light-dashboard"}>
       <div className={isDarkMode ? "mobile-header" : "light-mobile-header"}>
-        <button className={isDarkMode ? "menu-toggle" : "light-menu-toggle"} onClick={toggleSidebar}>
+        <button className="light-menu-toggle" onClick={toggleSidebar}>
           <span></span>
           <span></span>
           <span></span>
@@ -473,6 +546,7 @@ const BoissonsPage = () => {
               value={sortOrder}
               onChange={(e) => setSortOrder(e.target.value)}
             >
+              <option value="order">Ordre d'affichage</option>
               <option value="newest">Plus récent</option>
               <option value="oldest">Plus ancien</option>
               <option value="alphabetical">Alphabétique</option>
@@ -519,6 +593,7 @@ const BoissonsPage = () => {
 
             {showCategoryForm && (
               <form onSubmit={handleCategorySubmit} className={isDarkMode ? "category-form" : "light-category-form"}>
+                <label className={isDarkMode ? "form-label" : "light-form-label"}>Nom (par défaut) *</label>
                 <input
                   type="text"
                   name="name"
@@ -528,6 +603,12 @@ const BoissonsPage = () => {
                   required
                   className={isDarkMode ? "form-input" : "light-form-input"}
                 />
+                <div className={isDarkMode ? "form-label" : "light-form-label"} style={{ marginTop: "0.5rem" }}>Traductions (FR / AR)</div>
+                <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                  <button type="button" className={activeCategoryLang === "fr" ? (isDarkMode ? "btn btn-primary" : "light-btn light-btn-primary") : (isDarkMode ? "btn btn-secondary" : "light-btn light-btn-secondary")} onClick={() => setActiveCategoryLang("fr")}>Français</button>
+                  <button type="button" className={activeCategoryLang === "ar" ? (isDarkMode ? "btn btn-primary" : "light-btn light-btn-primary") : (isDarkMode ? "btn btn-secondary" : "light-btn light-btn-secondary")} onClick={() => setActiveCategoryLang("ar")}>العربية</button>
+                </div>
+                <input type="text" name={`tr_${activeCategoryLang}_name`} value={categoryFormData.translations?.[activeCategoryLang]?.name ?? ""} onChange={handleCategoryChange} placeholder={activeCategoryLang === "fr" ? "Nom FR" : "الاسم"} className={isDarkMode ? "form-input" : "light-form-input"} />
                 <div className="form-group">
                   <label htmlFor="categoryImage" className={isDarkMode ? "form-label" : "light-form-label"}>
                     Image de la catégorie
@@ -678,52 +759,38 @@ const BoissonsPage = () => {
                         onSubmit={handleBoissonSubmit}
                         className={isDarkMode ? "boisson-form" : "light-boisson-form"}
                       >
-                        <div className="form-row">
-                          <input
-                            type="text"
-                            name="title"
-                            placeholder="Nom de la boisson"
-                            value={boissonFormData.title}
-                            onChange={handleBoissonChange}
-                            required
-                            className={isDarkMode ? "form-input" : "light-form-input"}
-                          />
-                          <input
-                            type="number"
-                            name="price"
-                            placeholder="Prix (TND)"
-                            value={boissonFormData.price}
-                            onChange={handleBoissonChange}
-                            required
-                            className={isDarkMode ? "form-input" : "light-form-input"}
-                          />
-                        </div>
-                        <div className="form-row">
-                          <input
-                            type="number"
-                            name="quantity"
-                            placeholder="Quantité disponible"
-                            value={boissonFormData.quantity}
-                            onChange={handleBoissonChange}
-                            className={isDarkMode ? "form-input" : "light-form-input"}
-                          />
-                      <CompressedFileInput
-  type="file"
-  name="image"
-  accept="image/*"
-  onChange={handleBoissonChange}
-  className={isDarkMode ? "form-input file-input" : "light-form-input light-file-input"}
-/>
-
-                        </div>
+                        <label className={isDarkMode ? "form-label" : "light-form-label"}>Titre (par défaut) *</label>
+                        <input
+                          type="text"
+                          name="title"
+                          placeholder="Nom de la boisson"
+                          value={boissonFormData.title}
+                          onChange={handleBoissonChange}
+                          required
+                          className={isDarkMode ? "form-input" : "light-form-input"}
+                        />
+                        <label className={isDarkMode ? "form-label" : "light-form-label"}>Description (par défaut)</label>
                         <textarea
                           name="description"
                           placeholder="Description de la boisson"
                           value={boissonFormData.description}
                           onChange={handleBoissonChange}
                           className={isDarkMode ? "form-textarea" : "light-form-textarea"}
-                          rows="3"
+                          rows="2"
                         />
+                        <div className={isDarkMode ? "form-label" : "light-form-label"} style={{ marginTop: "0.5rem" }}>Traductions (FR / AR)</div>
+                        <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                          <button type="button" className={activeLang === "fr" ? (isDarkMode ? "btn btn-primary" : "light-btn light-btn-primary") : (isDarkMode ? "btn btn-secondary" : "light-btn light-btn-secondary")} onClick={() => setActiveLang("fr")}>Français</button>
+                          <button type="button" className={activeLang === "ar" ? (isDarkMode ? "btn btn-primary" : "light-btn light-btn-primary") : (isDarkMode ? "btn btn-secondary" : "light-btn light-btn-secondary")} onClick={() => setActiveLang("ar")}>العربية</button>
+                        </div>
+                        <input type="text" name={`tr_${activeLang}_title`} value={boissonFormData.translations?.[activeLang]?.title ?? ""} onChange={handleBoissonChange} placeholder={activeLang === "fr" ? "Titre FR" : "العنوان"} className={isDarkMode ? "form-input" : "light-form-input"} />
+                        <textarea name={`tr_${activeLang}_description`} value={boissonFormData.translations?.[activeLang]?.description ?? ""} onChange={handleBoissonChange} placeholder={activeLang === "fr" ? "Description FR" : "الوصف"} className={isDarkMode ? "form-textarea" : "light-form-textarea"} rows="2" />
+                        <div className="form-row">
+                          <input type="number" name="order" min={0} placeholder="Ordre" value={Number(boissonFormData.order ?? 0)} onChange={handleBoissonChange} className={isDarkMode ? "form-input" : "light-form-input"} style={{ maxWidth: "100px" }} title="Ordre d'affichage (0 = premier)" />
+                          <input type="number" name="price" placeholder="Prix (TND)" value={boissonFormData.price} onChange={handleBoissonChange} required className={isDarkMode ? "form-input" : "light-form-input"} />
+                          <input type="number" name="quantity" placeholder="Quantité" value={boissonFormData.quantity} onChange={handleBoissonChange} className={isDarkMode ? "form-input" : "light-form-input"} />
+                          <CompressedFileInput type="file" name="image" accept="image/*" onChange={handleBoissonChange} className={isDarkMode ? "form-input file-input" : "light-form-input light-file-input"} />
+                        </div>
                         {previewImage && (
                           <div className="image-preview-container">
                             <img src={previewImage || "/placeholder.svg"} alt="preview" className="form-preview-img" />
@@ -779,6 +846,9 @@ const BoissonsPage = () => {
                               </div>
                               <div className={isDarkMode ? "boisson-details" : "light-boisson-details"}>
                                 <h4 className="boisson-title">{boisson.title}</h4>
+                                <span className={isDarkMode ? "boisson-card-order" : "light-boisson-card-order"} title="Ordre d'affichage">
+                                  Ordre : {Number(boisson.order) ?? 0}
+                                </span>
                                 <div className="boisson-meta">
                                   <span className="quantity-info">
                                     <span className="quantity-icon">📦</span>
@@ -1397,6 +1467,22 @@ const BoissonsPage = () => {
 
 .light-boisson-details .boisson-description {
   color: #64748b;
+}
+
+.boisson-card-order,
+.light-boisson-card-order {
+  display: inline-block;
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+  padding: 0.2rem 0.5rem;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 6px;
+}
+
+.boisson-card-order {
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .boisson-card-actions {

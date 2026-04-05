@@ -6,10 +6,136 @@ import API from "../services/api"
 import "./OffresPage.css"
 import CompressedFileInput from "../components/CompressedFileInput"
 
+// Composant pour générer une miniature à partir d'une vidéo
+const VideoThumbnail = ({ src, alt }) => {
+  const [thumbnail, setThumbnail] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    if (!src) {
+      setIsLoading(false)
+      return
+    }
+
+    let isCancelled = false
+    const video = document.createElement("video")
+
+    video.crossOrigin = "anonymous"
+    video.src = src
+    video.muted = true
+    video.playsInline = true
+    video.preload = "metadata"
+
+    const cleanup = () => {
+      video.removeEventListener("loadeddata", handleLoadedData)
+      video.removeEventListener("seeked", handleSeeked)
+      video.removeEventListener("error", handleError)
+      video.pause()
+      video.src = ""
+    }
+
+    const captureFrame = () => {
+      try {
+        const canvas = document.createElement("canvas")
+        const width = video.videoWidth || 640
+        const height = video.videoHeight || 360
+
+        canvas.width = width
+        canvas.height = height
+
+        const ctx = canvas.getContext("2d")
+        if (!ctx) {
+          throw new Error("Canvas context not available")
+        }
+
+        ctx.drawImage(video, 0, 0, width, height)
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.8)
+
+        if (!isCancelled) {
+          setThumbnail(dataUrl)
+          setIsLoading(false)
+        }
+      } catch (error) {
+        console.error("Erreur génération miniature vidéo:", error)
+        if (!isCancelled) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    const handleLoadedData = () => {
+      try {
+        const targetTime = video.duration && !Number.isNaN(video.duration) ? Math.min(1, video.duration / 2) : 0
+        video.currentTime = targetTime
+      } catch (error) {
+        captureFrame()
+      }
+    }
+
+    const handleSeeked = () => {
+      captureFrame()
+      cleanup()
+    }
+
+    const handleError = () => {
+      if (!isCancelled) {
+        setIsLoading(false)
+      }
+      cleanup()
+    }
+
+    video.addEventListener("loadeddata", handleLoadedData)
+    video.addEventListener("seeked", handleSeeked)
+    video.addEventListener("error", handleError)
+
+    video.load()
+
+    return () => {
+      isCancelled = true
+      cleanup()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [src])
+
+  if (thumbnail) {
+    return (
+      <div className="card-video-thumbnail-wrapper">
+        <img src={thumbnail} alt={alt} className="card-image" />
+        <div className="card-video-play-overlay">
+          <div className="play-button-circle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="play-icon">
+              <path d="M8 5v14l11-7z" fill="currentColor" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (isLoading) {
+    return (
+      <div className="card-video-loading">
+        <div className="card-video-loading-spinner"></div>
+        <span>Chargement...</span>
+      </div>
+    )
+  }
+
+  // Fallback si on ne peut pas générer la miniature
+  return (
+    <div className="card-video-fallback">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 5v14l11-7z" fill="currentColor" />
+      </svg>
+      <span>Vidéo</span>
+    </div>
+  )
+}
+
 const OffresPage = () => {
   const navigate = useNavigate()
   const [offres, setOffres] = useState([])
-  // Update the formData state to include image
+  // Update the formData state to include images or video
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -17,11 +143,20 @@ const OffresPage = () => {
     startDate: "",
     endDate: "",
     active: true,
-    image: null,
+    images: [],
+    video: null,
+    mediaType: "images",
+    translations: {
+      en: { title: "", description: "" },
+      fr: { title: "", description: "" },
+      ar: { title: "", description: "" },
+    },
   })
+  const [activeLang, setActiveLang] = useState("en")
 
-  // Add image preview state
-  const [previewImage, setPreviewImage] = useState(null)
+  // Add preview states
+  const [previewImages, setPreviewImages] = useState([])
+  const [previewVideo, setPreviewVideo] = useState(null)
 
   const [editId, setEditId] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -32,6 +167,7 @@ const OffresPage = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [sortOrder, setSortOrder] = useState("newest")
   const [viewMode, setViewMode] = useState("grid")
+  const [imageIndices, setImageIndices] = useState({}) // Track current image index for each offer
 
   // Theme state with localStorage initialization
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -39,7 +175,7 @@ const OffresPage = () => {
     return savedTheme ? savedTheme === "dark" : true
   })
 
-  const fetchOffres = async () => {
+  const fetchOffres = async () => { 
     try {
       setIsLoading(true)
       const res = await API.get("/offres")
@@ -93,18 +229,74 @@ const OffresPage = () => {
     setIsDarkMode(!isDarkMode)
   }
 
-  // Update the handleChange function to handle image files
-  const handleChange = (e) => {
-    const { name, value, files } = e.target
+  // Handle media type change
+  const handleMediaTypeChange = (type) => {
+    setFormData((prev) => ({
+      ...prev,
+      mediaType: type,
+      images: type === "video" ? [] : prev.images,
+      video: type === "images" ? null : prev.video,
+    }))
+    if (type === "video") {
+      setPreviewImages([])
+    } else {
+      setPreviewVideo(null)
+    }
+  }
 
-    if (name === "image" && files && files[0]) {
-      const image = files[0]
-      setFormData((prev) => ({ ...prev, image }))
+  // Handle multiple images
+  const handleImagesChange = (e) => {
+    const files = Array.from(e.target.files || [])
+    if (files.length === 0) return
 
-      // Create preview for the image
+    const imageFiles = files.filter((file) => file.type.startsWith("image/"))
+    const newImages = [...formData.images, ...imageFiles]
+    setFormData((prev) => ({ ...prev, images: newImages }))
+
+    // Create previews for new images
+    imageFiles.forEach((file) => {
       const reader = new FileReader()
-      reader.onloadend = () => setPreviewImage(reader.result)
-      reader.readAsDataURL(image)
+      reader.onloadend = () => {
+        setPreviewImages((prev) => [...prev, reader.result])
+      }
+      reader.readAsDataURL(file)
+    })
+  }
+
+  // Handle video upload
+  const handleVideoChange = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (file.type.startsWith("video/")) {
+      setFormData((prev) => ({ ...prev, video: file }))
+      const reader = new FileReader()
+      reader.onloadend = () => setPreviewVideo(reader.result)
+      reader.readAsDataURL(file)
+    } else {
+      alert("Veuillez sélectionner un fichier vidéo")
+    }
+  }
+
+  // Remove image from preview
+  const removeImage = (index) => {
+    const updatedImages = formData.images.filter((_, i) => i !== index)
+    const updatedPreviews = previewImages.filter((_, i) => i !== index)
+    setFormData((prev) => ({ ...prev, images: updatedImages }))
+    setPreviewImages(updatedPreviews)
+  }
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    if (name.startsWith("tr_")) {
+      const [, lang, field] = name.split("_")
+      setFormData((prev) => ({
+        ...prev,
+        translations: {
+          ...prev.translations,
+          [lang]: { ...prev.translations[lang], [field]: value },
+        },
+      }))
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }))
     }
@@ -117,15 +309,51 @@ const OffresPage = () => {
 
     try {
       const form = new FormData()
-      form.append("title", formData.title)
-      form.append("description", formData.description)
-      form.append("discountPercentage", formData.discountPercentage)
+      form.append("title", formData.translations?.en?.title ?? formData.title ?? "")
+      form.append("description", formData.translations?.en?.description ?? formData.description ?? "")
+      form.append(
+        "translations",
+        JSON.stringify({
+          fr: formData.translations?.fr || { title: "", description: "" },
+          ar: formData.translations?.ar || { title: "", description: "" },
+        }),
+      )
+      // Envoyer 0 si le champ remise est vide, sinon envoyer la valeur
+      if (formData.discountPercentage && formData.discountPercentage !== "" && Number(formData.discountPercentage) > 0) {
+        form.append("discountPercentage", formData.discountPercentage)
+      } else {
+        form.append("discountPercentage", "0")
+      }
       form.append("startDate", formData.startDate)
       form.append("endDate", formData.endDate)
       form.append("active", formData.active)
+      form.append("mediaType", formData.mediaType)
 
-      if (formData.image) {
-        form.append("image", formData.image)
+      // Handle images or video
+      if (formData.mediaType === "images" && formData.images.length > 0) {
+        // Separate existing images (URLs) from new images (Files)
+        const existingImages = []
+        const newImageFiles = []
+
+        formData.images.forEach((image) => {
+          if (image instanceof Blob || image instanceof File) {
+            newImageFiles.push(image)
+          } else if (typeof image === "string" && image.startsWith("http")) {
+            existingImages.push(image)
+          }
+        })
+
+        // Append new image files
+        newImageFiles.forEach((image) => {
+          form.append("images", image)
+        })
+
+        // For edits, send existing images
+        if (editId && existingImages.length > 0) {
+          form.append("existingImages", JSON.stringify(existingImages))
+        }
+      } else if (formData.mediaType === "video" && formData.video) {
+        form.append("video", formData.video)
       }
 
       if (editId) {
@@ -150,23 +378,47 @@ const OffresPage = () => {
     }
   }
 
-  // Update the handleEdit function to handle image
   const handleEdit = (offre) => {
+    const tr = offre.translations || {}
+    const mediaType = offre.video ? "video" : offre.images && offre.images.length > 0 ? "images" : offre.image ? "images" : "images"
+    const mediaData = offre.video
+      ? { video: null, images: [] }
+      : {
+          video: null,
+          images: offre.images && offre.images.length > 0 ? offre.images : offre.image ? [offre.image] : [],
+        }
+
     setFormData({
       title: offre.title,
       description: offre.description,
-      discountPercentage: offre.discountPercentage,
+      discountPercentage: offre.discountPercentage || "",
       startDate: new Date(offre.startDate).toISOString().slice(0, 16),
       endDate: new Date(offre.endDate).toISOString().slice(0, 16),
       active: offre.active,
-      image: null,
+      mediaType,
+      ...mediaData,
+      translations: {
+        en: { title: offre.title || "", description: offre.description || "" },
+        fr: { title: (tr.fr && tr.fr.title) || "", description: (tr.fr && tr.fr.description) || "" },
+        ar: { title: (tr.ar && tr.ar.title) || "", description: (tr.ar && tr.ar.description) || "" },
+      },
     })
-    setPreviewImage(offre.image)
+
+    // Set previews - keep URLs as strings for existing images
+    if (mediaType === "video" && offre.video) {
+      setPreviewVideo(offre.video)
+      setPreviewImages([])
+    } else {
+      const images = offre.images || (offre.image ? [offre.image] : [])
+      // Keep existing images as URLs (strings) for preview
+      setPreviewImages(images)
+      setPreviewVideo(null)
+    }
+
     setEditId(offre._id)
     setShowForm(true)
   }
 
-  // Update the resetForm function to clear image preview
   const resetForm = () => {
     setFormData({
       title: "",
@@ -175,9 +427,17 @@ const OffresPage = () => {
       startDate: "",
       endDate: "",
       active: true,
-      image: null,
+      images: [],
+      video: null,
+      mediaType: "images",
+      translations: {
+        en: { title: "", description: "" },
+        fr: { title: "", description: "" },
+        ar: { title: "", description: "" },
+      },
     })
-    setPreviewImage(null)
+    setPreviewImages([])
+    setPreviewVideo(null)
     setEditId(null)
     setShowForm(false)
   }
@@ -239,7 +499,7 @@ const OffresPage = () => {
   return (
     <div className={isDarkMode ? "dashboard" : "light-dashboard"}>
       <div className={isDarkMode ? "mobile-header" : "light-mobile-header"}>
-        <button className={isDarkMode ? "menu-toggle" : "light-menu-toggle"} onClick={toggleSidebar}>
+        <button className="light-menu-toggle" onClick={toggleSidebar}>
           <span></span>
           <span></span>
           <span></span>
@@ -433,31 +693,68 @@ const OffresPage = () => {
         {showForm && (
           <div className={isDarkMode ? "form-container" : "light-form-container"}>
             <form onSubmit={handleSubmit} className={isDarkMode ? "offre-form" : "light-offre-form"}>
-              <input
-                type="text"
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                placeholder="Titre"
-                required
-                className={isDarkMode ? "form-input" : "light-form-input"}
-              />
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                placeholder="Description"
-                className={isDarkMode ? "form-input" : "light-form-input"}
-              />
-              <input
-                type="number"
-                name="discountPercentage"
-                value={formData.discountPercentage}
-                onChange={handleChange}
-                placeholder="Remise (%)"
-                required
-                className={isDarkMode ? "form-input" : "light-form-input"}
-              />
+              <div className={isDarkMode ? "form-label" : "light-form-label"} style={{ marginBottom: "0.5rem" }}>
+                Langues (EN par défaut — FR / AR dans translations)
+              </div>
+              <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1rem" }}>
+                <button
+                  type="button"
+                  className={activeLang === "en" ? (isDarkMode ? "btn btn-primary" : "light-btn light-btn-primary") : (isDarkMode ? "btn btn-secondary" : "light-btn light-btn-secondary")}
+                  onClick={() => setActiveLang("en")}
+                >
+                  English (défaut)
+                </button>
+                <button
+                  type="button"
+                  className={activeLang === "fr" ? (isDarkMode ? "btn btn-primary" : "light-btn light-btn-primary") : (isDarkMode ? "btn btn-secondary" : "light-btn light-btn-secondary")}
+                  onClick={() => setActiveLang("fr")}
+                >
+                  Français
+                </button>
+                <button
+                  type="button"
+                  className={activeLang === "ar" ? (isDarkMode ? "btn btn-primary" : "light-btn light-btn-primary") : (isDarkMode ? "btn btn-secondary" : "light-btn light-btn-secondary")}
+                  onClick={() => setActiveLang("ar")}
+                >
+                  العربية
+                </button>
+              </div>
+              <label className={isDarkMode ? "form-label" : "light-form-label"}>
+                📝 Titre ({activeLang === "fr" ? "Français" : activeLang === "ar" ? "العربية" : "English"}) <span style={{ color: "#ef4444" }}>*</span>
+                <input
+                  type="text"
+                  name={`tr_${activeLang}_title`}
+                  value={formData.translations?.[activeLang]?.title ?? ""}
+                  onChange={handleChange}
+                  placeholder={activeLang === "fr" ? "Ex: Offre spéciale été 2024" : activeLang === "ar" ? "عنوان العرض" : "Ex: Special summer offer 2024"}
+                  required={activeLang === "en"}
+                  className={isDarkMode ? "form-input" : "light-form-input"}
+                />
+              </label>
+              <label className={isDarkMode ? "form-label" : "light-form-label"}>
+                📄 Description ({activeLang === "fr" ? "Français" : activeLang === "ar" ? "العربية" : "English"})
+                <textarea
+                  name={`tr_${activeLang}_description`}
+                  value={formData.translations?.[activeLang]?.description ?? ""}
+                  onChange={handleChange}
+                  placeholder={activeLang === "fr" ? "Décrivez votre offre..." : activeLang === "ar" ? "وصف العرض" : "Describe your offer..."}
+                  rows="4"
+                  className={isDarkMode ? "form-input" : "light-form-input"}
+                />
+              </label>
+              <label className={isDarkMode ? "form-label" : "light-form-label"}>
+                💰 Remise (%): <span style={{ fontSize: "0.875rem", color: "#64748b", fontWeight: "normal" }}>(Optionnel)</span>
+                <input
+                  type="number"
+                  name="discountPercentage"
+                  value={formData.discountPercentage}
+                  onChange={handleChange}
+                  placeholder="Ex: 20 pour 20%"
+                  min="0"
+                  max="100"
+                  className={isDarkMode ? "form-input" : "light-form-input"}
+                />
+              </label>
               <label className={isDarkMode ? "form-label" : "light-form-label"}>
                 📅 Date de début:
                 <input
@@ -481,23 +778,142 @@ const OffresPage = () => {
                 />
               </label>
               <label className={isDarkMode ? "form-label checkbox-label" : "light-form-label light-checkbox-label"}>
-                ✅ Active:
-                <input
-                  type="checkbox"
-                  name="active"
-                  checked={formData.active}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, active: e.target.checked }))}
-                  className={isDarkMode ? "form-checkbox" : "light-form-checkbox"}
-                />
+                <span className="checkbox-label-text">
+                  {formData.active ? (
+                    <>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: "8px", color: "#4ade80" }}>
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+                        <path d="M8 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                      Statut: <strong style={{ color: formData.active ? "#4ade80" : "#f87171" }}>Active</strong>
+                    </>
+                  ) : (
+                    <>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginRight: "8px", color: "#f87171" }}>
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+                        <path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                      </svg>
+                      Statut: <strong style={{ color: formData.active ? "#4ade80" : "#f87171" }}>Inactive</strong>
+                    </>
+                  )}
+                </span>
+                <div className={isDarkMode ? "custom-checkbox-wrapper" : "light-custom-checkbox-wrapper"}>
+                  <input
+                    type="checkbox"
+                    name="active"
+                    checked={formData.active}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, active: e.target.checked }))}
+                    className={isDarkMode ? "form-checkbox custom-checkbox" : "light-form-checkbox light-custom-checkbox"}
+                    id="active-checkbox"
+                  />
+                  <label htmlFor="active-checkbox" className={isDarkMode ? "custom-checkbox-label" : "light-custom-checkbox-label"}>
+                    <span className={isDarkMode ? "custom-checkbox-indicator" : "light-custom-checkbox-indicator"}></span>
+                  </label>
+                </div>
               </label>
-          <CompressedFileInput
-  type="file"
-  name="image"
-  accept="image/*"
-  onChange={handleChange}
-  className={isDarkMode ? "form-input" : "light-form-input"}
-/>
-              {previewImage && <img src={previewImage || "/placeholder.svg"} alt="Aperçu" className="preview-img" />}
+              {/* Media Type Selector */}
+              <div className={isDarkMode ? "media-type-selector" : "light-media-type-selector"}>
+                <label className={isDarkMode ? "form-label" : "light-form-label"}>
+                  Type de média:
+                </label>
+                <div className="media-type-buttons">
+                  <button
+                    type="button"
+                    className={`media-type-btn ${formData.mediaType === "images" ? "active" : ""} ${isDarkMode ? "" : "light"}`}
+                    onClick={() => handleMediaTypeChange("images")}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2" />
+                      <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor" />
+                      <path d="M21 15l-5-5L5 21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    Images multiples
+                  </button>
+                  <button
+                    type="button"
+                    className={`media-type-btn ${formData.mediaType === "video" ? "active" : ""} ${isDarkMode ? "" : "light"}`}
+                    onClick={() => handleMediaTypeChange("video")}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M23 7l-7 5 7 5V7z" fill="currentColor" />
+                      <rect x="1" y="5" width="15" height="14" rx="2" stroke="currentColor" strokeWidth="2" />
+                    </svg>
+                    Vidéo
+                  </button>
+                </div>
+              </div>
+
+              {/* Images Upload */}
+              {formData.mediaType === "images" && (
+                <div className={isDarkMode ? "media-upload-section" : "light-media-upload-section"}>
+                  <label className={isDarkMode ? "form-label" : "light-form-label"}>
+                    📷 Images (plusieurs images possibles):
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleImagesChange}
+                      className={isDarkMode ? "form-input" : "light-form-input"}
+                    />
+                  </label>
+                  {previewImages.length > 0 && (
+                    <div className="preview-images-grid">
+                      {previewImages.map((preview, index) => (
+                        <div key={index} className="preview-image-item">
+                          <img src={preview} alt={`Aperçu ${index + 1}`} className="preview-img" />
+                          <button
+                            type="button"
+                            className="remove-image-btn"
+                            onClick={() => removeImage(index)}
+                            aria-label="Supprimer l'image"
+                          >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+                              <path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                            </svg>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Video Upload */}
+              {formData.mediaType === "video" && (
+                <div className={isDarkMode ? "media-upload-section" : "light-media-upload-section"}>
+                  <label className={isDarkMode ? "form-label" : "light-form-label"}>
+                    🎥 Vidéo:
+                    <input
+                      type="file"
+                      accept="video/*"
+                      onChange={handleVideoChange}
+                      className={isDarkMode ? "form-input" : "light-form-input"}
+                    />
+                  </label>
+                  {previewVideo && (
+                    <div className="preview-video-container">
+                      <video src={previewVideo} controls className="preview-video">
+                        Votre navigateur ne supporte pas la lecture de vidéos.
+                      </video>
+                      <button
+                        type="button"
+                        className="remove-video-btn"
+                        onClick={() => {
+                          setFormData((prev) => ({ ...prev, video: null }))
+                          setPreviewVideo(null)
+                        }}
+                        aria-label="Supprimer la vidéo"
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+                          <path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
 
               <div className={isDarkMode ? "form-actions" : "light-form-actions"}>
                 <button
@@ -535,23 +951,130 @@ const OffresPage = () => {
           <div
             className={`${isDarkMode ? "offres-list" : "light-offres-list"} ${viewMode === "list" ? "list-view" : ""}`}
           >
-            {filteredOffres.map((offre) => (
+            {filteredOffres.map((offre) => {
+              // Determine media type and data
+              const mediaType = offre.video ? "video" : (offre.images && offre.images.length > 0) ? "images" : offre.image ? "image" : null
+              const images = offre.images && offre.images.length > 0 ? offre.images : offre.image ? [offre.image] : []
+              const currentImageIndex = imageIndices[offre._id] || 0
+              
+              const setCurrentImageIndex = (index) => {
+                setImageIndices((prev) => ({ ...prev, [offre._id]: index }))
+              }
+              
+              return (
               <div key={offre._id} className={isDarkMode ? "offre-card" : "light-offre-card"}>
-                {offre.image && (
-                  <img src={offre.image || "/placeholder.svg"} alt={offre.title} className="card-image" />
-                )}
+                {/* Media Container */}
+                <div className="card-media-container">
+                  {mediaType === "video" && offre.video ? (
+                    <div className="card-video-wrapper">
+                      <VideoThumbnail src={offre.video} alt={offre.title} />
+                      <div className="media-type-indicator video-indicator">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M8 5v14l11-7z" fill="currentColor" />
+                        </svg>
+                        <span>Vidéo</span>
+                      </div>
+                    </div>
+                  ) : images.length > 0 ? (
+                    <div className="card-images-carousel">
+                      <div 
+                        className="carousel-track" 
+                        style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
+                      >
+                        {images.map((img, idx) => (
+                          <div key={idx} className="carousel-slide">
+                            <img 
+                              src={img || "/placeholder.svg"} 
+                              alt={`${offre.title} - Image ${idx + 1}`} 
+                              className="card-image" 
+                            />
+                          </div>
+                        ))}
+                      </div>
+                      
+                      {/* Image indicators */}
+                      {images.length > 1 && (
+                        <>
+                          <div className="carousel-indicators">
+                            {images.map((_, idx) => (
+                              <button
+                                key={idx}
+                                className={`carousel-dot ${idx === currentImageIndex ? "active" : ""}`}
+                                onClick={() => setCurrentImageIndex(idx)}
+                                aria-label={`Aller à l'image ${idx + 1}`}
+                              />
+                            ))}
+                          </div>
+                          <div className="carousel-counter">
+                            {currentImageIndex + 1} / {images.length}
+                          </div>
+                          <button 
+                            className="carousel-nav carousel-prev"
+                            onClick={() => setCurrentImageIndex((currentImageIndex - 1 + images.length) % images.length)}
+                            aria-label="Image précédente"
+                          >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </button>
+                          <button 
+                            className="carousel-nav carousel-next"
+                            onClick={() => setCurrentImageIndex((currentImageIndex + 1) % images.length)}
+                            aria-label="Image suivante"
+                          >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </button>
+                        </>
+                      )}
+                      {images.length > 1 && (
+                        <div className="media-type-indicator images-indicator">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="3" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2"/>
+                            <circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/>
+                            <path d="M21 15l-5-5L5 21" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                          </svg>
+                          <span>{images.length} images</span>
+                        </div>
+                      )}
+                    </div>
+                  ) : null}
+                </div>
                 <h3>{offre.title}</h3>
                 <p>{offre.description}</p>
-                <p>
-                  💸 <strong>Remise:</strong> {offre.discountPercentage}%
-                </p>
+                {offre.discountPercentage != null && 
+                 offre.discountPercentage !== "" && 
+                 Number(offre.discountPercentage) > 0 && (
+                  <p>
+                    💸 <strong>Remise:</strong> {offre.discountPercentage}%
+                  </p>
+                )}
                 <p>
                   🕓 <strong>Du:</strong> {new Date(offre.startDate).toLocaleString("fr-FR")} au{" "}
                   {new Date(offre.endDate).toLocaleString("fr-FR")}
                 </p>
-                <p>
-                  ✅ <strong>Statut:</strong> {offre.active ? "Active" : "Inactive"}
-                </p>
+                <div className="offre-status-container">
+                  <span className={offre.active ? (isDarkMode ? "status-badge status-active-dark" : "status-badge status-active-light") : (isDarkMode ? "status-badge status-inactive-dark" : "status-badge status-inactive-light")}>
+                    {offre.active ? (
+                      <>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+                          <path d="M8 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                        Active
+                      </>
+                    ) : (
+                      <>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+                          <path d="M15 9l-6 6M9 9l6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                        </svg>
+                        Inactive
+                      </>
+                    )}
+                  </span>
+                </div>
                 <div className={isDarkMode ? "seminaire-card-actions" : "light-seminaire-card-actions"}>
                   <button
                     onClick={() => handleEdit(offre)}
@@ -567,7 +1090,8 @@ const OffresPage = () => {
                   </button>
                 </div>
               </div>
-            ))}
+              )
+            })}
           </div>
         )}
       </div>
@@ -964,16 +1488,43 @@ const OffresPage = () => {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.8);
   z-index: 1;
+  overflow: hidden;
+}
+
+.light-action-button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #ec4899, #8b5cf6);
+  transform: translate(-50%, -50%);
+  transition: width 0.5s ease, height 0.5s ease;
+  z-index: -1;
+}
+
+.light-action-button:hover::before {
+  width: 100%;
+  height: 100%;
 }
 
 .light-action-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(236, 72, 153, 0.2);
-  background: linear-gradient(45deg, #ec4899, #8b5cf6);
+  transform: translateY(-4px) scale(1.1) rotate(5deg);
+  box-shadow: 0 8px 25px rgba(236, 72, 153, 0.35),
+              inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  border-color: #8b5cf6;
   color: white;
+}
+
+.light-action-button:active {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
 }
 
 .light-action-icon {
@@ -992,18 +1543,45 @@ const OffresPage = () => {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.8);
   font-size: 1.2rem;
   position: relative;
   z-index: 1;
+  overflow: hidden;
+}
+
+.light-theme-toggle-button::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #ec4899, #8b5cf6);
+  transform: translate(-50%, -50%);
+  transition: width 0.5s ease, height 0.5s ease;
+  z-index: -1;
+}
+
+.light-theme-toggle-button:hover::before {
+  width: 100%;
+  height: 100%;
 }
 
 .light-theme-toggle-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(236, 72, 153, 0.2);
-  background: linear-gradient(45deg, #ec4899, #8b5cf6);
+  transform: translateY(-4px) scale(1.1) rotate(10deg);
+  box-shadow: 0 8px 25px rgba(236, 72, 153, 0.35),
+              inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  border-color: #8b5cf6;
   color: white;
+}
+
+.light-theme-toggle-button:active {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
 }
 
 .light-user-avatar-small {
@@ -1101,22 +1679,61 @@ const OffresPage = () => {
 .light-section-action {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: linear-gradient(45deg, #ec4899, #8b5cf6);
+  gap: 0.75rem;
+  padding: 0.875rem 1.75rem;
+  background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #a855f7 100%);
+  background-size: 200% 200%;
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: 14px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: 500;
-  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  font-weight: 600;
+  font-size: 15px;
+  box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4),
+              0 2px 8px rgba(236, 72, 153, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  letter-spacing: 0.3px;
+  position: relative;
+  overflow: hidden;
+}
+
+.light-section-action::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+  z-index: 0;
+}
+
+.light-section-action:hover::before {
+  width: 400px;
+  height: 400px;
+}
+
+.light-section-action > * {
+  position: relative;
+  z-index: 1;
 }
 
 .light-section-action:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(236, 72, 153, 0.4);
-  background: linear-gradient(45deg, #db2777, #7c3aed);
+  background-position: 100% 0;
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 10px 30px rgba(236, 72, 153, 0.5),
+              0 4px 12px rgba(236, 72, 153, 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.light-section-action:active {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
 }
 
 .light-form-container {
@@ -1131,12 +1748,18 @@ const OffresPage = () => {
 .light-offre-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
+}
+
+.light-offre-form textarea {
+  min-height: 120px;
+  line-height: 1.6;
+  resize: vertical;
 }
 
 .light-form-input {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: 0.875rem 1.125rem;
   border: 2px solid #e2e8f0;
   border-radius: 12px;
   background: #ffffff;
@@ -1144,31 +1767,127 @@ const OffresPage = () => {
   font-size: 1rem;
   transition: all 0.3s ease;
   font-family: inherit;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.light-form-input:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .light-form-input:focus {
   outline: none;
   border-color: #ec4899;
-  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+  box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.1), 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
 }
 
 .light-form-input::placeholder {
   color: #94a3b8;
+  font-style: italic;
 }
 
 .light-form-label {
   color: #1e293b;
-  font-weight: 500;
+  font-weight: 600;
   margin-bottom: 0.5rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  font-size: 15px;
+}
+
+.light-form-label span {
+  font-size: 0.875rem;
+  color: #64748b;
+  font-weight: normal;
 }
 
 .light-checkbox-label {
   flex-direction: row;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(236, 72, 153, 0.05);
+  border-radius: 12px;
+  border: 2px solid rgba(236, 72, 153, 0.1);
+  transition: all 0.3s ease;
+}
+
+.light-checkbox-label:hover {
+  background: rgba(236, 72, 153, 0.08);
+  border-color: rgba(236, 72, 153, 0.2);
+}
+
+.checkbox-label-text {
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.light-custom-checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.light-custom-checkbox {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.light-custom-checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.light-custom-checkbox-indicator {
+  width: 48px;
+  height: 26px;
+  background: rgba(239, 68, 68, 0.2);
+  border-radius: 26px;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 2px solid rgba(239, 68, 68, 0.4);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.light-custom-checkbox-indicator::before {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: white;
+  top: 1px;
+  left: 1px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.light-custom-checkbox:checked + .light-custom-checkbox-label .light-custom-checkbox-indicator {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.3) 0%, rgba(22, 163, 74, 0.2) 100%);
+  border-color: rgba(34, 197, 94, 0.5);
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1),
+              inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.light-custom-checkbox:checked + .light-custom-checkbox-label .light-custom-checkbox-indicator::before {
+  transform: translateX(22px);
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  box-shadow: 0 2px 6px rgba(34, 197, 94, 0.3);
+}
+
+.light-custom-checkbox:focus + .light-custom-checkbox-label .light-custom-checkbox-indicator {
+  box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.2);
 }
 
 .light-form-checkbox {
@@ -1180,6 +1899,8 @@ const OffresPage = () => {
   display: flex;
   gap: 1rem;
   margin-top: 1rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #e2e8f0;
 }
 
 .light-btn {
@@ -1200,38 +1921,123 @@ const OffresPage = () => {
 }
 
 .light-btn-primary {
-  background: linear-gradient(45deg, #ec4899, #8b5cf6);
+  background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #a855f7 100%);
+  background-size: 200% 200%;
   color: white;
-  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+  box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4),
+              0 2px 8px rgba(236, 72, 153, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.light-btn-primary::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+  z-index: 0;
+}
+
+.light-btn-primary:hover::before {
+  width: 400px;
+  height: 400px;
+}
+
+.light-btn-primary > * {
+  position: relative;
+  z-index: 1;
 }
 
 .light-btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(236, 72, 153, 0.4);
-  background: linear-gradient(45deg, #db2777, #7c3aed);
+  background-position: 100% 0;
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 10px 30px rgba(236, 72, 153, 0.5),
+              0 4px 12px rgba(236, 72, 153, 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.light-btn-primary:active {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
 }
 
 .light-btn-secondary {
-  background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
-  color: #64748b;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  color: #475569;
   border: 2px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05),
+              inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .light-btn-secondary:hover {
-  background: linear-gradient(45deg, #ec4899, #8b5cf6);
-  color: white;
-  border-color: transparent;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  border-color: #cbd5e1;
+  color: #334155;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.light-btn-secondary:active {
+  transform: translateY(-1px) scale(1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .light-btn-danger {
-  background: linear-gradient(45deg, #ef4444, #dc2626);
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%);
+  background-size: 200% 200%;
   color: white;
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4),
+              0 2px 8px rgba(239, 68, 68, 0.2),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.light-btn-danger::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+  z-index: 0;
+}
+
+.light-btn-danger:hover::before {
+  width: 400px;
+  height: 400px;
+}
+
+.light-btn-danger > * {
+  position: relative;
+  z-index: 1;
 }
 
 .light-btn-danger:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+  background-position: 100% 0;
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.5),
+              0 4px 12px rgba(239, 68, 68, 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.light-btn-danger:active {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
 }
 
 .light-empty-state {
@@ -1279,6 +2085,69 @@ const OffresPage = () => {
   box-shadow: 0 8px 25px rgba(236, 72, 153, 0.15);
 }
 
+.light-offre-card:hover .carousel-nav {
+  opacity: 1;
+}
+
+/* Light Mode Card Media Styles */
+.light-offre-card .card-media-container {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.light-offre-card .carousel-nav {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(236, 72, 153, 0.3);
+  color: #ec4899;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.light-offre-card .carousel-nav:hover {
+  background: white;
+  border-color: #ec4899;
+  box-shadow: 0 6px 20px rgba(236, 72, 153, 0.3);
+}
+
+.light-offre-card .carousel-indicators {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #e2e8f0;
+}
+
+.light-offre-card .carousel-dot {
+  background: rgba(148, 163, 184, 0.5);
+}
+
+.light-offre-card .carousel-dot:hover {
+  background: rgba(148, 163, 184, 0.8);
+}
+
+.light-offre-card .carousel-dot.active {
+  background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+  box-shadow: 0 2px 8px rgba(236, 72, 153, 0.4);
+}
+
+.light-offre-card .carousel-counter {
+  background: rgba(255, 255, 255, 0.95);
+  color: #1e293b;
+  border-color: #e2e8f0;
+}
+
+.light-offre-card .media-type-indicator {
+  background: rgba(255, 255, 255, 0.95);
+  color: #1e293b;
+  border-color: #e2e8f0;
+}
+
+.light-offre-card .video-indicator {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.9) 0%, rgba(220, 38, 38, 0.9) 100%);
+  color: white;
+}
+
+.light-offre-card .images-indicator {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.9) 0%, rgba(37, 99, 235, 0.9) 100%);
+  color: white;
+}
+
 .light-offre-card h3 {
   color: #1e293b;
   margin-bottom: 1rem;
@@ -1291,10 +2160,223 @@ const OffresPage = () => {
   margin-bottom: 0.5rem;
 }
 
+.light-offre-card .card-image,
+.light-offre-card video {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.light-offre-card video {
+  background: #000;
+}
+
+/* Light Mode Media Type Selector */
+.light-media-type-selector .media-type-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.light-media-type-selector .media-type-btn.light {
+  border-color: #e2e8f0;
+  background: #ffffff;
+  color: #64748b;
+}
+
+.light-media-type-selector .media-type-btn.light:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+}
+
+.light-media-type-selector .media-type-btn.light.active {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+  border-color: #ec4899;
+  color: #ec4899;
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.2);
+}
+
+/* Light Mode Preview Images */
+.light-media-upload-section .preview-images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.light-media-upload-section .preview-image-item {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 16/9;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  transition: all 0.3s ease;
+}
+
+.light-media-upload-section .preview-image-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  border-color: #cbd5e1;
+}
+
+.light-media-upload-section .preview-video-container {
+  position: relative;
+  margin-top: 1rem;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+  border: 2px solid #e2e8f0;
+}
+
+.light-media-upload-section .preview-video {
+  width: 100%;
+  max-height: 400px;
+  display: block;
+  border-radius: 12px;
+}
+
+.light-media-upload-section .remove-video-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.9);
+  border: 2px solid white;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.light-media-upload-section .remove-video-btn:hover {
+  background: rgba(220, 38, 38, 1);
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
+}
+
+.light-media-upload-section .remove-image-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.9);
+  border: 2px solid white;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.light-media-upload-section .remove-image-btn:hover {
+  background: rgba(220, 38, 38, 1);
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
+}
+
+/* Status Badge Styles - Light Mode */
+.light-offre-card .offre-status-container {
+  margin: 12px 0;
+  display: flex;
+  align-items: center;
+}
+
+/* Active Status - Light Mode */
+.status-active-light {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(22, 163, 74, 0.1) 100%);
+  color: #16a34a;
+  border-color: rgba(34, 197, 94, 0.3);
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.status-active-light::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.15), transparent);
+  transition: left 0.5s ease;
+}
+
+.status-active-light:hover::before {
+  left: 100%;
+}
+
+.status-active-light:hover {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.25) 0%, rgba(22, 163, 74, 0.2) 100%);
+  border-color: rgba(34, 197, 94, 0.5);
+  color: #15803d;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 14px rgba(34, 197, 94, 0.25),
+              inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* Inactive Status - Light Mode */
+.status-inactive-light {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.1) 100%);
+  color: #dc2626;
+  border-color: rgba(239, 68, 68, 0.3);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.status-inactive-light::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.15), transparent);
+  transition: left 0.5s ease;
+}
+
+.status-inactive-light:hover::before {
+  left: 100%;
+}
+
+.status-inactive-light:hover {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(220, 38, 38, 0.2) 100%);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: #b91c1c;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.25),
+              inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
 .light-seminaire-card-actions {
   display: flex;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.light-seminaire-card-actions .light-btn {
+  flex: 1;
+  min-width: 100px;
+  padding: 10px 18px;
+  font-size: 14px;
 }
 
 /* Ensure all interactive elements work properly */

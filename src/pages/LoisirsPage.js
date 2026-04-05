@@ -16,7 +16,9 @@ const LoisirsPage = () => {
     image: null,
     ouverture: "",
     fermeture: "",
+    translations: { fr: { name: "", description: "" }, ar: { name: "", description: "" } },
   })
+  const [activeLoisirLang, setActiveLoisirLang] = useState("fr")
   const [editId, setEditId] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [previewImage, setPreviewImage] = useState(null)
@@ -77,12 +79,18 @@ const LoisirsPage = () => {
     const { name, value, files } = e.target
     if (name === "image" && files && files[0]) {
       setFormData((prev) => ({ ...prev, image: files[0] }))
-
       const reader = new FileReader()
-      reader.onloadend = () => {
-        setPreviewImage(reader.result)
-      }
+      reader.onloadend = () => setPreviewImage(reader.result)
       reader.readAsDataURL(files[0])
+    } else if (name.startsWith("tr_")) {
+      const [, lang, field] = name.split("_")
+      setFormData((prev) => ({
+        ...prev,
+        translations: {
+          ...prev.translations,
+          [lang]: { ...prev.translations[lang], [field]: value },
+        },
+      }))
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }))
     }
@@ -94,11 +102,16 @@ const LoisirsPage = () => {
 
     try {
       const form = new FormData()
-      form.append("name", formData.name)
-      form.append("description", formData.description)
+      form.append("name", formData.name ?? "")
+      form.append("description", formData.description ?? "")
+      form.append(
+        "translations",
+        JSON.stringify({
+          fr: formData.translations?.fr || { name: "", description: "" },
+          ar: formData.translations?.ar || { name: "", description: "" },
+        }),
+      )
       if (formData.image) form.append("image", formData.image)
-
-      // Add the new date fields
       if (formData.ouverture) form.append("ouverture", formData.ouverture)
       if (formData.fermeture) form.append("fermeture", formData.fermeture)
 
@@ -130,6 +143,7 @@ const LoisirsPage = () => {
       image: null,
       ouverture: "",
       fermeture: "",
+      translations: { fr: { name: "", description: "" }, ar: { name: "", description: "" } },
     })
     setEditId(null)
     setShowForm(false)
@@ -155,22 +169,51 @@ const LoisirsPage = () => {
     })
   }
 
+  const renderStatusBadge = (loisir) => {
+    const now = new Date()
+    const start = loisir.ouverture ? new Date(loisir.ouverture) : null
+    const end = loisir.fermeture ? new Date(loisir.fermeture) : null
+
+    let label = "Sans date"
+    let tone = "unknown"
+
+    if (start && end) {
+      if (now < start) {
+        label = "À venir"
+        tone = "upcoming"
+      } else if (now > end) {
+        label = "Terminé"
+        tone = "ended"
+      } else {
+        label = "En cours"
+        tone = "active"
+      }
+    }
+
+    return (
+      <span className={`loisir-status-badge loisir-status-${tone}`}>
+        <span className="loisir-status-dot" />
+        {label}
+      </span>
+    )
+  }
+
   const handleEdit = (loisir) => {
+    const tr = loisir.translations || {}
     setFormData({
-      name: loisir.name,
-      description: loisir.description || "",
+      name: loisir.name ?? "",
+      description: loisir.description ?? "",
       image: null,
       ouverture: formatDateForInput(loisir.ouverture),
       fermeture: formatDateForInput(loisir.fermeture),
+      translations: {
+        fr: { name: (tr.fr && tr.fr.name) || "", description: (tr.fr && tr.fr.description) || "" },
+        ar: { name: (tr.ar && tr.ar.name) || "", description: (tr.ar && tr.ar.description) || "" },
+      },
     })
     setEditId(loisir._id)
     setShowForm(true)
-
-    if (loisir.image) {
-      setPreviewImage(`${loisir.image}`)
-    } else {
-      setPreviewImage(null)
-    }
+    setPreviewImage(loisir.image ? `${loisir.image}` : null)
   }
 
   const handleDelete = async (id) => {
@@ -241,7 +284,7 @@ const LoisirsPage = () => {
   return (
     <div className={isDarkMode ? "dashboard" : "light-dashboard"}>
       <div className={isDarkMode ? "mobile-header" : "light-mobile-header"}>
-        <button className={isDarkMode ? "menu-toggle" : "light-menu-toggle"} onClick={toggleSidebar}>
+        <button className="light-menu-toggle" onClick={toggleSidebar}>
           <span></span>
           <span></span>
           <span></span>
@@ -433,6 +476,7 @@ const LoisirsPage = () => {
         {showForm && (
           <div className={isDarkMode ? "form-container" : "light-form-container"}>
             <form onSubmit={handleSubmit} className={isDarkMode ? "loisir-form" : "light-loisir-form"}>
+              <label className={isDarkMode ? "form-label" : "light-form-label"}>Nom (par défaut) *</label>
               <input
                 type="text"
                 name="name"
@@ -442,6 +486,7 @@ const LoisirsPage = () => {
                 required
                 className={isDarkMode ? "form-input" : "light-form-input"}
               />
+              <label className={isDarkMode ? "form-label" : "light-form-label"}>Description (par défaut)</label>
               <textarea
                 name="description"
                 placeholder="Description du Service"
@@ -449,6 +494,13 @@ const LoisirsPage = () => {
                 onChange={handleChange}
                 className={isDarkMode ? "form-input" : "light-form-input"}
               />
+              <div className={isDarkMode ? "form-label" : "light-form-label"} style={{ marginTop: "0.5rem" }}>Traductions (FR / AR)</div>
+              <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                <button type="button" className={activeLoisirLang === "fr" ? (isDarkMode ? "btn btn-primary" : "light-btn light-btn-primary") : (isDarkMode ? "btn btn-secondary" : "light-btn light-btn-secondary")} onClick={() => setActiveLoisirLang("fr")}>Français</button>
+                <button type="button" className={activeLoisirLang === "ar" ? (isDarkMode ? "btn btn-primary" : "light-btn light-btn-primary") : (isDarkMode ? "btn btn-secondary" : "light-btn light-btn-secondary")} onClick={() => setActiveLoisirLang("ar")}>العربية</button>
+              </div>
+              <input type="text" name={`tr_${activeLoisirLang}_name`} value={formData.translations?.[activeLoisirLang]?.name ?? ""} onChange={handleChange} placeholder={activeLoisirLang === "fr" ? "Nom FR" : "الاسم"} className={isDarkMode ? "form-input" : "light-form-input"} />
+              <textarea name={`tr_${activeLoisirLang}_description`} value={formData.translations?.[activeLoisirLang]?.description ?? ""} onChange={handleChange} placeholder={activeLoisirLang === "fr" ? "Description FR" : "الوصف"} className={isDarkMode ? "form-input" : "light-form-input"} rows={2} />
 
               <div className={isDarkMode ? "date-inputs" : "light-date-inputs"}>
                 <div className={isDarkMode ? "date-input-group" : "light-date-input-group"}>
@@ -537,7 +589,10 @@ const LoisirsPage = () => {
                     onError={(e) => (e.target.src = "/placeholder.svg")}
                   />
                 )}
-                <h2>{loisir.name}</h2>
+                <div className="loisir-card-header">
+                  <h2>{loisir.name}</h2>
+                  {renderStatusBadge(loisir)}
+                </div>
                 <p>{loisir.description}</p>
 
                 <div className={isDarkMode ? "date-info" : "light-date-info"}>
@@ -1307,6 +1362,73 @@ const LoisirsPage = () => {
   display: flex;
   gap: 0.5rem;
   margin-top: 1rem;
+}
+
+/* Status badge styles (shared light/dark) */
+.loisir-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.loisir-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.loisir-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+}
+
+.loisir-status-active {
+  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(34, 197, 94, 0.4);
+  color: #16a34a;
+}
+
+.loisir-status-active .loisir-status-dot {
+  background: #22c55e;
+}
+
+.loisir-status-upcoming {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #2563eb;
+}
+
+.loisir-status-upcoming .loisir-status-dot {
+  background: #3b82f6;
+}
+
+.loisir-status-ended {
+  background: rgba(148, 163, 184, 0.16);
+  border-color: rgba(148, 163, 184, 0.5);
+  color: #64748b;
+}
+
+.loisir-status-ended .loisir-status-dot {
+  background: #94a3b8;
+}
+
+.loisir-status-unknown {
+  background: rgba(251, 191, 36, 0.12);
+  border-color: rgba(251, 191, 36, 0.4);
+  color: #b45309;
+}
+
+.loisir-status-unknown .loisir-status-dot {
+  background: #fbbf24;
 }
 
 /* Ensure all interactive elements work properly */
