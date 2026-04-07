@@ -579,3 +579,108 @@
   height: 200px !important;
   object-fit: cover !important;
 }
+
+/* Allergens UI Modernization */
+.menu-item-allergens-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 8px 0;
+}
+
+.allergen-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  border: 1.5px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Dark Mode Chip */
+.allergen-chip.dark {
+  background: rgba(255, 255, 255, 0.05);
+  color: #e2e8f0;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.allergen-chip.dark:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.allergen-chip.dark.selected {
+  background: rgba(106, 48, 147, 0.2);
+  color: #a044ff;
+  border-color: #a044ff;
+  box-shadow: 0 0 10px rgba(106, 48, 147, 0.3);
+}
+
+/* Light Mode Chip */
+.allergen-chip.light {
+  background: #f1f5f9;
+  color: #475569;
+  border-color: #e2e8f0;
+}
+
+.allergen-chip.light:hover {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+}
+
+.allergen-chip.light.selected {
+  background: rgba(106, 48, 147, 0.1);
+  color: #6a3093;
+  border-color: #6a3093;
+}
+
+.allergen-chip input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.allergen-option-icon {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease;
+}
+
+.allergen-chip.selected .allergen-option-icon {
+  transform: scale(1.1);
+}
+
+.menu-item-options-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #94a3b8;
+  margin-bottom: 8px;
+  margin-top: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Responsive adjustment for allergens */
+@media (max-width: 640px) {
+  .menu-item-allergens-row {
+    gap: 8px;
+  }
+  
+  .allergen-chip {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}

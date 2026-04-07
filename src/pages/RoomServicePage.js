@@ -1239,12 +1239,23 @@ const handleEdit = (menu) => {
                       </div>
                       <span className="menu-item-options-label">Allergènes (contient)</span>
                       <div className="menu-item-options-row menu-item-allergens-row">
-                        {ALLERGENS_LIST.map(({ key, label, Icon }) => (
-                          <label key={key} className={isDarkMode ? "checkbox-label" : "light-checkbox-label"}>
-                            <input type="checkbox" checked={item[key] || false} onChange={(e) => handleItemChange(index, key, e.target.checked)} className={isDarkMode ? "checkbox-input" : "light-checkbox-input"} />
-                            <span className={isDarkMode ? "checkbox-text" : "light-checkbox-text"}><Icon size={16} strokeWidth={2} className="allergen-option-icon" aria-hidden /> {label}</span>
-                          </label>
-                        ))}
+                        {ALLERGENS_LIST.map(({ key, label, Icon }) => {
+                          const isSelected = item[key] || false;
+                          return (
+                            <label 
+                              key={key} 
+                              className={`allergen-chip ${isDarkMode ? "dark" : "light"} ${isSelected ? "selected" : ""}`}
+                            >
+                              <input 
+                                type="checkbox" 
+                                checked={isSelected} 
+                                onChange={(e) => handleItemChange(index, key, e.target.checked)} 
+                              />
+                              <Icon size={16} strokeWidth={isSelected ? 2.5 : 2} className="allergen-option-icon" aria-hidden />
+                              <span>{label}</span>
+                            </label>
+                          );
+                        })}
                       </div>
                     </div>
                   )})}
