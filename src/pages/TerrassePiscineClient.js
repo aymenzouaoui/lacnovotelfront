@@ -1552,10 +1552,10 @@ useEffect(() => {
         onError={(e) => (e.target.src = "/placeholder.svg")}
       />
     )}
-    {pageContent.description && (
+    {(pageContent.translations?.[currentLanguage]?.description || pageContent.description) && (
       <div
   className="page-content-description"
-  dangerouslySetInnerHTML={{ __html: pageContent.description }}
+  dangerouslySetInnerHTML={{ __html: pageContent.translations?.[currentLanguage]?.description || pageContent.description }}
 />
 
     )}
@@ -1598,17 +1598,17 @@ useEffect(() => {
                     <div className="spa-detail-image-container">
                       <img
                         src={selectedLounge.image || "/placeholder.svg"}
-                        alt={selectedLounge.name}
+                        alt={selectedLounge.translations?.[currentLanguage]?.name || selectedLounge.name}
                         className="spa-detail-image"
                         onError={(e) => {
-                          e.target.src = `/placeholder.svg?height=300&width=500&text=${selectedLounge.name}`
+                          e.target.src = `/placeholder.svg?height=300&width=500&text=${selectedLounge.translations?.[currentLanguage]?.name || selectedLounge.name}`
                         }}
                       />
                     </div>
                     <div className="spa-detail-info">
-                      <h2 className="spa-detail-name">{selectedLounge.name}</h2>
+                      <h2 className="spa-detail-name">{selectedLounge.translations?.[currentLanguage]?.name || selectedLounge.name}</h2>
                       <div className="spa-detail-description">
-                        <p>{selectedLounge.description || t("noDescriptionAvailable")}</p>
+                        <p>{selectedLounge.translations?.[currentLanguage]?.description || selectedLounge.description || t("noDescriptionAvailable")}</p>
                       </div>
                       <button
                         className="reserve-button btn-with-icon"
@@ -1665,9 +1665,9 @@ useEffect(() => {
                       <div className="content-item-image">
                         <img
                           src={lounge.image || "/placeholder.svg"}
-                          alt={lounge.name}
+                          alt={lounge.translations?.[currentLanguage]?.name || lounge.name}
                           onError={(e) => {
-                            e.target.src = `/placeholder.svg?height=120&width=300&text=${lounge.name}`
+                            e.target.src = `/placeholder.svg?height=120&width=300&text=${lounge.translations?.[currentLanguage]?.name || lounge.name}`
                           }}
                         />
                         <div className="content-item-overlay">
@@ -1675,8 +1675,8 @@ useEffect(() => {
                         </div>
                       </div>
                       <div className="content-item-content">
-                        <h3>{lounge.name}</h3>
-                        <p>{lounge.description}</p>
+                        <h3>{lounge.translations?.[currentLanguage]?.name || lounge.name}</h3>
+                        <p>{lounge.translations?.[currentLanguage]?.description || lounge.description}</p>
                         <div className="content-item-arrow">
                           <svg
                             width="20"
@@ -1749,7 +1749,7 @@ useEffect(() => {
                                     <div key={index} className="carousel-container-fixed">
                                       <img
                                         src={image || "/placeholder.svg"}
-                                        alt={`${menus[currentMenuIndex].title} ${index + 1}`}
+                                        alt={`${menus[currentMenuIndex].translations?.[currentLanguage]?.title || menus[currentMenuIndex].title} ${index + 1}`}
                                         className="menu-image-fixed"
                                         onError={(e) => (e.target.src = "/placeholder.svg")}
                                       />
@@ -1761,7 +1761,7 @@ useEffect(() => {
                                     <div className="carousel-container-new carousel-container-new-dark">
                                       <img
                                         src={menus[currentMenuIndex].images[currentImageIndex] || "/placeholder.svg"}
-                                        alt={`${menus[currentMenuIndex].title} ${currentImageIndex + 1}`}
+                                        alt={`${menus[currentMenuIndex].translations?.[currentLanguage]?.title || menus[currentMenuIndex].title} ${currentImageIndex + 1}`}
                                         className="menu-image-new menu-image-new-dark"
                                         onError={(e) => (e.target.src = "/placeholder.svg")}
                                       />
@@ -1817,19 +1817,19 @@ useEffect(() => {
                           </div>
                           {/* Right side - Menu Items */}
                           <div className="menu-items-side-new">
-                            <h2 className="menu-title-new">{menus[currentMenuIndex].title}</h2>
+                            <h2 className="menu-title-new">{menus[currentMenuIndex].translations?.[currentLanguage]?.title || menus[currentMenuIndex].title}</h2>
                             {menus[currentMenuIndex].items?.length > 0 ? (
                               <div className="menu-items-list-new">
                                 {getCurrentMenuItems().map((item, idx) => (
                                   <div key={idx} className="menu-item-new">
                                     <div className="menu-item-header-new">
                                       <h3 className="menu-item-name-new">
-                                        {item.name}
+                                        {item.translations?.[currentLanguage]?.name || item.name}
                                          {renderDietaryBadges(item)}
                                       </h3>
                                       <div className="menu-item-price-new">{item.price} TND</div>
                                     </div>
-                                    <p className="menu-item-description-new">{item.description}</p>
+                                    <p className="menu-item-description-new">{item.translations?.[currentLanguage]?.description || item.description}</p>
                                   </div>
                                 ))}
                               </div>
@@ -1877,14 +1877,14 @@ useEffect(() => {
                       {menus[currentMenuIndex].images && menus[currentMenuIndex].images.length > 0 ? (
                         <img
                           src={menus[currentMenuIndex].images[headerImageIndex] || "/placeholder.svg"}
-                          alt={menus[currentMenuIndex].title}
+                          alt={menus[currentMenuIndex].translations?.[currentLanguage]?.title || menus[currentMenuIndex].title}
                           onError={(e) => (e.target.src = "/placeholder.svg")}
                         />
                       ) : (
                         <img src="/placeholder.svg" alt={t("noMenuAvailable")} />
                       )}
                       <div className="modern-header-title">
-                        <h2>{menus[currentMenuIndex].title}</h2>
+                        <h2>{menus[currentMenuIndex].translations?.[currentLanguage]?.title || menus[currentMenuIndex].title}</h2>
                       </div>
                     </div>
                     {/* Menu Tabs - Showing all menus */}
@@ -1895,7 +1895,7 @@ useEffect(() => {
                           className={`menu-tab ${currentMenuIndex === index ? "active" : ""}`}
                           onClick={() => goToMenu(index)}
                         >
-                          {menu.title}
+                          {menu.translations?.[currentLanguage]?.title || menu.title}
                         </button>
                       ))}
                     </div>
@@ -1936,7 +1936,7 @@ useEffect(() => {
         <div className="modern-item-image">
           <img
             src={item.image || "/placeholder.svg"}
-            alt={item.name}
+            alt={item.translations?.[currentLanguage]?.name || item.name}
             onError={(e) => (e.target.src = "/placeholder.svg")}
           />
         </div>
@@ -1944,13 +1944,13 @@ useEffect(() => {
       <div className="modern-item-content">
         <div className="modern-item-header">
           <div className="modern-item-title">
-            {item.name}
+            {item.translations?.[currentLanguage]?.name || item.name}
  {renderDietaryBadges(item)}          </div>
           <span className="modern-item-price">
             {item.price} <span className="currency">TND</span>
           </span>
         </div>
-        <p className="modern-item-description">{item.description}</p>
+        <p className="modern-item-description">{item.translations?.[currentLanguage]?.description || item.description}</p>
         {item.weight && <div className="modern-item-weight">{item.weight} gr</div>}
       </div>
     </div>

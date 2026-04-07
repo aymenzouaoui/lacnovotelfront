@@ -14,7 +14,14 @@ const TerrassePiscinePage = () => {
   const [menus, setMenus] = useState([])
   const [showForm, setShowForm] = useState(false)
   const [showLoungeForm, setShowLoungeForm] = useState(false)
-  const [loungeFormData, setLoungeFormData] = useState({ name: "", description: "", reservable: true, image: null })
+  const [loungeFormData, setLoungeFormData] = useState({
+    name: "",
+    description: "",
+    reservable: true,
+    image: null,
+    translations: { fr: { name: "", description: "" }, ar: { name: "", description: "" } },
+  })
+  const [activeLoungeLang, setActiveLoungeLang] = useState("fr")
   const [loungePreviewImage, setLoungePreviewImage] = useState(null)
   const [user, setUser] = useState({ username: "", email: "" })
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -33,16 +40,44 @@ const TerrassePiscinePage = () => {
   const [formData, setFormData] = useState({
     title: "",
     images: [], // Changed from image to images array
-    items: [{ name: "", description: "", price: "", reservable: true,isVegetarian: false, isOrganic: false, isLocal: false, isGlutenFree: false, isLactoseFree: false }],
+    items: [
+      {
+        name: "",
+        description: "",
+        price: "",
+        reservable: true,
+        isVegetarian: false,
+        isOrganic: false,
+        isLocal: false,
+        isGlutenFree: false,
+        isLactoseFree: false,
+        translations: { fr: { name: "", description: "" }, ar: { name: "", description: "" } },
+      },
+    ],
+    translations: { fr: { title: "" }, ar: { title: "" } },
   })
+  const [activeMenuLang, setActiveMenuLang] = useState("fr")
+  const [activeItemLang, setActiveItemLang] = useState("fr")
   const [editId, setEditId] = useState(null)
   const [previewImages, setPreviewImages] = useState([]) // Changed to array
   const [editingLoungeId, setEditingLoungeId] = useState(null)
 
   const handleEditLounge = (lounge) => {
+    const tr = lounge.translations || {}
     setEditingLoungeId(lounge._id)
-    setLoungeFormData({ name: lounge.name, description: lounge.description, reservable: lounge.reservable})
+    setLoungeFormData({
+      name: lounge.name ?? "",
+      description: lounge.description ?? "",
+      reservable: lounge.reservable ?? true,
+      image: null,
+      translations: {
+        fr: { name: (tr.fr && tr.fr.name) || "", description: (tr.fr && tr.fr.description) || "" },
+        ar: { name: (tr.ar && tr.ar.name) || "", description: (tr.ar && tr.ar.description) || "" },
+      },
+    })
     setShowLoungeForm(true)
+    if (lounge.image) setLoungePreviewImage(lounge.image)
+    else setLoungePreviewImage(null)
   }
 
   const fetchLounges = async () => {
@@ -108,44 +143,82 @@ const TerrassePiscinePage = () => {
   }
 
 const handleChange = (e) => {
-  const { name, value, files } = e.target
-  if (name === "images" && files && files.length > 0) {
-    // Handle multiple image files
-    const imageFiles = Array.from(files)
-    
-    // Combine existing images with new ones when editing
-    const currentImages = formData.images || [];
-    const updatedImages = [...currentImages, ...imageFiles];
-    
-    setFormData((prev) => ({ ...prev, images: updatedImages }))
+    const { name, value, files } = e.target
+    if (name === "images" && files && files.length > 0) {
+      // Handle multiple image files
+      const imageFiles = Array.from(files)
 
-    // Create preview URLs for all NEW selected images only
-    const newPreviewUrls = []
-    imageFiles.forEach((file) => {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        newPreviewUrls.push(reader.result)
-        if (newPreviewUrls.length === imageFiles.length) {
-          // Keep existing previews and add new ones
-          setPreviewImages((prevPreviews) => [...prevPreviews, ...newPreviewUrls])
+      // Combine existing images with new ones when editing
+      const currentImages = formData.images || []
+      const updatedImages = [...currentImages, ...imageFiles]
+
+      setFormData((prev) => ({ ...prev, images: updatedImages }))
+
+      // Create preview URLs for all NEW selected images only
+      const newPreviewUrls = []
+      imageFiles.forEach((file) => {
+        const reader = new FileReader()
+        reader.onloadend = () => {
+          newPreviewUrls.push(reader.result)
+          if (newPreviewUrls.length === imageFiles.length) {
+            // Keep existing previews and add new ones
+            setPreviewImages((prevPreviews) => [...prevPreviews, ...newPreviewUrls])
+          }
         }
-      }
-      reader.readAsDataURL(file)
-    })
-  } else {
-    setFormData((prev) => ({ ...prev, [name]: value }))
+        reader.readAsDataURL(file)
+      })
+    } else if (name.startsWith("tr_")) {
+      const [, lang, field] = name.split("_")
+      setFormData((prev) => ({
+        ...prev,
+        translations: {
+          ...prev.translations,
+          [lang]: { ...prev.translations[lang], [field]: value },
+        },
+      }))
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }))
+    }
   }
-}
+
   const handleItemChange = (index, fieldName, value) => {
     const updatedItems = [...formData.items]
-    updatedItems[index][fieldName] = value
+    if (fieldName.startsWith("tr_")) {
+      const [, lang, f] = fieldName.split("_")
+      if (!updatedItems[index].translations) {
+        updatedItems[index].translations = {
+          fr: { name: "", description: "" },
+          ar: { name: "", description: "" },
+        }
+      }
+      updatedItems[index].translations[lang] = {
+        ...updatedItems[index].translations[lang],
+        [f]: value,
+      }
+    } else {
+      updatedItems[index][fieldName] = value
+    }
     setFormData((prev) => ({ ...prev, items: updatedItems }))
   }
 
   const addItem = () => {
     setFormData((prev) => ({
       ...prev,
-      items: [...prev.items, { name: "", description: "", price: "", reservable: true, isVegetarian: false, isOrganic: false, isLocal: false, isGlutenFree: false, isLactoseFree: false }],
+      items: [
+        ...prev.items,
+        {
+          name: "",
+          description: "",
+          price: "",
+          reservable: true,
+          isVegetarian: false,
+          isOrganic: false,
+          isLocal: false,
+          isGlutenFree: false,
+          isLactoseFree: false,
+          translations: { fr: { name: "", description: "" }, ar: { name: "", description: "" } },
+        },
+      ],
     }))
   }
 
@@ -171,6 +244,13 @@ const handleSubmit = async (e) => {
     form.append("title", formData.title)
     form.append("items", JSON.stringify(formData.items))
     form.append("terrassePiscine", selectedLounge._id)
+    form.append(
+      "translations",
+      JSON.stringify({
+        fr: formData.translations?.fr || { title: "" },
+        ar: formData.translations?.ar || { title: "" },
+      }),
+    )
 
     // Separate existing images (URLs) from new images (Blob/File objects)
     const existingImages = []
@@ -237,11 +317,15 @@ const handleSubmit = async (e) => {
 
 const handleEdit = (menu) => {
   console.log("Editing menu:", menu);
-  
+  const tr = menu.translations || {}
   setFormData({
     title: menu.title,
     images: menu.images || [], // This contains URL strings
     items: menu.items || [],
+    translations: {
+      fr: { title: (tr.fr && tr.fr.title) || "" },
+      ar: { title: (tr.ar && tr.ar.title) || "" },
+    },
   });
   setEditId(menu._id);
   setShowForm(true);
@@ -274,29 +358,51 @@ const handleEdit = (menu) => {
     setFormData({
       title: "",
       images: [],
-      items: [{ name: "", description: "", price: "", reservable: true, isVegetarian: false, isOrganic: false, isLocal: false, isGlutenFree: false, isLactoseFree: false }],
+      items: [
+        {
+          name: "",
+          description: "",
+          price: "",
+          reservable: true,
+          isVegetarian: false,
+          isOrganic: false,
+          isLocal: false,
+          isGlutenFree: false,
+          isLactoseFree: false,
+          translations: { fr: { name: "", description: "" }, ar: { name: "", description: "" } },
+        },
+      ],
+      translations: { fr: { title: "" }, ar: { title: "" } },
     })
     setPreviewImages([])
     setEditId(null)
   }
 
-const handleLoungeChange = (e) => {
-  const { name, type, value, checked, files } = e.target;
+  const handleLoungeChange = (e) => {
+    const { name, type, value, checked, files } = e.target
 
-  if (name === "image" && files && files[0]) {
-    const image = files[0];
-    setLoungeFormData((prev) => ({ ...prev, image }));
-    const reader = new FileReader();
-    reader.onloadend = () => setLoungePreviewImage(reader.result);
-    reader.readAsDataURL(image);
-  } else {
-    setLoungeFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value
-    }));
+    if (name === "image" && files && files[0]) {
+      const image = files[0]
+      setLoungeFormData((prev) => ({ ...prev, image }))
+      const reader = new FileReader()
+      reader.onloadend = () => setLoungePreviewImage(reader.result)
+      reader.readAsDataURL(image)
+    } else if (name.startsWith("tr_")) {
+      const [, lang, field] = name.split("_")
+      setLoungeFormData((prev) => ({
+        ...prev,
+        translations: {
+          ...prev.translations,
+          [lang]: { ...prev.translations[lang], [field]: value },
+        },
+      }))
+    } else {
+      setLoungeFormData((prev) => ({
+        ...prev,
+        [name]: type === "checkbox" ? checked : value,
+      }))
+    }
   }
-};
-
 
   const handleLoungeSubmit = async (e) => {
     e.preventDefault()
@@ -306,6 +412,13 @@ const handleLoungeChange = (e) => {
       form.append("name", loungeFormData.name)
       form.append("description", loungeFormData.description)
       form.append("reservable", loungeFormData.reservable)
+      form.append(
+        "translations",
+        JSON.stringify({
+          fr: loungeFormData.translations?.fr || { name: "", description: "" },
+          ar: loungeFormData.translations?.ar || { name: "", description: "" },
+        }),
+      )
       if (loungeFormData.image) form.append("image", loungeFormData.image)
 
       if (editingLoungeId) {
@@ -323,7 +436,13 @@ const handleLoungeChange = (e) => {
       fetchLounges()
       setShowLoungeForm(false)
       setEditingLoungeId(null)
-      setLoungeFormData({ name: "", description: "", reservable: true, image: null })
+      setLoungeFormData({
+        name: "",
+        description: "",
+        reservable: true,
+        image: null,
+        translations: { fr: { name: "", description: "" }, ar: { name: "", description: "" } },
+      })
       setLoungePreviewImage(null)
     } catch (error) {
       console.error("Erreur soumission lounge:", error)
@@ -634,6 +753,59 @@ const handleLoungeChange = (e) => {
                     required
                     className={isDarkMode ? "" : "light-form-input"}
                   />
+
+                  <div className={isDarkMode ? "form-label" : "light-form-label"} style={{ marginTop: "0.5rem" }}>
+                    Traductions (FR / AR)
+                  </div>
+                  <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                    <button
+                      type="button"
+                      className={
+                        activeLoungeLang === "fr"
+                          ? isDarkMode
+                            ? "btn btn-primary"
+                            : "light-btn light-btn-primary"
+                          : isDarkMode
+                            ? "btn btn-secondary"
+                            : "light-btn light-btn-secondary"
+                      }
+                      onClick={() => setActiveLoungeLang("fr")}
+                    >
+                      Français
+                    </button>
+                    <button
+                      type="button"
+                      className={
+                        activeLoungeLang === "ar"
+                          ? isDarkMode
+                            ? "btn btn-primary"
+                            : "light-btn light-btn-primary"
+                          : isDarkMode
+                            ? "btn btn-secondary"
+                            : "light-btn light-btn-secondary"
+                      }
+                      onClick={() => setActiveLoungeLang("ar")}
+                    >
+                      العربية
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    name={`tr_${activeLoungeLang}_name`}
+                    value={loungeFormData.translations?.[activeLoungeLang]?.name ?? ""}
+                    onChange={handleLoungeChange}
+                    placeholder={activeLoungeLang === "fr" ? "Nom FR" : "الاسم"}
+                    className={isDarkMode ? "" : "light-form-input"}
+                  />
+                  <textarea
+                    name={`tr_${activeLoungeLang}_description`}
+                    value={loungeFormData.translations?.[activeLoungeLang]?.description ?? ""}
+                    onChange={handleLoungeChange}
+                    placeholder={activeLoungeLang === "fr" ? "Description FR" : "الوصف"}
+                    className={isDarkMode ? "" : "light-form-input"}
+                    rows={2}
+                  />
+
                   <textarea
                     name="description"
                     placeholder="Description"
@@ -781,6 +953,50 @@ const handleLoungeChange = (e) => {
                     required
                     className={isDarkMode ? "" : "light-form-input"}
                   />
+
+                  <div className={isDarkMode ? "form-label" : "light-form-label"} style={{ marginTop: "0.5rem" }}>
+                    Traductions du Menu (FR / AR)
+                  </div>
+                  <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                    <button
+                      type="button"
+                      className={
+                        activeMenuLang === "fr"
+                          ? isDarkMode
+                            ? "btn btn-primary"
+                            : "light-btn light-btn-primary"
+                          : isDarkMode
+                            ? "btn btn-secondary"
+                            : "light-btn light-btn-secondary"
+                      }
+                      onClick={() => setActiveMenuLang("fr")}
+                    >
+                      Français
+                    </button>
+                    <button
+                      type="button"
+                      className={
+                        activeMenuLang === "ar"
+                          ? isDarkMode
+                            ? "btn btn-primary"
+                            : "light-btn light-btn-primary"
+                          : isDarkMode
+                            ? "btn btn-secondary"
+                            : "light-btn light-btn-secondary"
+                      }
+                      onClick={() => setActiveMenuLang("ar")}
+                    >
+                      العربية
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    name={`tr_${activeMenuLang}_title`}
+                    value={formData.translations?.[activeMenuLang]?.title ?? ""}
+                    onChange={handleChange}
+                    placeholder={activeMenuLang === "fr" ? "Titre FR" : "العنوان"}
+                    className={isDarkMode ? "" : "light-form-input"}
+                  />
                   <div className={isDarkMode ? "image-upload-section" : "light-image-upload-section"}>
                     <label htmlFor="images">Images du menu (max 5):</label>
                    <CompressedFileInput
@@ -844,6 +1060,60 @@ const handleLoungeChange = (e) => {
                         value={item.description}
                         onChange={(e) => handleItemChange(index, "description", e.target.value)}
                         className={isDarkMode ? "" : "light-form-input"}
+                      />
+
+                      <div className={isDarkMode ? "form-label" : "light-form-label"} style={{ marginTop: "0.5rem" }}>
+                        Traductions de l'Item (FR / AR)
+                      </div>
+                      <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                        <button
+                          type="button"
+                          className={
+                            activeItemLang === "fr"
+                              ? isDarkMode
+                                ? "btn btn-primary"
+                                : "light-btn light-btn-primary"
+                              : isDarkMode
+                                ? "btn btn-secondary"
+                                : "light-btn light-btn-secondary"
+                          }
+                          onClick={() => setActiveItemLang("fr")}
+                        >
+                          Français
+                        </button>
+                        <button
+                          type="button"
+                          className={
+                            activeItemLang === "ar"
+                              ? isDarkMode
+                                ? "btn btn-primary"
+                                : "light-btn light-btn-primary"
+                              : isDarkMode
+                                ? "btn btn-secondary"
+                                : "light-btn light-btn-secondary"
+                          }
+                          onClick={() => setActiveItemLang("ar")}
+                        >
+                          العربية
+                        </button>
+                      </div>
+                      <input
+                        type="text"
+                        value={item.translations?.[activeItemLang]?.name ?? ""}
+                        onChange={(e) =>
+                          handleItemChange(index, `tr_${activeItemLang}_name`, e.target.value)
+                        }
+                        placeholder={activeItemLang === "fr" ? "Nom de l'item FR" : "الاسم"}
+                        className={isDarkMode ? "" : "light-form-input"}
+                      />
+                      <textarea
+                        value={item.translations?.[activeItemLang]?.description ?? ""}
+                        onChange={(e) =>
+                          handleItemChange(index, `tr_${activeItemLang}_description`, e.target.value)
+                        }
+                        placeholder={activeItemLang === "fr" ? "Description FR" : "الوصف"}
+                        className={isDarkMode ? "" : "light-form-input"}
+                        rows={2}
                       />
                        <div className={isDarkMode ? "checkbox-container" : "light-checkbox-container"}>
   {/* Vegetarian */}

@@ -830,12 +830,11 @@ useEffect(() => {
         onError={(e) => (e.target.src = "/placeholder.svg")}
       />
     )}
-    {pageContent.description && (
+    {(pageContent.translations?.[currentLanguage]?.description || pageContent.description) && (
       <div
   className="page-content-description"
-  dangerouslySetInnerHTML={{ __html: pageContent.description }}
+  dangerouslySetInnerHTML={{ __html: pageContent.translations?.[currentLanguage]?.description || pageContent.description }}
 />
-
     )}
   </div>
 )}
@@ -867,27 +866,27 @@ useEffect(() => {
                         {categories[currentCategoryIndex].image ? (
                           <img
                             src={categories[currentCategoryIndex].image || "/placeholder.svg"}
-                            alt={categories[currentCategoryIndex].name}
+                            alt={categories[currentCategoryIndex].translations?.[currentLanguage]?.name || categories[currentCategoryIndex].name}
                             className="menu-image-drinks"
                           />
                         ) : (
                           <div className="menu-image-placeholder-drinks">
-                            <span>{categories[currentCategoryIndex].name}</span>
+                            <span>{categories[currentCategoryIndex].translations?.[currentLanguage]?.name || categories[currentCategoryIndex].name}</span>
                           </div>
                         )}
                       </div>
                       {/* Right side - Drinks Items */}
                       <div className="menu-items-side-drinks">
-                        <h2 className="menu-title-drinks">{categories[currentCategoryIndex].name}</h2>
+                        <h2 className="menu-title-drinks">{categories[currentCategoryIndex].translations?.[currentLanguage]?.name || categories[currentCategoryIndex].name}</h2>
                         {boissons[categories[currentCategoryIndex]._id]?.length > 0 ? (
                           <div className="menu-items-list-drinks">
                             {boissons[categories[currentCategoryIndex]._id].map((boisson, idx) => (
                               <div key={idx} className="menu-item-drinks">
                                 <div className="menu-item-header-drinks">
-                                  <h3 className="menu-item-name-drinks">{boisson.title}</h3>
+                                  <h3 className="menu-item-name-drinks">{boisson.translations?.[currentLanguage]?.title || boisson.title}</h3>
                                   <div className="menu-item-price-drinks">{boisson.price} TND</div>
                                 </div>
-                                <p className="menu-item-description-drinks">{boisson.description}</p>
+                                <p className="menu-item-description-drinks">{boisson.translations?.[currentLanguage]?.description || boisson.description}</p>
                               </div>
                             ))}
                           </div>
@@ -926,11 +925,11 @@ useEffect(() => {
                 <div className="modern-header-image">
                   <img
                     src={categories[currentCategoryIndex]?.image || "/placeholder.svg"}
-                    alt={categories[currentCategoryIndex]?.name}
+                    alt={categories[currentCategoryIndex]?.translations?.[currentLanguage]?.name || categories[currentCategoryIndex]?.name}
                     onError={(e) => (e.target.src = "/placeholder.svg")}
                   />
                   <div className="modern-header-title">
-                    <h2>{categories[currentCategoryIndex]?.name || t("drinks")}</h2>
+                    <h2>{categories[currentCategoryIndex]?.translations?.[currentLanguage]?.name || categories[currentCategoryIndex]?.name || t("drinks")}</h2>
                   </div>
                 </div>
 
@@ -942,7 +941,7 @@ useEffect(() => {
                       className={`category-tab ${currentCategoryIndex === index ? "active" : ""}`}
                       onClick={() => goToCategory(index)}
                     >
-                      {category.name}
+                      {category.translations?.[currentLanguage]?.name || category.name}
                     </button>
                   ))}
                 </div>
@@ -957,7 +956,7 @@ useEffect(() => {
                             <div className="modern-drink-image">
                               <img
                                 src={drink.image || "/placeholder.svg"}
-                                alt={drink.title}
+                                alt={drink.translations?.[currentLanguage]?.title || drink.title}
                                 onError={(e) => (e.target.src = "/placeholder.svg")}
                               />
                             </div>
@@ -967,19 +966,19 @@ useEffect(() => {
                               // Restaurant menu style layout for drinks without images
                               <>
                                 <div className="modern-drink-header">
-                                  <div className="modern-drink-title">{drink.title}</div>
+                                  <div className="modern-drink-title">{drink.translations?.[currentLanguage]?.title || drink.title}</div>
                                   <span className="modern-drink-price">
                                     {drink.price} <span className="currency">TND</span>
                                   </span>
                                 </div>
-                                <p className="modern-drink-description">{drink.description}</p>
+                                <p className="modern-drink-description">{drink.translations?.[currentLanguage]?.description || drink.description}</p>
                                 {drink.volume && <div className="modern-drink-volume">{drink.volume} ml</div>}
                               </>
                             ) : (
                               // Original card layout for drinks with images
                               <>
-                                <h4 className="modern-drink-title">{drink.title}</h4>
-                                <p className="modern-drink-description">{drink.description}</p>
+                                <h4 className="modern-drink-title">{drink.translations?.[currentLanguage]?.title || drink.title}</h4>
+                                <p className="modern-drink-description">{drink.translations?.[currentLanguage]?.description || drink.description}</p>
                                 {drink.volume && <div className="modern-drink-volume">{drink.volume} ml</div>}
                                 <div className="modern-drink-price">{drink.price} TND</div>
                               </>
