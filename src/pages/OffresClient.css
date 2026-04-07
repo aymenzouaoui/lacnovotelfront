@@ -543,3 +543,44 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary-dark);
 }
+
+/* Fix VIDEO affichage */
+.offre-video,
+.offre-detail-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Important pour grid (sinon bug taille) */
+.content-item-image video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Fix overlay au-dessus de la vidéo */
+.content-item-overlay {
+  z-index: 2;
+}
+
+.content-item-image img,
+.content-item-image video {
+  position: relative;
+  z-index: 1;
+}
+
+/* Eviter bug hover zoom image seulement */
+.content-item:hover .content-item-image video {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+/* Detail video fix */
+.offre-detail-image-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: black; /* évite écran blanc */
+}

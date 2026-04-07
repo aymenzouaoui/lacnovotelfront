@@ -87,6 +87,193 @@
   border-color: var(--primary);
 }
 
+/* Language select (re-use sort-select base) */
+.lang-select {
+  min-width: 76px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Video thumbnail card */
+.card-media-container {
+  width: 100%;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 16px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.card-video-wrapper {
+  position: relative;
+}
+
+.card-video-thumbnail-wrapper {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+}
+
+.card-video-thumbnail-wrapper .card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.01);
+}
+
+.card-video-play-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.55));
+  opacity: 1;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.card-video-open-btn:hover .card-video-play-overlay {
+  background: radial-gradient(circle at center, rgba(236, 64, 122, 0.2), rgba(0, 0, 0, 0.65));
+}
+
+.play-button-circle {
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+  color: #111827;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  transform: scale(1);
+  transition: transform 0.2s ease;
+}
+
+.card-video-open-btn:hover .play-button-circle {
+  transform: scale(1.06);
+}
+
+.card-video-loading,
+.card-video-fallback {
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.card-video-loading-spinner {
+  width: 26px;
+  height: 26px;
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  border-top-color: rgba(236, 64, 122, 0.9);
+  border-radius: 50%;
+  animation: offresSpin 0.9s linear infinite;
+}
+
+@keyframes offresSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Video modal */
+.video-modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(8px);
+}
+
+.video-modal {
+  width: min(980px, 100%);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #0b1220;
+}
+
+.video-modal-overlay.theme-light .video-modal {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+.video-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.video-modal-overlay.theme-light .video-modal-header {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+.video-modal-title {
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.92);
+  max-width: 80%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.video-modal-overlay.theme-light .video-modal-title {
+  color: #0f172a;
+}
+
+.video-modal-close {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.95);
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.video-modal-overlay.theme-light .video-modal-close {
+  border-color: rgba(0, 0, 0, 0.12);
+  background: rgba(0, 0, 0, 0.04);
+  color: #0f172a;
+}
+
+.video-modal-close:hover {
+  transform: scale(1.05);
+  background: rgba(236, 64, 122, 0.18);
+}
+
+.video-modal-body {
+  background: #000;
+}
+
+.video-modal-player {
+  width: 100%;
+  max-height: 76vh;
+  display: block;
+  background: #000;
+}
+
 .form-container {
   margin-bottom: 24px;
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import API from "../services/api"
 import "./OffresPage.css"
@@ -78,6 +78,7 @@ const VideoThumbnail = ({ src, alt }) => {
     }
 
     const handleError = () => {
+      console.warn("[VideoThumbnail] error loading video for thumbnail:", src)
       if (!isCancelled) {
         setIsLoading(false)
       }
@@ -168,6 +169,12 @@ const OffresPage = () => {
   const [sortOrder, setSortOrder] = useState("newest")
   const [viewMode, setViewMode] = useState("grid")
   const [imageIndices, setImageIndices] = useState({}) // Track current image index for each offer
+  const [currentLanguage, setCurrentLanguage] = useState(() => {
+    const savedLanguage = localStorage.getItem("novotel-language")
+    return savedLanguage === "fr" || savedLanguage === "en" || savedLanguage === "ar" ? savedLanguage : "fr"
+  })
+  const [videoModal, setVideoModal] = useState({ open: false, src: "", title: "" })
+  const hasLoggedOffresDebugRef = useRef(false)
 
   // Theme state with localStorage initialization
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -219,6 +226,14 @@ const OffresPage = () => {
       clearInterval(timer)
     }
   }, [navigate])
+
+  useEffect(() => {
+    // Keep language in sync with the client-side selector (Home/OffresClient)
+    const savedLanguage = localStorage.getItem("novotel-language")
+    if (savedLanguage === "fr" || savedLanguage === "en" || savedLanguage === "ar") {
+      setCurrentLanguage(savedLanguage)
+    }
+  }, [])
 
   useEffect(() => {
     // Save theme preference to localStorage
@@ -455,11 +470,72 @@ const OffresPage = () => {
     setIsSidebarOpen(!isSidebarOpen)
   }
 
+  const backendOrigin = (() => {
+    const base = API?.defaults?.baseURL || ""
+    // ex: http://localhost:5000/api  -> http://localhost:5000
+    return base.replace(/\/api\/?$/, "")
+  })()
+
+  const isVideoUrl = (url) => typeof url === "string" && /\.(mp4|webm|ogg)(\?.*)?$/i.test(url)
+
+  const resolveMediaUrl = (url) => {
+    if (!url || typeof url !== "string") return ""
+    // Normalize Windows backslashes coming from backend paths
+    const normalized = url.replace(/\\/g, "/")
+    if (normalized.startsWith("data:") || normalized.startsWith("blob:")) return normalized
+    if (/^https?:\/\//i.test(normalized)) return normalized
+    if (normalized.startsWith("/")) return `${backendOrigin}${normalized}`
+    return `${backendOrigin}/${normalized}`
+  }
+
+  const getLocalizedOfferField = (offre, field) => {
+    const tr = offre?.translations?.[currentLanguage]
+    const translated = tr?.[field]
+    if (typeof translated === "string" && translated.trim()) return translated
+    const fallback = offre?.[field]
+    return typeof fallback === "string" ? fallback : ""
+  }
+
+  useEffect(() => {
+    if (hasLoggedOffresDebugRef.current) return
+    if (!offres || offres.length === 0) return
+    hasLoggedOffresDebugRef.current = true
+
+    try {
+      const sample = offres.slice(0, 8).map((o) => {
+        const rawVideoCandidate = o?.video || (isVideoUrl(o?.image) ? o?.image : null)
+        const resolvedVideo = resolveMediaUrl(rawVideoCandidate)
+        const rawImages = o?.images && o.images.length > 0 ? o.images : o?.image ? [o.image] : []
+        const resolvedImages = rawImages.map(resolveMediaUrl).filter(Boolean)
+        return {
+          id: o?._id,
+          title: o?.title,
+          tr_fr_title: o?.translations?.fr?.title,
+          tr_en_title: o?.translations?.en?.title,
+          tr_ar_title: o?.translations?.ar?.title,
+          image: o?.image,
+          video: o?.video,
+          imagesCount: Array.isArray(o?.images) ? o.images.length : 0,
+          resolvedVideo,
+          resolvedFirstImage: resolvedImages[0] || "",
+        }
+      })
+      console.groupCollapsed("[OffresPage debug] sample offres media/translation")
+      console.table(sample)
+      console.log("[OffresPage debug] backendOrigin:", backendOrigin)
+      console.log("[OffresPage debug] currentLanguage:", currentLanguage)
+      console.groupEnd()
+    } catch (e) {
+      console.warn("[OffresPage debug] failed to log sample", e)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [offres])
+
   const filteredOffres = offres
     .filter(
       (o) =>
-        o.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        o.description?.toLowerCase().includes(searchTerm.toLowerCase()),
+        getLocalizedOfferField(o, "title")?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        getLocalizedOfferField(o, "description")?.toLowerCase().includes(searchTerm.toLowerCase()),
     )
     .sort((a, b) => {
       if (sortOrder === "newest") {
@@ -646,6 +722,23 @@ const OffresPage = () => {
           </div>
 
           <div className="view-sort-container">
+            <select
+              className={`${isDarkMode ? "sort-select" : "light-sort-select"} lang-select`}
+              value={currentLanguage}
+              onChange={(e) => {
+                const lang = e.target.value
+                setCurrentLanguage(lang)
+                localStorage.setItem("novotel-language", lang)
+                document.documentElement.dir = lang === "ar" ? "rtl" : "ltr"
+                document.documentElement.lang = lang
+              }}
+              aria-label="Langue"
+              title="Langue"
+            >
+              <option value="fr">FR</option>
+              <option value="en">EN</option>
+              <option value="ar">AR</option>
+            </select>
             <div className="view-toggle">
               <button
                 className={`view-btn ${viewMode === "grid" ? "active" : ""}`}
@@ -953,9 +1046,14 @@ const OffresPage = () => {
           >
             {filteredOffres.map((offre) => {
               // Determine media type and data
-              const mediaType = offre.video ? "video" : (offre.images && offre.images.length > 0) ? "images" : offre.image ? "image" : null
-              const images = offre.images && offre.images.length > 0 ? offre.images : offre.image ? [offre.image] : []
+              const videoCandidate = offre.video || (isVideoUrl(offre.image) ? offre.image : null)
+              const mediaType = videoCandidate ? "video" : (offre.images && offre.images.length > 0) ? "images" : offre.image ? "image" : null
+              const imagesRaw = offre.images && offre.images.length > 0 ? offre.images : offre.image ? [offre.image] : []
+              const images = imagesRaw.map(resolveMediaUrl).filter(Boolean)
+              const videoSrc = resolveMediaUrl(videoCandidate)
               const currentImageIndex = imageIndices[offre._id] || 0
+              const localizedTitle = getLocalizedOfferField(offre, "title")
+              const localizedDescription = getLocalizedOfferField(offre, "description")
               
               const setCurrentImageIndex = (index) => {
                 setImageIndices((prev) => ({ ...prev, [offre._id]: index }))
@@ -965,9 +1063,17 @@ const OffresPage = () => {
               <div key={offre._id} className={isDarkMode ? "offre-card" : "light-offre-card"}>
                 {/* Media Container */}
                 <div className="card-media-container">
-                  {mediaType === "video" && offre.video ? (
+                  {mediaType === "video" && videoSrc ? (
                     <div className="card-video-wrapper">
-                      <VideoThumbnail src={offre.video} alt={offre.title} />
+                      <button
+                        type="button"
+                        onClick={() => setVideoModal({ open: true, src: videoSrc, title: localizedTitle || "Vidéo" })}
+                        className="card-video-open-btn"
+                        aria-label="Ouvrir la vidéo"
+                        style={{ all: "unset", display: "block", cursor: "pointer" }}
+                      >
+                        <VideoThumbnail src={videoSrc} alt={localizedTitle || offre.title} />
+                      </button>
                       <div className="media-type-indicator video-indicator">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <path d="M8 5v14l11-7z" fill="currentColor" />
@@ -985,7 +1091,7 @@ const OffresPage = () => {
                           <div key={idx} className="carousel-slide">
                             <img 
                               src={img || "/placeholder.svg"} 
-                              alt={`${offre.title} - Image ${idx + 1}`} 
+                              alt={`${localizedTitle || offre.title} - Image ${idx + 1}`} 
                               className="card-image" 
                             />
                           </div>
@@ -1041,8 +1147,8 @@ const OffresPage = () => {
                     </div>
                   ) : null}
                 </div>
-                <h3>{offre.title}</h3>
-                <p>{offre.description}</p>
+                <h3>{localizedTitle || offre.title}</h3>
+                <p>{localizedDescription || offre.description}</p>
                 {offre.discountPercentage != null && 
                  offre.discountPercentage !== "" && 
                  Number(offre.discountPercentage) > 0 && (
@@ -1095,6 +1201,39 @@ const OffresPage = () => {
           </div>
         )}
       </div>
+
+      {videoModal.open && (
+        <div
+          className={`video-modal-overlay ${isDarkMode ? "theme-dark" : "theme-light"}`}
+          onClick={() => setVideoModal({ open: false, src: "", title: "" })}
+          role="dialog"
+          aria-modal="true"
+          aria-label={videoModal.title || "Vidéo"}
+        >
+          <div className="video-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="video-modal-header">
+              <div className="video-modal-title">{videoModal.title || "Vidéo"}</div>
+              <button
+                type="button"
+                onClick={() => setVideoModal({ open: false, src: "", title: "" })}
+                className="video-modal-close"
+                aria-label="Fermer"
+              >
+                ×
+              </button>
+            </div>
+            <div className="video-modal-body">
+              <video
+                src={videoModal.src}
+                controls
+                autoPlay
+                playsInline
+                className="video-modal-player"
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       <style jsx>{`
 /* Light Mode Styles for Offres Page - Same base styles as Loisirs */

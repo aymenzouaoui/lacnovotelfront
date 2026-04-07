@@ -553,6 +553,7 @@ const HomeClient = () => {
           onPrev={handlePrevPopupOffer}
           titleFallback={t("discoverOffers")}
           descriptionFallback={t("discoverPromotions")}
+          currentLanguage={currentLanguage}
         />
       </Suspense>
 

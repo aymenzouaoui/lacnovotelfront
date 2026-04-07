@@ -139,6 +139,22 @@ const OffresClient = () => {
   // Get translation function
   const t = (key) => translations[currentLanguage][key] || translations.fr[key] || key
 
+  const backendOrigin = (() => {
+    const base = API?.defaults?.baseURL || ""
+    return base.replace(/\/api\/?$/, "")
+  })()
+
+  const isVideoUrl = (url) => typeof url === "string" && /\.(mp4|webm|ogg)(\?.*)?$/i.test(url)
+
+  const resolveMediaUrl = (url) => {
+    if (!url || typeof url !== "string") return ""
+    const normalized = url.replace(/\\/g, "/")
+    if (normalized.startsWith("data:") || normalized.startsWith("blob:")) return normalized
+    if (/^https?:\/\//i.test(normalized)) return normalized
+    if (normalized.startsWith("/")) return `${backendOrigin}${normalized}`
+    return `${backendOrigin}/${normalized}`
+  }
+
   const fetchOffres = async () => {
     try {
       setIsLoading(true)
@@ -437,14 +453,30 @@ const OffresClient = () => {
               </button>
               <div className="offre-detail-content">
                 <div className="offre-detail-image-container">
-                  <img
-                    src={selectedOffre.image || "/placeholder.svg"}
-                    alt={selectedOffre.title}
-                    className="offre-detail-image"
-                    onError={(e) => {
-                      e.target.src = `/placeholder.svg?height=300&width=500&text=${selectedOffre.title}`
-                    }}
-                  />
+                  {(() => {
+                    const videoCandidate = selectedOffre?.video || (isVideoUrl(selectedOffre?.image) ? selectedOffre?.image : null)
+                    const videoSrc = resolveMediaUrl(videoCandidate)
+                    const imageSrc = resolveMediaUrl(selectedOffre?.image)
+                    if (videoSrc) {
+                      return (
+                        <video
+                          src={videoSrc}
+                          controls
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                          className="offre-detail-video"
+                        />
+                      )
+                    }
+                    return (
+                      <img
+                        src={imageSrc || "/placeholder.svg"}
+                        alt={selectedOffre.title}
+                      />
+                    )
+                  })()}
                 </div>
                 <div className="offre-detail-info">
                   <h2 className="offre-detail-name">{selectedOffre.title}</h2>
@@ -480,41 +512,60 @@ const OffresClient = () => {
             </div>
           ) : (
             <div className={`content-grid ${isLoaded ? "loaded" : ""}`}>
-              {offres.map((offre, index) => (
-                <div
-                  key={offre._id}
-                  className="content-item"
-                  style={{ animationDelay: `${index * 0.05}s` }}
-                  onClick={() => setSelectedOffre(offre)}
-                >
-                  <div className="content-item-image">
-                    <img
-                      src={offre.image || "/placeholder.svg"}
-                      alt={offre.title}
-                      onError={(e) => {
-                        e.target.src = `/placeholder.svg?height=120&width=300&text=${offre.title}`
-                      }}
-                    />
-                    <div className="content-item-overlay">
-                      <span className="view-details">{t("viewDetails")}</span>
+              {offres
+                .filter((offre) => offre.active) // 👈 ici le filtre
+                .map((offre, index) => (
+                  <div
+                    key={offre._id}
+                    className="content-item"
+                    style={{ animationDelay: `${index * 0.05}s` }}
+                    onClick={() => setSelectedOffre(offre)}
+                  >
+                    <div className="content-item-image">
+                      {(() => {
+                        const videoCandidate = offre?.video || (isVideoUrl(offre?.image) ? offre?.image : null)
+                        const videoSrc = resolveMediaUrl(videoCandidate)
+                        const imageSrc = resolveMediaUrl(offre?.image)
+                        if (videoSrc) {
+                          return (
+                            <video
+                              src={videoSrc}
+                              controls
+                              autoPlay
+                              muted
+                              loop
+                              playsInline
+                              className="offre-video"
+                            />
+                          )
+                        }
+                        return (
+                          <img
+                            src={imageSrc || "/placeholder.svg"}
+                            alt={offre.title}
+                          />
+                        )
+                      })()}
+                      <div className="content-item-overlay">
+                        <span className="view-details">{t("viewDetails")}</span>
+                      </div>
+                    </div>
+                    <div className="content-item-content">
+                      <h3>{offre.title}</h3>
+                      <div className="content-item-arrow">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M12 4L20 12L12 20M4 12H20"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </div>
                     </div>
                   </div>
-                  <div className="content-item-content">
-                    <h3>{offre.title}</h3>
-                    <div className="content-item-arrow">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M12 4L20 12L12 20M4 12H20"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
           )}
         </div>
@@ -539,7 +590,7 @@ const OffresClient = () => {
           </div>
           <div className="footer-section">
             <h4>{t("wifi")}</h4>
-             
+
             <p>
               {t("password")}: {t("availableAtReception")}
             </p>
@@ -586,7 +637,7 @@ const OffresClient = () => {
                   <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                 </svg>
               </a>
-               
+
             </div>
           </div>
         </div>

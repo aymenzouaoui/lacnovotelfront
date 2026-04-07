@@ -9,6 +9,7 @@ const OffersPopup = ({
   onPrev,
   titleFallback = "Découvrir nos offres",
   descriptionFallback = "Profitez de nos offres exclusives",
+  currentLanguage = "fr",
 }) => {
   const hasOffers = !!offers && offers.length > 0
   const [resolvedImage, setResolvedImage] = useState("/images/offres_popup.jpg")
@@ -105,10 +106,22 @@ const OffersPopup = ({
             setTouchStartX(null)
           }}
         >
-          <div
-            className={`offers-popup-image ${slideClass}`}
-            style={{ backgroundImage: `url("${resolvedImage}")` }}
-          />
+          {currentOffer.video ? (
+            <video
+              key={currentOffer._id}
+              className={`offers-popup-video ${slideClass}`}
+              src={currentOffer.video}
+              autoPlay
+              muted
+              loop
+              playsInline
+            />
+          ) : (
+            <div
+              className={`offers-popup-image ${slideClass}`}
+              style={{ backgroundImage: `url("${resolvedImage}")` }}
+            />
+          )}
           {hasMultipleOffers && (
             <>
               <button
@@ -134,10 +147,10 @@ const OffersPopup = ({
 
         <div className="novotel-v2-popup-content-wrapper offers-popup-content">
           <div className="novotel-v2-popup-title offers-popup-title">
-            {currentOffer.title || titleFallback}
+            {currentOffer.translations?.[currentLanguage]?.title || currentOffer.title || titleFallback}
           </div>
           <div className="novotel-v2-popup-content offers-popup-description">
-            {currentOffer.description || descriptionFallback}
+            {currentOffer.translations?.[currentLanguage]?.description || currentOffer.description || descriptionFallback}
           </div>
           <a href="/offres-client#" className="novotel-v2-popup-button offers-popup-cta">
             {titleFallback}
