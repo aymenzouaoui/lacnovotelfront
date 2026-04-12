@@ -213,9 +213,23 @@ const HomeClient = () => {
   const [popupOfferIndex, setPopupOfferIndex] = useState(0)
   const [currentLanguage, setCurrentLanguage] = useState("fr")
   const [weatherData, setWeatherData] = useState({ temp: "18°C", loading: true })
+  const [isDarkMode, setIsDarkMode] = useState(false)
 
   // Get translation function
   const t = (key) => translations[currentLanguage][key] || translations.fr[key] || key
+
+  // Dark mode toggle handler
+  const toggleDarkMode = () => {
+    const newMode = !isDarkMode
+    setIsDarkMode(newMode)
+    localStorage.setItem("novotel-dark-mode", JSON.stringify(newMode))
+    
+    if (newMode) {
+      document.body.classList.add("dark-mode")
+    } else {
+      document.body.classList.remove("dark-mode")
+    }
+  }
 
   // Images du diaporama principal
   const heroImages = ["/images/hotel-lobby4-v4.jpg"]
@@ -319,6 +333,16 @@ const HomeClient = () => {
     const savedLanguage = localStorage.getItem("novotel-language")
     if (savedLanguage && translations[savedLanguage]) {
       setCurrentLanguage(savedLanguage)
+    }
+
+    // Load saved theme from localStorage
+    const savedTheme = localStorage.getItem("novotel-dark-mode")
+    if (savedTheme !== null) {
+      const isDark = JSON.parse(savedTheme)
+      setIsDarkMode(isDark)
+      if (isDark) {
+        document.body.classList.add("dark-mode")
+      }
     }
 
     // Update time every minute
@@ -507,6 +531,8 @@ const HomeClient = () => {
         weatherData={weatherData}
         formatDate={formatDate}
         formatTime={formatTime}
+        isDarkMode={isDarkMode}
+        onToggleDarkMode={toggleDarkMode}
       />
 
       <main className="novotel-v2-main">

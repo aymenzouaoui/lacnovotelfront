@@ -208,15 +208,34 @@
 /* ===== END LOADING SCREEN STYLES ===== */
 
 /* Base styles */
+:root {
+  --bg-color: #f5f5f5;
+  --text-color: #333;
+  --card-bg: #ffffff;
+  --header-bg: #f5f5f5;
+  --nav-bg: #ffffff;
+  --accent-blue: #002984;
+}
+
+body.dark-mode {
+  --bg-color: #121212;
+  --text-color: #e0e0e0;
+  --card-bg: #1e1e1e;
+  --header-bg: #121212;
+  --nav-bg: #1e1e1e;
+  --accent-blue: #4dabf7;
+}
+
 .novotel-v2-app {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
-  background-color: #f5f5f5;
+  color: var(--text-color);
+  background-color: var(--bg-color);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   position: relative;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Smooth scrolling */
@@ -345,6 +364,39 @@ html {
   border-radius: 20px;
 }
 
+.novotel-v2-hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.novotel-v2-theme-toggle {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.novotel-v2-theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.novotel-v2-theme-toggle svg {
+  transition: transform 0.5s ease;
+}
+
+.novotel-v2-theme-toggle:active svg {
+  transform: rotate(45deg);
+}
+
 /* Hero slideshow */
 .novotel-v2-hero-slideshow {
   position: absolute;
@@ -376,7 +428,8 @@ html {
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
-  background-color: #f5f5f5;
+  background-color: var(--bg-color);
+  transition: background-color 0.3s ease;
 }
 
 .novotel-v2-logo img {
@@ -387,9 +440,10 @@ html {
   display: flex;
   align-items: center;
   gap: 5px;
-  background-color: #eee;
+  background-color: var(--card-bg);
   padding: 5px 15px;
   border-radius: 20px;
+  transition: background-color 0.3s ease;
 }
 
 .novotel-v2-flag {
@@ -476,14 +530,16 @@ html {
 .novotel-v2-dot {
   width: 8px;
   height: 8px;
-  background-color: rgba(0, 8, 255, 0.5);
+  background-color: var(--accent-blue);
+  opacity: 0.5;
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .novotel-v2-dot.active {
-  background-color: white;
+  background-color: var(--accent-blue);
+  opacity: 1;
   transform: scale(1.2);
 }
 

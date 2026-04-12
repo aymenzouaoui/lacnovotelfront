@@ -12,7 +12,7 @@
 
 .copyright-inner {
   text-align: center;
-  color: #777;
+  color: var(--text-color, #777);
   font-size: 14px;
   max-width: 100%;
 }
@@ -23,7 +23,7 @@
 }
 
 .copyright a {
-  color: #777;
+  color: var(--text-color, #777);
   text-decoration: none;
   margin-left: 5px;
   display: inline-flex;

@@ -474,6 +474,7 @@ const OffresClient = () => {
                       <img
                         src={imageSrc || "/placeholder.svg"}
                         alt={selectedOffre.title}
+                        className="offre-detail-image"
                       />
                     )
                   })()}
