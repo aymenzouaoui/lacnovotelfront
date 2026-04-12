@@ -12,9 +12,10 @@
 
 .copyright-inner {
   text-align: center;
-  color: var(--text-color, #777);
+  color: var(--text-muted, #777);
   font-size: 14px;
   max-width: 100%;
+  transition: color var(--transition-speed, 0.3s) ease;
 }
 
 .copyright p {
@@ -23,12 +24,12 @@
 }
 
 .copyright a {
-  color: var(--text-color, #777);
+  color: var(--text-muted, #777);
   text-decoration: none;
   margin-left: 5px;
   display: inline-flex;
   align-items: center;
-  transition: opacity 0.3s ease;
+  transition: all var(--transition-speed, 0.3s) ease;
 }
 
 .copyright a:hover {

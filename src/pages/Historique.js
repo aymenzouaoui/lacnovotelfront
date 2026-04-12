@@ -308,6 +308,12 @@ const Historique = () => {
                 <span>Statistiques</span>
               </a>
             </li>
+            <li>
+              <a href="#analytics" onClick={() => navigate("/analytics-stats")}>
+                <span className={isDarkMode ? "nav-icon" : "light-nav-icon"}>👁️</span>
+                <span>Vues GA4</span>
+              </a>
+            </li>
             <li className="active">
               <a href="#historique">
                 <span className={isDarkMode ? "nav-icon" : "light-nav-icon"}>📋</span>

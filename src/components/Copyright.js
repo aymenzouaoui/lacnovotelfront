@@ -1,7 +1,9 @@
 import "./Copyright.css"
 
-const Copyright = ({ translations, currentLanguage }) => {
+const Copyright = ({ translations, currentLanguage, isDarkMode }) => {
   const t = (key) => translations[currentLanguage]?.[key] || translations.fr[key] || key
+
+  const logoSrc = isDarkMode ? "/images/itbafa_logo_white.png" : "/images/itbafa_logo_dark.png"
 
   return (
     <div className="copyright" dir={currentLanguage === "ar" ? "rtl" : "ltr"}>
@@ -14,7 +16,7 @@ const Copyright = ({ translations, currentLanguage }) => {
           {t("createdBy")}{" "}
           <a href="https://www.itbafa.com" target="_blank" rel="noopener noreferrer" aria-label="ITBAFA Website">
             <img
-              src="/images/itbafa_logo_dark.png"
+              src={logoSrc}
               alt="ITBAFA Logo"
               className="copyright-logo"
             />

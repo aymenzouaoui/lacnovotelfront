@@ -209,21 +209,34 @@
 
 /* Base styles */
 :root {
-  --bg-color: #f5f5f5;
-  --text-color: #333;
+  --bg-color: #f8f9fa;
+  --text-color: #2c3e50;
+  --text-muted: #6c757d;
   --card-bg: #ffffff;
-  --header-bg: #f5f5f5;
+  --header-bg: #ffffff;
   --nav-bg: #ffffff;
   --accent-blue: #002984;
+  --accent-blue-light: rgba(0, 41, 132, 0.1);
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --card-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --popup-overlay: rgba(0, 0, 0, 0.6);
+  --border-color: rgba(0, 0, 0, 0.05);
+  --transition-speed: 0.3s;
 }
 
 body.dark-mode {
-  --bg-color: #121212;
-  --text-color: #e0e0e0;
-  --card-bg: #1e1e1e;
-  --header-bg: #121212;
-  --nav-bg: #1e1e1e;
+  --bg-color: #0f1115;
+  --text-color: #f1f3f5;
+  --text-muted: #adb5bd;
+  --card-bg: #1a1d23;
+  --header-bg: #1a1d23;
+  --nav-bg: #1a1d23;
   --accent-blue: #4dabf7;
+  --accent-blue-light: rgba(77, 171, 247, 0.15);
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --card-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --popup-overlay: rgba(0, 0, 0, 0.85);
+  --border-color: rgba(255, 255, 255, 0.08);
 }
 
 .novotel-v2-app {
@@ -235,7 +248,7 @@ body.dark-mode {
   flex-direction: column;
   position: relative;
   overflow-x: hidden;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
 }
 
 /* Smooth scrolling */
@@ -693,16 +706,16 @@ html {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 1px solid #002984;
+  border: 1px solid var(--accent-blue);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #002984;
-  transition: all 0.3s ease;
+  color: var(--accent-blue);
+  transition: all var(--transition-speed) ease;
 }
 
 .novotel-v2-social-icon:hover {
-  background-color: #002984;
+  background-color: var(--accent-blue);
   color: white;
   transform: scale(1.1);
 }
@@ -715,13 +728,14 @@ html {
 /* Copyright */
 .novotel-v2-copyright {
   text-align: center;
-  color: #777;
+  color: var(--text-muted);
   font-size: 14px;
   margin: 10px 0 20px;
+  transition: color var(--transition-speed) ease;
 }
 
 .novotel-v2-copyright a {
-  color: #777;
+  color: var(--text-muted);
   text-decoration: none;
   margin-left: 5px;
 }
@@ -765,21 +779,23 @@ html {
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: white;
+  background-color: var(--nav-bg);
   display: flex;
   justify-content: space-around;
   padding: 10px 0;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  border-top: 1px solid var(--border-color);
+  transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
 }
 
 .novotel-v2-nav-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #777;
+  color: var(--text-muted);
   text-decoration: none;
   font-size: 12px;
-  transition: color 0.3s ease;
+  transition: color var(--transition-speed) ease;
   cursor: pointer;
 }
 
@@ -790,11 +806,11 @@ html {
 }
 
 .novotel-v2-nav-item.active {
-  color: #002984;
+  color: var(--accent-blue);
 }
 
 .novotel-v2-nav-item:hover {
-  color: #002984;
+  color: var(--accent-blue);
 }
 
 /* Popup styles */
@@ -804,14 +820,14 @@ html {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: var(--popup-overlay);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+  transition: all var(--transition-speed) ease;
 }
 
 .novotel-v2-popup-overlay.active {
@@ -820,15 +836,15 @@ html {
 }
 
 .novotel-v2-popup {
-  background-color: white;
+  background-color: var(--card-bg);
   border-radius: 20px;
   width: 90%;
   max-width: 450px;
   position: relative;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--card-shadow-hover);
   transform: translateY(30px);
   opacity: 0;
-  transition: transform 0.4s ease, opacity 0.4s ease;
+  transition: transform 0.4s ease, opacity 0.4s ease, background-color var(--transition-speed) ease;
   overflow: hidden;
 }
 
@@ -855,11 +871,11 @@ html {
   position: absolute;
   top: 15px;
   right: 15px;
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--card-bg);
   border: none;
   font-size: 20px;
   cursor: pointer;
-  color: #333;
+  color: var(--text-color);
   width: 35px;
   height: 35px;
   display: flex;
@@ -869,11 +885,13 @@ html {
   transition: all 0.2s ease;
   font-weight: bold;
   z-index: 10;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
 .novotel-v2-popup-close:hover {
-  background-color: white;
+  background-color: var(--card-bg);
   transform: scale(1.1);
+  color: var(--accent-blue);
 }
 
 .novotel-v2-popup-content-wrapper {
@@ -885,20 +903,20 @@ html {
   font-size: 28px;
   font-weight: 700;
   margin-bottom: 15px;
-  color: #002984;
+  color: var(--accent-blue);
   line-height: 1.2;
 }
 
 .novotel-v2-popup-content {
   margin-bottom: 25px;
-  color: #555;
+  color: var(--text-color);
   font-size: 16px;
   line-height: 1.5;
 }
 
 .novotel-v2-popup-button {
   display: inline-block;
-  background: linear-gradient(135deg, #002984 0%, #0066cc 100%);
+  background: linear-gradient(135deg, var(--accent-blue) 0%, #0066cc 100%);
   color: white;
   padding: 15px 30px;
   border-radius: 50px;
@@ -907,6 +925,11 @@ html {
   transition: all 0.3s ease;
   font-size: 16px;
   box-shadow: 0 4px 15px rgba(0, 41, 132, 0.3);
+}
+
+body.dark-mode .novotel-v2-popup-button {
+  background: var(--accent-blue);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
 .novotel-v2-popup-button:hover {
@@ -927,8 +950,8 @@ html {
   height: 32px;
   border-radius: 50%;
   border: none;
-  background: rgba(0, 41, 132, 0.1);
-  color: #002984;
+  background: var(--accent-blue-light);
+  color: var(--accent-blue);
   font-size: 18px;
   display: flex;
   align-items: center;
@@ -939,14 +962,14 @@ html {
 }
 
 .novotel-v2-popup-nav-btn:hover {
-  background: #002984;
+  background: var(--accent-blue);
   color: #fff;
   transform: translateY(-1px);
 }
 
 .novotel-v2-popup-counter {
   font-size: 14px;
-  color: #666;
+  color: var(--text-muted);
 }
 
 .novotel-v2-popup-dots {
@@ -960,19 +983,19 @@ html {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: rgba(0, 41, 132, 0.3);
+  background: var(--accent-blue-light);
   border: none;
   cursor: pointer;
   transition: transform 0.2s ease, background 0.2s ease;
 }
 
 .novotel-v2-popup-dot.active {
-  background: #002984;
+  background: var(--accent-blue);
   transform: scale(1.2);
 }
 
 .novotel-v2-popup-dot:focus-visible {
-  outline: 2px solid #002984;
+  outline: 2px solid var(--accent-blue);
   outline-offset: 2px;
 }
 
@@ -1001,15 +1024,16 @@ html {
 .offers-popup-overlay {
   position: fixed;
   inset: 0;
-  z-index: 50;
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: var(--popup-overlay);
   opacity: 1;
   visibility: visible;
-  transition: all 0.3s ease-out;
+  transition: all var(--transition-speed) ease-out;
+  backdrop-filter: blur(4px);
 }
 
 .offers-popup-overlay.hidden {
@@ -1017,19 +1041,21 @@ html {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+  backdrop-filter: blur(0px);
 }
 
 .offers-popup-modal {
   position: relative;
   width: 100%;
   max-width: 450px;
-  background: #ffffff;
+  background: var(--card-bg);
   border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--card-shadow-hover);
   overflow: hidden;
-  transition: all 0.4s ease-out;
+  transition: all 0.4s ease-out, background-color var(--transition-speed) ease;
   transform: translateY(0);
   opacity: 1;
+  border: 1px solid var(--border-color);
 }
 
 .offers-popup-modal.hidden {
@@ -1044,13 +1070,13 @@ html {
   left: 0;
   right: 0;
   height: 4px;
-  background-color: rgba(0, 41, 132, 0.2);
+  background-color: var(--accent-blue-light);
   z-index: 20;
 }
 
 .offers-popup-progress-bar {
   height: 100%;
-  background: linear-gradient(to right, #002984, #0066cc);
+  background: var(--accent-blue);
   transition: width 0.5s ease-out;
 }
 
@@ -1058,7 +1084,7 @@ html {
   position: relative;
   aspect-ratio: 16 / 9;
   width: 100%;
-  background-color: #f3f4f6;
+  background-color: var(--bg-color);
   overflow: hidden;
 }
 
@@ -1092,31 +1118,32 @@ html {
   z-index: 10;
   width: 36px;
   height: 36px;
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--card-bg);
   border: none;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   transition: all 0.2s ease;
+  color: var(--text-color);
 }
 
 .offers-popup-close-btn:hover {
-  background: #ffffff;
+  background: var(--card-bg);
   transform: scale(1.1);
+  color: var(--accent-blue);
 }
 
 .offers-popup-close-btn:focus {
   outline: none;
-  box-shadow: 0 0 0 2px #002984;
+  box-shadow: 0 0 0 2px var(--accent-blue);
 }
 
 .offers-popup-close-btn svg {
   width: 20px;
   height: 20px;
-  color: #374151;
 }
 
 .offers-popup-nav-btn {
@@ -1126,25 +1153,28 @@ html {
   z-index: 10;
   width: 40px;
   height: 40px;
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--card-bg);
   border: none;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   transition: all 0.2s ease;
+  color: var(--accent-blue);
+  opacity: 0.8;
 }
 
 .offers-popup-nav-btn:hover {
-  background: #ffffff;
+  background: var(--card-bg);
   transform: translateY(-50%) scale(1.1);
+  opacity: 1;
 }
 
 .offers-popup-nav-btn:focus {
   outline: none;
-  box-shadow: 0 0 0 2px #002984;
+  box-shadow: 0 0 0 2px var(--accent-blue);
 }
 
 .offers-popup-nav-btn.prev {
@@ -1158,7 +1188,6 @@ html {
 .offers-popup-nav-btn svg {
   width: 20px;
   height: 20px;
-  color: #002984;
 }
 
 .offers-popup-content {
@@ -1169,13 +1198,13 @@ html {
 .offers-popup-title {
   font-size: 28px;
   font-weight: 700;
-  color: #002984;
+  color: var(--accent-blue);
   margin-bottom: 1rem;
   line-height: 1.2;
 }
 
 .offers-popup-description {
-  color: #555555;
+  color: var(--text-color);
   font-size: 16px;
   line-height: 1.6;
   margin-bottom: 1.5rem;
@@ -1183,8 +1212,8 @@ html {
 
 .offers-popup-cta {
   display: inline-block;
-  background: linear-gradient(to bottom right, #002984, #0066cc);
-  color: #ffffff;
+  background: linear-gradient(to bottom right, var(--accent-blue), #0066cc);
+  color: #ffffff !important;
   padding: 1rem 2rem;
   border-radius: 50px;
   font-weight: 600;
@@ -1192,6 +1221,11 @@ html {
   text-decoration: none;
   box-shadow: 0 4px 15px rgba(0, 41, 132, 0.3);
   transition: all 0.3s ease;
+}
+
+body.dark-mode .offers-popup-cta {
+  background: var(--accent-blue);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
 .offers-popup-cta:hover {
@@ -1209,7 +1243,7 @@ html {
 
 .offers-popup-counter {
   font-size: 14px;
-  color: #666666;
+  color: var(--text-muted);
   font-weight: 500;
 }
 
@@ -1233,24 +1267,25 @@ html {
 }
 
 .offers-popup-dot:focus-visible {
-  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #002984;
+  box-shadow: 0 0 0 2px var(--card-bg), 0 0 0 4px var(--accent-blue);
 }
 
 .offers-popup-dot.inactive {
   width: 10px;
   height: 10px;
-  background: rgba(0, 41, 132, 0.3);
+  background: var(--accent-blue-light);
 }
 
 .offers-popup-dot.inactive:hover {
-  background: rgba(0, 41, 132, 0.6);
+  background: var(--accent-blue);
+  opacity: 0.6;
   transform: scale(1.25);
 }
 
 .offers-popup-dot.active {
   width: 24px;
   height: 10px;
-  background: #002984;
+  background: var(--accent-blue);
 }
 
 @keyframes slideInFromRight {

@@ -191,31 +191,37 @@
   position: absolute;
   top: 100%;
   right: 0;
-  background: rgba(0, 0, 0, 0.9);
+  background: var(--card-bg, rgba(0, 0, 0, 0.9));
   border-radius: 8px;
   padding: 8px 0;
   min-width: 150px;
   z-index: 1000;
   backdrop-filter: blur(10px);
   margin-top: 5px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--card-shadow-hover, 0 8px 24px rgba(0, 0, 0, 0.2));
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  transition: background-color var(--transition-speed, 0.3s) ease;
 }
 
 .language-option {
+  padding: 10px 15px;
   display: flex;
   align-items: center;
-  padding: 8px 16px;
+  gap: 10px;
   cursor: pointer;
-  transition: background-color 0.2s;
-  gap: 8px;
+  transition: all var(--transition-speed, 0.2s) ease;
+  color: var(--text-color, white);
 }
 
 .language-option:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background-color: var(--accent-blue-light, rgba(255, 255, 255, 0.1));
+  color: var(--accent-blue, white);
 }
 
 .language-option.active {
-  background: rgba(255, 255, 255, 0.2);
+  background-color: var(--accent-blue-light, rgba(255, 255, 255, 0.2));
+  color: var(--accent-blue, white);
+  font-weight: 600;
 }
 
 .flag-small {

@@ -96,17 +96,38 @@
 }
 
 .novotel-v2-dot.active {
-  background-color: #002984;
+  background-color: var(--accent-blue, #002984);
   transform: scale(1.2);
 }
 
+/* Dark mode improvements */
+body.dark-mode .novotel-v2-commitment-banner.invert-dark {
+  filter: invert(1) hue-rotate(180deg) brightness(1.2);
+}
+
+body.dark-mode .novotel-v2-commitment-banner.invert-dark::before {
+  opacity: 0.1; /* Reduce overlay opacity when image is inverted */
+}
+
+body.dark-mode .novotel-v2-dot {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+body.dark-mode .novotel-v2-dot.active {
+  background-color: var(--accent-blue);
+}
+
+body.dark-mode .novotel-v2-commitment-slideshow {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
 .novotel-v2-dot:hover {
-  background-color: rgba(0, 41, 132, 0.8);
+  background-color: var(--accent-blue, rgba(0, 41, 132, 0.8));
   transform: scale(1.3);
 }
 
 .novotel-v2-dot:focus {
-  outline: 2px solid #002984;
+  outline: 2px solid var(--accent-blue, #002984);
   outline-offset: 2px;
 }
 

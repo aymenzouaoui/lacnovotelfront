@@ -645,6 +645,12 @@ const Statistiques = () => {
                 <span>Statistiques</span>
               </a>
             </li>
+            <li>
+              <a href="#analytics" onClick={() => navigate("/analytics-stats")}>
+                <span className={isDarkMode ? "nav-icon" : "light-nav-icon"}>👁️</span>
+                <span>Vues GA4</span>
+              </a>
+            </li>
           </ul>
         </nav>
 

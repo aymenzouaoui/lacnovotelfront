@@ -264,6 +264,7 @@ const HomeClient = () => {
       description: "",
       image: `/images/questionnaire_${currentLanguage}.png`,
       link: "/questionnaire-client",
+      invertInDarkMode: true,
     },
     {
       id: "skipcleans",
@@ -559,7 +560,7 @@ const HomeClient = () => {
 
           {/* Copyright - Lazy loaded */}
           <Suspense fallback={null}>
-            <Copyright translations={translations} currentLanguage={currentLanguage} />
+            <Copyright translations={translations} currentLanguage={currentLanguage} isDarkMode={isDarkMode} />
           </Suspense>
           <br />
         </div>

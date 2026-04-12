@@ -17,6 +17,7 @@ import RoomServicePage from "./pages/RoomServicePage";
 import TerrassePiscinePage from "./pages/TerrassePiscinePage";
 import ChambresPage from "./pages/ChambresPage";
 import Statistiques from "./pages/Statistiques";
+import AnalyticsStats from "./pages/AnalyticsStats";
 import PageContents from "./pages/page-contents";
 import CommitmentPage from "./pages/CommitmentPage";
 import QuestionnaireClient from "./pages/QuestionnaireClient";
@@ -68,6 +69,7 @@ function App() {
         <Route path="/roomserviceorders" element={<RoomServiceOrders />} />
         <Route path="/historique" element={<Historique />} />
         <Route path="/statistiques" element={<Statistiques />} />
+        <Route path="/analytics-stats" element={<AnalyticsStats />} />
 
         <Route path="/page-contents" element={<PageContents />} />
         <Route path="/chambres" element={<ChambresPage />} />

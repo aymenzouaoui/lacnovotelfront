@@ -16,15 +16,16 @@
   align-items: center;
   justify-content: center;
   color: var(--accent-blue, #002984);
-  transition: all 0.3s ease;
+  transition: all var(--transition-speed, 0.3s) ease;
   text-decoration: none;
+  background-color: transparent;
 }
 
 .novotel-v2-social-icon:hover {
   background-color: var(--accent-blue, #002984);
   color: white;
   transform: scale(1.1) translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 41, 132, 0.3);
+  box-shadow: var(--card-shadow-hover, 0 4px 12px rgba(0, 41, 132, 0.3));
 }
 
 .novotel-v2-social-icon:focus {

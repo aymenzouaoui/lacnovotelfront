@@ -31,7 +31,7 @@ const SlideshowBanner = ({ slides, autoRotateInterval = 5000, className = "" }) 
         {slides.map((slide, index) => (
           <div
             key={slide.id || index}
-            className={`novotel-v2-commitment-banner ${currentSlide === index ? "active" : ""}`}
+            className={`novotel-v2-commitment-banner ${currentSlide === index ? "active" : ""} ${slide.invertInDarkMode ? "invert-dark" : ""}`}
             onClick={handleBannerClick}
             style={{
               backgroundImage: `url("${slide.image}")`,

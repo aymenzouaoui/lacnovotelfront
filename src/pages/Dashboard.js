@@ -395,6 +395,12 @@ const filteredSections = sections.filter((section) => {
               </a>
             </li>
             <li>
+              <a href="#analytics" onClick={() => navigate("/analytics-stats")}>
+                <span className={isDarkMode ? "nav-icon" : "light-nav-icon"}>👁️</span>
+                <span>Vues GA4</span>
+              </a>
+            </li>
+            <li>
               <a href="#historique" onClick={() => navigate("/historique")}>
                 <span className={isDarkMode ? "nav-icon" : "light-nav-icon"}>📋</span>
                 <span>Historique</span>
@@ -451,7 +457,8 @@ const filteredSections = sections.filter((section) => {
             const isReservationCard = stat.label === "Réservations"
             const isNettoyageCard = stat.label === "Restauration en chambre"
             const isUtilisateursCard = stat.label === "Utilisateurs"
-            const isClickable = isReservationCard || isNettoyageCard || isUtilisateursCard
+            const isViewsCard = stat.label === "Vues"
+            const isClickable = isReservationCard || isNettoyageCard || isUtilisateursCard || isViewsCard
 
             return (
               <div
@@ -462,6 +469,7 @@ const filteredSections = sections.filter((section) => {
                   if (isReservationCard) navigate("/reservations")
                   if (isNettoyageCard) navigate("/roomserviceorders")
                   if (isUtilisateursCard) navigate("/settings")
+                  if (isViewsCard) navigate("/analytics-stats")
                 }}
               >
                 <div className={isDarkMode ? "stat-icon" : "light-stat-icon"}>{stat.icon}</div>
