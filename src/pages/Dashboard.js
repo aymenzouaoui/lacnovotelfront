@@ -16,7 +16,7 @@ const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [activeService, setActiveService] = useState(null)
   const [currentTime, setCurrentTime] = useState(new Date())
-  const [nettoyageCount, setNettoyageCount] = useState(0)
+  const [roomServiceCount, setRoomServiceCount] = useState(0)
   const [userCount, setUserCount] = useState(0)
   const [reservationCount, setReservationCount] = useState(0)
   const [notifications, setNotifications] = useState([])
@@ -47,9 +47,9 @@ const Dashboard = () => {
     API.get("/roomservice-orders")
       .then((res) => {
         const pendingOrders = res.data.filter((order) => order.status === "pending")
-        setNettoyageCount(pendingOrders.length || 0)
+        setRoomServiceCount(pendingOrders.length || 0)
       })
-      .catch((err) => console.error("Nettoyage fetch error", err))
+      .catch((err) => console.error("Room service fetch error", err))
 
     API.get("/users")
       .then((res) => setUserCount(res.data.length || 0))
@@ -221,7 +221,7 @@ const filteredSections = sections.filter((section) => {
 
 
   const stats = [
-    { label: "Restauration en chambre", value: nettoyageCount.toString(), icon: "🍽️", color: "#FF6B6B" },
+    { label: "Restauration en chambre", value: roomServiceCount.toString(), icon: "🍽️", color: "#FF6B6B" },
     { label: "Utilisateurs", value: userCount.toString(), icon: "👤", color: "#4ECDC4" },
     { label: "Réservations", value: reservationCount.toString(), icon: "📦", color: "#6A0572" },
     { label: "Vues", value: viewCount.toString(), icon: "👁️", color: "#FFD166" },

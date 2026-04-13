@@ -116,6 +116,8 @@ local: "Local",
 glutenFree: "Sans gluten",
 lactoseFree: "Sans lactose",
 available24_7: "Disponible 24/7",
+    allergenContains: "Contient :",
+    noAllergensDeclared: "Aucun allergène déclaré",
   },
   en: {
     // Header
@@ -222,6 +224,8 @@ available24_7: "Available 24/7",
     addressLine2: "1053 Tunis, TN",
     allRightsReserved: "All rights reserved",
     createdBy: "Created by",
+    allergenContains: "Contains:",
+    noAllergensDeclared: "No allergens declared",
   },
   ar: {
     // Header
@@ -328,22 +332,13 @@ available24_7: "متوفر 24/7",
     addressLine2: "1053 تونس، تونس",
     allRightsReserved: "جميع الحقوق محفوظة",
     createdBy: "تم إنشاؤه بواسطة",
+    allergenContains: "يحتوي على :",
+    noAllergensDeclared: "لا مواد مثيرة للحساسية معلنة",
   },
 }
 
 
 
-const renderDietaryBadges = (item) => (
-  <>
-    {item.isVegetarian && <span className="dietary-badge">Vég.</span>}
-    {item.isOrganic && <span className="dietary-badge">Bio</span>}
-    {item.isLocal && <span className="dietary-badge">Local</span>}
-    {item.isGlutenFree && <span className="dietary-badge">Sans gluten</span>}
-    {item.isLactoseFree && <span className="dietary-badge">Sans lactose</span>}
-    {item.isAvailable24_7 && <span className="dietary-badge">24/7</span>}
-
-  </>
-)
 
 const languages = [
   { code: "fr", name: "Français", flag: "/images/fr-flag-v2.png" },
@@ -895,6 +890,68 @@ useEffect(() => {
       </div>
     </div>
   )
+
+  // Mapping backend fields → legend keys (invert = field means "free of", so absence = contains)
+  const ITEM_ALLERGENS_MAP = [
+    { field: "arachideAllergy",    key: "arachide"    },
+    { field: "celeriAllergy",      key: "celeri"      },
+    { field: "crustacesAllergy",   key: "crustaces"   },
+    { field: "fruitsANoqueAllergy",key: "fruitsACoque" },
+    { field: "isGlutenFree",       key: "gluten",      invert: true },
+    { field: "isLactoseFree",      key: "lait",        invert: true },
+    { field: "lupinAllergy",       key: "lupin"       },
+    { field: "oeufAllergy",        key: "oeuf"        },
+    { field: "poissonAllergy",     key: "poisson"     },
+    { field: "mollusquesAllergy",  key: "mollusques"  },
+    { field: "moutardeAllergy",    key: "moutarde"    },
+    { field: "sesameAllergy",      key: "sesame"      },
+    { field: "sojaAllergy",        key: "soja"        },
+    { field: "sulfitesAllergy",    key: "sulfites"    },
+  ]
+
+  // Unified dietary + allergen info section per item
+  const renderItemInfo = (item) => {
+    const dietary = [
+      item.isVegetarian    && { key: "veg",     label: t("vegetarian"),    emoji: "🥦" },
+      item.isOrganic       && { key: "bio",     label: t("organic"),       emoji: "🌿" },
+      item.isLocal         && { key: "local",   label: t("local"),         emoji: "📍" },
+      item.isGlutenFree    && { key: "gluten",  label: t("glutenFree"),    emoji: "🌾" },
+      item.isLactoseFree   && { key: "lactose", label: t("lactoseFree"),   emoji: "🥛" },
+      item.isAvailable24_7 && { key: "24_7",    label: t("available24_7"), emoji: "🕐" },
+    ].filter(Boolean)
+
+    const allergens = ITEM_ALLERGENS_MAP.filter(({ field, invert }) =>
+      invert ? item[field] === false : !!item[field]
+    )
+
+    if (dietary.length === 0 && allergens.length === 0) return null
+
+    return (
+      <div className="item-info-section">
+        {dietary.length > 0 && (
+          <div className="item-dietary-row" role="list" aria-label={t("dietaryInformation")}>
+            {dietary.map(({ key, label, emoji }) => (
+              <span key={key} className="item-dietary-chip" role="listitem">
+                <span className="item-dietary-emoji" aria-hidden="true">{emoji}</span>
+                <span>{label}</span>
+              </span>
+            ))}
+          </div>
+        )}
+        {allergens.length > 0 && (
+          <div className="item-allergens-row" role="list" aria-label={t("allergenLegendTitle")}>
+            <span className="item-allergens-warn" aria-hidden="true">⚠</span>
+            {allergens.map(({ key }) => (
+              <span key={key} className="item-allergen-chip" role="listitem" title={t(key)}>
+                <span className="item-allergen-icon" aria-hidden="true">{allergenIcons[key]}</span>
+                <span>{t(key)}</span>
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    )
+  }
 
   return (
     <div className={`hotel-app-room-service ${currentLanguage === "ar" ? "rtl" : "ltr"}`}>
@@ -1872,11 +1929,11 @@ useEffect(() => {
       <div className="menu-item-header-room-service">
         <h3 className="menu-item-name-room-service">
           {item.name}
-          {renderDietaryBadges(item)}
         </h3>
         <div className="menu-item-price-room-service">{item.price} TND</div>
       </div>
       <p className="menu-item-description-room-service">{item.description}</p>
+      {renderItemInfo(item)}
 
       {/* Only show order button if commandable */}
       {item.commandable && (
@@ -2015,12 +2072,12 @@ useEffect(() => {
         <div className="modern-item-header">
           <h4 className="modern-item-title">
             {item.name}
-            {renderDietaryBadges(item)}
           </h4>
           <div className="modern-item-price">{item.price} TND</div>
         </div>
         <p className="modern-item-description">{item.description}</p>
         {item.weight && <div className="modern-item-weight">{item.weight} gr</div>}
+        {renderItemInfo(item)}
         <div className="modern-item-actions">
           {/* Only show order button if commandable */}
           {item.commandable && (

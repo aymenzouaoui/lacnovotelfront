@@ -2,10 +2,46 @@
 
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import {
+  CircleDot,
+  LeafyGreen,
+  Shrimp,
+  Wheat,
+  Nut,
+  Milk,
+  Leaf,
+  Egg,
+  Fish,
+  Shell,
+  Circle,
+  Bean,
+  Wine,
+  Trash2,
+  ListOrdered,
+  Plus,
+} from "lucide-react"
 import API from "../services/api"
+import "./MenusPage.css"
 import "./TerrassePiscinePage.css"
 import "./client-image-fix-dark.css"
 import CompressedFileInput from "../components/CompressedFileInput"
+
+const ALLERGENS_LIST = [
+  { key: "arachideAllergy",    label: "Arachide",        Icon: CircleDot },
+  { key: "celeriAllergy",      label: "Céleri",           Icon: LeafyGreen },
+  { key: "crustacesAllergy",   label: "Crustacés",        Icon: Shrimp },
+  { key: "fruitsANoqueAllergy",label: "Fruits à coque",   Icon: Nut },
+  { key: "isGlutenFree",       label: "Gluten",           Icon: Wheat,  invert: true },
+  { key: "isLactoseFree",      label: "Lactose",          Icon: Milk,   invert: true },
+  { key: "lupinAllergy",       label: "Lupin",            Icon: Leaf },
+  { key: "oeufAllergy",        label: "Œuf",              Icon: Egg },
+  { key: "poissonAllergy",     label: "Poisson",          Icon: Fish },
+  { key: "mollusquesAllergy",  label: "Mollusques",       Icon: Shell },
+  { key: "moutardeAllergy",    label: "Moutarde",         Icon: Circle },
+  { key: "sesameAllergy",      label: "Sésame",           Icon: Circle },
+  { key: "sojaAllergy",        label: "Soja",             Icon: Bean },
+  { key: "sulfitesAllergy",    label: "Sulfites",         Icon: Wine },
+]
 
 const TerrassePiscinePage = () => {
   const navigate = useNavigate()
@@ -37,23 +73,37 @@ const TerrassePiscinePage = () => {
     return savedTheme ? savedTheme === "dark" : true
   })
 
+  const defaultMenuItem = () => ({
+    name: "",
+    description: "",
+    price: "",
+    reservable: true,
+    isVegetarian: false,
+    isOrganic: false,
+    isLocal: false,
+    isAvailable24_7: false,
+    commandable: true,
+    arachideAllergy: false,
+    celeriAllergy: false,
+    crustacesAllergy: false,
+    fruitsANoqueAllergy: false,
+    isGlutenFree: false,
+    isLactoseFree: false,
+    lupinAllergy: false,
+    oeufAllergy: false,
+    poissonAllergy: false,
+    mollusquesAllergy: false,
+    moutardeAllergy: false,
+    sesameAllergy: false,
+    sojaAllergy: false,
+    sulfitesAllergy: false,
+    translations: { fr: { name: "", description: "" }, ar: { name: "", description: "" } },
+  })
+
   const [formData, setFormData] = useState({
     title: "",
-    images: [], // Changed from image to images array
-    items: [
-      {
-        name: "",
-        description: "",
-        price: "",
-        reservable: true,
-        isVegetarian: false,
-        isOrganic: false,
-        isLocal: false,
-        isGlutenFree: false,
-        isLactoseFree: false,
-        translations: { fr: { name: "", description: "" }, ar: { name: "", description: "" } },
-      },
-    ],
+    images: [],
+    items: [defaultMenuItem()],
     translations: { fr: { title: "" }, ar: { title: "" } },
   })
   const [activeMenuLang, setActiveMenuLang] = useState("fr")
@@ -204,21 +254,7 @@ const handleChange = (e) => {
   const addItem = () => {
     setFormData((prev) => ({
       ...prev,
-      items: [
-        ...prev.items,
-        {
-          name: "",
-          description: "",
-          price: "",
-          reservable: true,
-          isVegetarian: false,
-          isOrganic: false,
-          isLocal: false,
-          isGlutenFree: false,
-          isLactoseFree: false,
-          translations: { fr: { name: "", description: "" }, ar: { name: "", description: "" } },
-        },
-      ],
+      items: [...prev.items, defaultMenuItem()],
     }))
   }
 
@@ -358,20 +394,7 @@ const handleEdit = (menu) => {
     setFormData({
       title: "",
       images: [],
-      items: [
-        {
-          name: "",
-          description: "",
-          price: "",
-          reservable: true,
-          isVegetarian: false,
-          isOrganic: false,
-          isLocal: false,
-          isGlutenFree: false,
-          isLactoseFree: false,
-          translations: { fr: { name: "", description: "" }, ar: { name: "", description: "" } },
-        },
-      ],
+      items: [defaultMenuItem()],
       translations: { fr: { title: "" }, ar: { title: "" } },
     })
     setPreviewImages([])
@@ -1036,177 +1059,114 @@ const handleEdit = (menu) => {
                     </div>
                   )}
 
-                  <h3 className={isDarkMode ? "form-subtitle" : "light-form-subtitle"}>Éléments du menu</h3>
+                  <h3 className={isDarkMode ? "form-subtitle" : "light-form-subtitle"}>
+                    <ListOrdered size={22} strokeWidth={2} className="form-subtitle-icon" aria-hidden />
+                    Éléments du menu
+                  </h3>
                   {formData.items.map((item, index) => (
                     <div key={index} className={isDarkMode ? "menu-item" : "light-menu-item"}>
-                      <input
-                        type="text"
-                        placeholder="Nom de l'item"
-                        value={item.name}
-                        onChange={(e) => handleItemChange(index, "name", e.target.value)}
-                        required
-                        className={isDarkMode ? "" : "light-form-input"}
-                      />
-                      <input
-                        type="number"
-                        placeholder="Prix"
-                        value={item.price}
-                        onChange={(e) => handleItemChange(index, "price", e.target.value)}
-                        required
-                        className={isDarkMode ? "" : "light-form-input"}
-                      />
-                      <textarea
-                        placeholder="Description"
-                        value={item.description}
-                        onChange={(e) => handleItemChange(index, "description", e.target.value)}
-                        className={isDarkMode ? "" : "light-form-input"}
-                      />
-
-                      <div className={isDarkMode ? "form-label" : "light-form-label"} style={{ marginTop: "0.5rem" }}>
-                        Traductions de l'Item (FR / AR)
-                      </div>
-                      <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
-                        <button
-                          type="button"
-                          className={
-                            activeItemLang === "fr"
-                              ? isDarkMode
-                                ? "btn btn-primary"
-                                : "light-btn light-btn-primary"
-                              : isDarkMode
-                                ? "btn btn-secondary"
-                                : "light-btn light-btn-secondary"
-                          }
-                          onClick={() => setActiveItemLang("fr")}
-                        >
-                          Français
-                        </button>
-                        <button
-                          type="button"
-                          className={
-                            activeItemLang === "ar"
-                              ? isDarkMode
-                                ? "btn btn-primary"
-                                : "light-btn light-btn-primary"
-                              : isDarkMode
-                                ? "btn btn-secondary"
-                                : "light-btn light-btn-secondary"
-                          }
-                          onClick={() => setActiveItemLang("ar")}
-                        >
-                          العربية
+                      <div className="menu-item-header">
+                        <span className="menu-item-title">
+                          <ListOrdered size={16} className="menu-item-title-icon" aria-hidden />
+                          Item N° {index + 1}
+                        </span>
+                        <button type="button" onClick={() => removeItem(index)} className="menu-item-remove-btn" aria-label={`Supprimer l'item ${index + 1}`}>
+                          <Trash2 size={16} aria-hidden />
+                          <span>Supprimer</span>
                         </button>
                       </div>
-                      <input
-                        type="text"
-                        value={item.translations?.[activeItemLang]?.name ?? ""}
-                        onChange={(e) =>
-                          handleItemChange(index, `tr_${activeItemLang}_name`, e.target.value)
-                        }
-                        placeholder={activeItemLang === "fr" ? "Nom de l'item FR" : "الاسم"}
-                        className={isDarkMode ? "" : "light-form-input"}
-                      />
-                      <textarea
-                        value={item.translations?.[activeItemLang]?.description ?? ""}
-                        onChange={(e) =>
-                          handleItemChange(index, `tr_${activeItemLang}_description`, e.target.value)
-                        }
-                        placeholder={activeItemLang === "fr" ? "Description FR" : "الوصف"}
-                        className={isDarkMode ? "" : "light-form-input"}
-                        rows={2}
-                      />
-                       <div className={isDarkMode ? "checkbox-container" : "light-checkbox-container"}>
-  {/* Vegetarian */}
-  <label className={isDarkMode ? "checkbox-label" : "light-checkbox-label"}>
-    <input
-      type="checkbox"
-      checked={item.isVegetarian || false}
-      onChange={(e) => handleItemChange(index, "isVegetarian", e.target.checked)}
-      className={isDarkMode ? "checkbox-input" : "light-checkbox-input"}
-    />
-    <span className={`${isDarkMode ? "checkbox-text" : "light-checkbox-text"} inline-block relative -mt-1`}>
-      Vegetarian
-    </span>
-  </label>
-</div>
 
-<div className={isDarkMode ? "checkbox-container" : "light-checkbox-container"}>
-  {/* Organic */}
-  <label className={isDarkMode ? "checkbox-label" : "light-checkbox-label"}>
-    <input
-      type="checkbox"
-      checked={item.isOrganic || false}
-      onChange={(e) => handleItemChange(index, "isOrganic", e.target.checked)}
-      className={isDarkMode ? "checkbox-input" : "light-checkbox-input"}
-    />
-    <span className={`${isDarkMode ? "checkbox-text" : "light-checkbox-text"} inline-block relative -mt-1`}>
-      Organic
-    </span>
-  </label>
-</div>
+                      <div className="menu-item-body">
+                        <div className="menu-item-fields-row">
+                          <input
+                            type="text"
+                            placeholder="Nom de l'item"
+                            value={item.name}
+                            onChange={(e) => handleItemChange(index, "name", e.target.value)}
+                            required
+                            className={isDarkMode ? "form-input" : "light-form-input"}
+                            style={{ margin: 0 }}
+                          />
+                          <input
+                            type="number"
+                            placeholder="Prix (TND)"
+                            value={item.price}
+                            onChange={(e) => handleItemChange(index, "price", e.target.value)}
+                            required
+                            className={isDarkMode ? "form-input" : "light-form-input"}
+                            style={{ margin: 0 }}
+                          />
+                        </div>
 
-<div className={isDarkMode ? "checkbox-container" : "light-checkbox-container"}>
-  {/* Local */}
-  <label className={isDarkMode ? "checkbox-label" : "light-checkbox-label"}>
-    <input
-      type="checkbox"
-      checked={item.isLocal || false}
-      onChange={(e) => handleItemChange(index, "isLocal", e.target.checked)}
-      className={isDarkMode ? "checkbox-input" : "light-checkbox-input"}
-    />
-    <span className={`${isDarkMode ? "checkbox-text" : "light-checkbox-text"} inline-block relative -mt-1`}>
-      Local
-    </span>
-  </label>
-</div>
+                        <div className="menu-item-description-row">
+                          <textarea
+                            placeholder="Description"
+                            value={item.description}
+                            onChange={(e) => handleItemChange(index, "description", e.target.value)}
+                            className={isDarkMode ? "form-input" : "light-form-input"}
+                          />
+                        </div>
 
-<div className={isDarkMode ? "checkbox-container" : "light-checkbox-container"}>
-  {/* Gluten Free */}
-  <label className={isDarkMode ? "checkbox-label" : "light-checkbox-label"}>
-    <input
-      type="checkbox"
-      checked={item.isGlutenFree || false}
-      onChange={(e) => handleItemChange(index, "isGlutenFree", e.target.checked)}
-      className={isDarkMode ? "checkbox-input" : "light-checkbox-input"}
-    />
-    <span className={`${isDarkMode ? "checkbox-text" : "light-checkbox-text"} inline-block relative -mt-1`}>
-      Gluten Free
-    </span>
-  </label>
-</div>
+                        <hr className="menu-item-section-divider" />
 
-<div className={isDarkMode ? "checkbox-container" : "light-checkbox-container"}>
-  {/* Lactose Free */}
-  <label className={isDarkMode ? "checkbox-label" : "light-checkbox-label"}>
-    <input
-      type="checkbox"
-      checked={item.isLactoseFree || false}
-      onChange={(e) => handleItemChange(index, "isLactoseFree", e.target.checked)}
-      className={isDarkMode ? "checkbox-input" : "light-checkbox-input"}
-    />
-    <span className={`${isDarkMode ? "checkbox-text" : "light-checkbox-text"} inline-block relative -mt-1`}>
-      Lactose Free
-    </span>
-  </label>
-</div>
+                        <div className={isDarkMode ? "form-label" : "light-form-label"} style={{ marginBottom: "0.4rem" }}>
+                          Traductions de l'Item (FR / AR)
+                        </div>
+                        <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                          <button type="button" className={activeItemLang === "fr" ? (isDarkMode ? "btn btn-primary" : "light-btn light-btn-primary") : (isDarkMode ? "btn btn-secondary" : "light-btn light-btn-secondary")} style={{ padding: "0.35rem 0.75rem", fontSize: "0.9rem" }} onClick={() => setActiveItemLang("fr")}>Français</button>
+                          <button type="button" className={activeItemLang === "ar" ? (isDarkMode ? "btn btn-primary" : "light-btn light-btn-primary") : (isDarkMode ? "btn btn-secondary" : "light-btn light-btn-secondary")} style={{ padding: "0.35rem 0.75rem", fontSize: "0.9rem" }} onClick={() => setActiveItemLang("ar")}>العربية</button>
+                        </div>
+                        <input type="text" placeholder={activeItemLang === "fr" ? "Nom de l'item FR" : "الاسم"} value={item.translations?.[activeItemLang]?.name ?? ""} onChange={(e) => handleItemChange(index, `tr_${activeItemLang}_name`, e.target.value)} className={isDarkMode ? "form-input" : "light-form-input"} style={{ marginBottom: "0.35rem" }} />
+                        <textarea placeholder={activeItemLang === "fr" ? "Description FR" : "الوصف"} value={item.translations?.[activeItemLang]?.description ?? ""} onChange={(e) => handleItemChange(index, `tr_${activeItemLang}_description`, e.target.value)} className={isDarkMode ? "form-input" : "light-form-input"} rows={2} />
 
-                      <button
-                        type="button"
-                        onClick={() => removeItem(index)}
-                        className={isDarkMode ? "remove-item-btn" : "light-remove-item-btn"}
-                      >
-                        ❌ Supprimer
-                      </button>
+                        <hr className="menu-item-section-divider" />
+
+                        <span className="menu-item-options-label">Options</span>
+                        <div className="menu-item-options-row">
+                          {[
+                            { key: "isVegetarian",    label: "Végétarien",  emoji: "🥦" },
+                            { key: "isOrganic",       label: "Bio",         emoji: "🌿" },
+                            { key: "isLocal",         label: "Local",       emoji: "📍" },
+                            { key: "isAvailable24_7", label: "24/7",        emoji: "🕐" },
+                            { key: "commandable",     label: "Commandable", emoji: "🛒" },
+                          ].map(({ key, label, emoji }) => {
+                            const checked = key === "commandable" ? item.commandable !== false : (item[key] || false)
+                            return (
+                              <label key={key} className={`option-chip ${isDarkMode ? "dark" : "light"} ${checked ? "selected" : ""}`}>
+                                <input type="checkbox" checked={checked} onChange={(e) => handleItemChange(index, key, e.target.checked)} />
+                                <span className="option-chip-emoji" aria-hidden>{emoji}</span>
+                                <span>{label}</span>
+                              </label>
+                            )
+                          })}
+                        </div>
+
+                        <hr className="menu-item-section-divider" />
+
+                        <span className="menu-item-options-label">Allergènes (contient)</span>
+                        <div className="menu-item-options-row menu-item-allergens-row">
+                          {ALLERGENS_LIST.map(({ key, label, Icon, invert }) => {
+                            const isSelected = invert ? !(item[key] ?? true) : (item[key] || false)
+                            return (
+                              <label key={key} className={`allergen-chip ${isDarkMode ? "dark" : "light"} ${isSelected ? "selected" : ""}`}>
+                                <input type="checkbox" checked={isSelected} onChange={(e) => handleItemChange(index, key, invert ? !e.target.checked : e.target.checked)} />
+                                <Icon size={16} strokeWidth={isSelected ? 2.5 : 2} className="allergen-option-icon" aria-hidden />
+                                <span>{label}</span>
+                              </label>
+                            )
+                          })}
+                        </div>
+                      </div>
                     </div>
                   ))}
                   <button
                     type="button"
                     onClick={addItem}
-                    className={
-                      isDarkMode ? "btn btn-secondary add-item-btn" : "light-btn light-btn-secondary light-add-item-btn"
-                    }
+                    className={isDarkMode ? "btn btn-secondary add-item-btn" : "light-btn light-btn-secondary light-add-item-btn"}
+                    aria-label="Ajouter un item au menu"
                   >
-                    ➕ Ajouter un item
+                    <Plus size={18} aria-hidden />
+                    <span>Ajouter un item</span>
                   </button>
 
                   <div className="form-actions">

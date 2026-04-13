@@ -100,6 +100,8 @@ lactoseFree: "Sans lactose",
     showingVegetarian: "Végétarien uniquement",
     showAll: "Tous les plats",
     noVegetarianDishes: "Aucun plat végétarien disponible",
+    allergenContains: "Contient :",
+    noAllergensDeclared: "Aucun allergène déclaré",
   },
   en: {
     // Header
@@ -188,6 +190,8 @@ lactoseFree: "Lactose-Free",
     showingVegetarian: "Vegetarian only",
     showAll: "All dishes",
     noVegetarianDishes: "No vegetarian dishes available",
+    allergenContains: "Contains:",
+    noAllergensDeclared: "No allergens declared",
   },
   ar: {
     // Header
@@ -276,6 +280,8 @@ lactoseFree: "خالٍ من اللاكتوز",
     showingVegetarian: "نباتي فقط",
     showAll: "جميع الأطباق",
     noVegetarianDishes: "لا يوجد أطباق نباتية متاحة",
+    allergenContains: "يحتوي على :",
+    noAllergensDeclared: "لا مواد مثيرة للحساسية معلنة",
   },
 }
 
@@ -287,15 +293,6 @@ const languages = [
 
 
 
-const renderDietaryBadges = (item) => (
-  <>
-    {item.isVegetarian && <span className="dietary-badge">Vég.</span>}
-    {item.isOrganic && <span className="dietary-badge">Bio</span>}
-    {item.isLocal && <span className="dietary-badge">Local</span>}
-    {item.isGlutenFree && <span className="dietary-badge">Sans gluten</span>}
-    {item.isLactoseFree && <span className="dietary-badge">Sans lactose</span>}
-  </>
-)
 
 const RestaurantsMenusClient = () => {
   const navigate = useNavigate()
@@ -718,6 +715,78 @@ useEffect(() => {
       </div>
     </div>
   )
+
+  // Mapping backend fields → legend keys (invert = field means "free of", so absence = contains)
+  const ITEM_ALLERGENS_MAP = [
+    { field: "arachideAllergy",    key: "arachide"    },
+    { field: "celeriAllergy",      key: "celeri"      },
+    { field: "crustacesAllergy",   key: "crustaces"   },
+    { field: "fruitsANoqueAllergy",key: "fruitsACoque" },
+    { field: "isGlutenFree",       key: "gluten",      invert: true },
+    { field: "isLactoseFree",      key: "lait",        invert: true },
+    { field: "lupinAllergy",       key: "lupin"       },
+    { field: "oeufAllergy",        key: "oeuf"        },
+    { field: "poissonAllergy",     key: "poisson"     },
+    { field: "mollusquesAllergy",  key: "mollusques"  },
+    { field: "moutardeAllergy",    key: "moutarde"    },
+    { field: "sesameAllergy",      key: "sesame"      },
+    { field: "sojaAllergy",        key: "soja"        },
+    { field: "sulfitesAllergy",    key: "sulfites"    },
+  ]
+
+  // Unified dietary + allergen info section per item
+  const renderItemInfo = (item) => {
+    const dietary = [
+      item.isVegetarian  && { key: "veg",     label: t("vegetarian"),  emoji: "🥦" },
+      item.isOrganic     && { key: "bio",     label: t("organic"),     emoji: "🌿" },
+      item.isLocal       && { key: "local",   label: t("local"),       emoji: "📍" },
+      item.isGlutenFree  && { key: "gluten",  label: t("glutenFree"),  emoji: "🌾" },
+      item.isLactoseFree && { key: "lactose", label: t("lactoseFree"), emoji: "🥛" },
+    ].filter(Boolean)
+
+    // Only count allergens when the field is explicitly set (not undefined)
+    const hasAllergenData = ITEM_ALLERGENS_MAP.some(
+      ({ field }) => item[field] !== undefined && item[field] !== null
+    )
+    const allergens = ITEM_ALLERGENS_MAP.filter(({ field, invert }) =>
+      invert ? item[field] === false : item[field] === true
+    )
+    const allergenFree = hasAllergenData && allergens.length === 0
+
+    if (dietary.length === 0 && allergens.length === 0 && !allergenFree) return null
+
+    return (
+      <div className="item-info-section">
+        {dietary.length > 0 && (
+          <div className="item-dietary-row" role="list" aria-label={t("dietaryInformation")}>
+            {dietary.map(({ key, label, emoji }) => (
+              <span key={key} className="item-dietary-chip" role="listitem">
+                <span className="item-dietary-emoji" aria-hidden="true">{emoji}</span>
+                <span>{label}</span>
+              </span>
+            ))}
+          </div>
+        )}
+        {allergens.length > 0 && (
+          <div className="item-allergens-row" role="list" aria-label={t("allergenLegendTitle")}>
+            <span className="item-allergens-warn">⚠ {t("allergenContains")}</span>
+            {allergens.map(({ key }) => (
+              <span key={key} className="item-allergen-chip" role="listitem" title={t(key)}>
+                <span className="item-allergen-icon" aria-hidden="true">{allergenIcons[key]}</span>
+                <span>{t(key)}</span>
+              </span>
+            ))}
+          </div>
+        )}
+        {allergenFree && (
+          <div className="item-allergen-free" role="status">
+            <span className="item-allergen-free-icon" aria-hidden="true">✓</span>
+            <span>{t("noAllergensDeclared")}</span>
+          </div>
+        )}
+      </div>
+    )
+  }
 
   const getCurrentLanguage = () => languages.find((lang) => lang.code === currentLanguage)
 
@@ -1999,7 +2068,6 @@ useEffect(() => {
                                     <div className="modern-item-header">
                                       <div className="modern-item-title">
                                         {item.name}
-                                        {renderDietaryBadges(item)}
                                       </div>
                                       <span className="modern-item-price">
                                         {item.price} <span className="currency">TND</span>
@@ -2007,6 +2075,7 @@ useEffect(() => {
                                     </div>
                                     <p className="modern-item-description">{item.description}</p>
                                     {item.weight && <div className="modern-item-weight">{item.weight} gr</div>}
+                                    {renderItemInfo(item)}
                                   </div>
                                 </div>
                               ))}

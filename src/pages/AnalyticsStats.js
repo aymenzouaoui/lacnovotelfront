@@ -31,6 +31,7 @@ const AnalyticsStats = () => {
     dailyViews: [],
     pageViews: [],
     deviceData: [],
+    countryData: [],
     trafficData: [],
     conversionData: {
       totalUsers: 0,
@@ -80,6 +81,7 @@ const AnalyticsStats = () => {
         dailyRes, 
         pagesRes, 
         devicesRes, 
+        countriesRes,
         trafficRes, 
         conversionRes
       ] = await Promise.all([
@@ -88,6 +90,7 @@ const AnalyticsStats = () => {
         API.get("/analytics/reports/daily").catch(() => ({ data: { data: [] } })),
         API.get("/analytics/reports/pages").catch(() => ({ data: { data: [] } })),
         API.get("/analytics/reports/devices").catch(() => ({ data: { data: [] } })),
+        API.get("/analytics/reports/countries").catch(() => ({ data: { data: [] } })),
         API.get("/analytics/reports/traffic").catch(() => ({ data: { data: [] } })),
         API.get("/analytics/reports/conversion").catch(() => ({ data: { data: {} } }))
       ])
@@ -101,6 +104,7 @@ const AnalyticsStats = () => {
         dailyViews: dailyRes.data.data?.map(d => ({ name: d.day, views: d.views, sessions: d.sessions })) || [],
         pageViews: pagesRes.data.data?.map(p => ({ name: p.title, value: p.views, duration: p.avgDuration })) || [],
         deviceData: devicesRes.data.data?.map(dev => ({ name: dev.device, value: dev.sessions, users: dev.users })) || [],
+        countryData: countriesRes.data.data?.map(c => ({ name: c.country, value: c.sessions, users: c.users })) || [],
         trafficData: trafficRes.data.data?.map(t => ({ name: t.source, value: t.sessions, views: t.views })) || [],
         conversionData: conversionRes.data.data || {
           totalUsers: 0,
@@ -452,6 +456,30 @@ const AnalyticsStats = () => {
               ) : (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: isDarkMode ? '#888' : '#666' }}>
                   Chargement des données d'appareil...
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Country Distribution */}
+          <div className={isDarkMode ? "chart-card" : "light-chart-card"} style={{ background: isDarkMode ? '#1a1a1a' : '#fff', padding: '20px', borderRadius: '15px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+            <h3 style={{ marginBottom: '20px', color: isDarkMode ? '#fff' : '#333' }}>Répartition par Pays</h3>
+            <div style={{ width: '100%', height: 300 }}>
+              {analyticsData.countryData.length > 0 ? (
+                <ResponsiveContainer>
+                  <BarChart data={analyticsData.countryData} layout="vertical">
+                    <CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? '#333' : '#eee'} />
+                    <XAxis type="number" stroke={isDarkMode ? '#888' : '#666'} />
+                    <YAxis dataKey="name" type="category" width={100} stroke={isDarkMode ? '#888' : '#666'} fontSize={12} />
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: isDarkMode ? '#1a1a1a' : '#fff', border: 'none', borderRadius: '8px', color: isDarkMode ? '#fff' : '#333' }}
+                    />
+                    <Bar dataKey="value" name="Sessions" fill="#FFBB28" radius={[0, 4, 4, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: isDarkMode ? '#888' : '#666' }}>
+                  Chargement des données par pays...
                 </div>
               )}
             </div>
