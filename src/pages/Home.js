@@ -500,20 +500,10 @@ const HomeClient = () => {
         <div className="novotel-v2-main-content">
           {/* Hotel Video */}
           <div className={`novotel-v2-video-container${videoMuted ? "" : " unmuted"}`}>
-            {!videoReady && (
-              <div className="novotel-v2-video-skeleton">
-                <div className="novotel-v2-video-skeleton-shimmer" />
-                <div className="novotel-v2-video-skeleton-icon">
-                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="10" />
-                    <polygon points="10 8 16 12 10 16 10 8" fill="rgba(255,255,255,0.5)" stroke="none" />
-                  </svg>
-                </div>
-              </div>
-            )}
             <video
               ref={videoRef}
               src="https://novotel-tunis.com/uploads/events/Novotel%20Tunis%20lac.mp4"
+              poster="/images/hotel-lobby4-v4.jpg"
               autoPlay
               muted={videoMuted}
               loop
