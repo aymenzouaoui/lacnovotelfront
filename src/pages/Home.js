@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, useEffect, useMemo, lazy, Suspense } from "react"
+import { useState, useEffect, useMemo, useRef, lazy, Suspense } from "react"
 import "./home-client-v21.css"
 import API from "../services/api"
 import HeroSection from "../components/HeroSection"
+import { useTheme } from "../context/ThemeContext"
 
 // Lazy load components that are not critical for initial render
 const OffersPopup = lazy(() => import("../components/OffersPopup"))
@@ -31,15 +32,15 @@ const translations = {
     panoramicView: "Profitez d'une vue panoramique avec des boissons premium",
 
     // Feature cards
-    eat: "Restaurant Novotel",
+    eat: "Restaurant",
     drink: "Bar",
     relax: "Terrasse Piscine",
     room: "Chambre",
-    wellness: "IN BALANCE BY NOVOTEL",
+    wellness: "IN BALANCE",
     events: "Événements",
     services: "S'informer",
     roomService: "Restauration en chambre",
-    business: "Meeting AT Novotel",
+    business: "Meeting",
     feedback: "Avis",
 
     environmentalPolicy: "Politique environnementale",
@@ -55,7 +56,7 @@ const translations = {
     spa: "Spa",
 
     // Popup
-    specialOffers: "Offres Spéciales Novotel",
+    specialOffers: "Offres Spéciales",
     discoverPromotions:
       "Découvrez nos promotions exclusives et profitez de réductions exceptionnelles sur votre séjour. Réservez maintenant et économisez jusqu'à 30% !",
     discoverOffers: "Découvrir les offres",
@@ -93,15 +94,15 @@ const translations = {
     panoramicView: "Enjoy panoramic views with premium drinks",
 
     // Feature cards
-    eat: "Novotel  Restaurant",
+    eat: "Restaurant",
     drink: "Bar",
     relax: "Pool Terrace",
     room: "Room",
-    wellness: "IN BALANCE BY NOVOTEL",
+    wellness: "IN BALANCE",
     events: "Events",
     services: "Inform",
     roomService: "in-room catering",
-    business: "Meeting AT Novotel",
+    business: "Meeting ",
     feedback: "Feedback",
 
     environmentalPolicy: "Environmental Policy",
@@ -117,7 +118,7 @@ const translations = {
     spa: "Spa",
 
     // Popup
-    specialOffers: "Novotel Special Offers",
+    specialOffers: "Special Offers",
     discoverPromotions:
       "Discover our exclusive promotions and enjoy exceptional discounts on your stay. Book now and save up to 30%!",
     discoverOffers: "Discover Offers",
@@ -155,7 +156,7 @@ const translations = {
     panoramicView: "استمتع بإطلالة بانورامية مع المشروبات المميزة",
 
     // Feature cards
-    eat: "مطاعم نوفوتيل",
+    eat: "مطاعم ",
     drink: "حانة",
     relax: "تراس المسبح",
     room: "غرفة",
@@ -213,23 +214,13 @@ const HomeClient = () => {
   const [popupOfferIndex, setPopupOfferIndex] = useState(0)
   const [currentLanguage, setCurrentLanguage] = useState("fr")
   const [weatherData, setWeatherData] = useState({ temp: "18°C", loading: true })
-  const [isDarkMode, setIsDarkMode] = useState(false)
+  const [videoMuted, setVideoMuted] = useState(true)
+  const [videoReady, setVideoReady] = useState(false)
+  const videoRef = useRef(null)
+  const { isDark: isDarkMode } = useTheme()
 
   // Get translation function
   const t = (key) => translations[currentLanguage][key] || translations.fr[key] || key
-
-  // Dark mode toggle handler
-  const toggleDarkMode = () => {
-    const newMode = !isDarkMode
-    setIsDarkMode(newMode)
-    localStorage.setItem("novotel-dark-mode", JSON.stringify(newMode))
-    
-    if (newMode) {
-      document.body.classList.add("dark-mode")
-    } else {
-      document.body.classList.remove("dark-mode")
-    }
-  }
 
   // Images du diaporama principal
   const heroImages = ["/images/hotel-lobby4-v4.jpg"]
@@ -255,25 +246,6 @@ const HomeClient = () => {
       img.src = src
     })
   }, [criticalImages])
-
-  // Memoize slides to avoid recalculation on every render
-  const feedbackSlides = useMemo(() => [
-    {
-      id: "questionnaire",
-      title: "",
-      description: "",
-      image: `/images/questionnaire_${currentLanguage}.png`,
-      link: "/questionnaire-client",
-      invertInDarkMode: true,
-    },
-    {
-      id: "skipcleans",
-      title: t("skipCleans"),
-      description: "",
-      image: "/images/skipcleans.png",
-      link: "/skipclean-client",
-    },
-  ], [currentLanguage])
 
   const commitmentSlides = useMemo(() => [
     {
@@ -334,16 +306,6 @@ const HomeClient = () => {
     const savedLanguage = localStorage.getItem("novotel-language")
     if (savedLanguage && translations[savedLanguage]) {
       setCurrentLanguage(savedLanguage)
-    }
-
-    // Load saved theme from localStorage
-    const savedTheme = localStorage.getItem("novotel-dark-mode")
-    if (savedTheme !== null) {
-      const isDark = JSON.parse(savedTheme)
-      setIsDarkMode(isDark)
-      if (isDark) {
-        document.body.classList.add("dark-mode")
-      }
     }
 
     // Update time every minute
@@ -532,16 +494,61 @@ const HomeClient = () => {
         weatherData={weatherData}
         formatDate={formatDate}
         formatTime={formatTime}
-        isDarkMode={isDarkMode}
-        onToggleDarkMode={toggleDarkMode}
       />
 
       <main className="novotel-v2-main">
         <div className="novotel-v2-main-content">
-          {/* Feedback Slideshow - Lazy loaded */}
-          <Suspense fallback={<div style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{t("loading")}</div>}>
-            <SlideshowBanner slides={feedbackSlides} autoRotateInterval={5000} />
-          </Suspense>
+          {/* Hotel Video */}
+          <div className={`novotel-v2-video-container${videoMuted ? "" : " unmuted"}`}>
+            {!videoReady && (
+              <div className="novotel-v2-video-skeleton">
+                <div className="novotel-v2-video-skeleton-shimmer" />
+                <div className="novotel-v2-video-skeleton-icon">
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <polygon points="10 8 16 12 10 16 10 8" fill="rgba(255,255,255,0.5)" stroke="none" />
+                  </svg>
+                </div>
+              </div>
+            )}
+            <video
+              ref={videoRef}
+              src="https://novotel-tunis.com/uploads/events/Novotel%20Tunis%20lac.mp4"
+              autoPlay
+              muted={videoMuted}
+              loop
+              playsInline
+              className={`novotel-v2-video${videoReady ? " ready" : ""}`}
+              onCanPlay={() => setVideoReady(true)}
+            />
+            {videoReady && (
+              <div className="novotel-v2-video-overlay">
+                <div className="novotel-v2-video-badge">
+                  <span className="novotel-v2-video-badge-dot" />
+                  Novotel Tunis Lac
+                </div>
+                <button
+                  className="novotel-v2-video-mute-btn"
+                  onClick={() => setVideoMuted((m) => !m)}
+                  aria-label={videoMuted ? "Activer le son" : "Couper le son"}
+                >
+                  {videoMuted ? (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                      <line x1="23" y1="9" x2="17" y2="15" />
+                      <line x1="17" y1="9" x2="23" y2="15" />
+                    </svg>
+                  ) : (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                      <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+            )}
+          </div>
 
           {/* Feature Cards with Horizontal Scroll - Lazy loaded */}
           <Suspense fallback={<div style={{ minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{t("loading")}</div>}>

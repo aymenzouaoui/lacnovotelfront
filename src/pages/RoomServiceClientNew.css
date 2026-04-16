@@ -58,6 +58,14 @@
 
 /* .header-back-link-room-service → styles/back-button-global.css */
 
+/* Right side of header: language selector + theme toggle */
+.header-right-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
 /* Buttons with icons */
 .btn-with-icon svg {
   flex-shrink: 0;

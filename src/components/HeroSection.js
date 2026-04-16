@@ -1,23 +1,23 @@
-import { useState, useEffect, memo } from "react"
+import { useState, useEffect, useRef, memo } from "react"
 import "./HeroSection.css"
+import ThemeToggle from "./ThemeToggle"
 
-const HeroSection = memo(({ 
-  heroImages, 
-  welcomeText, 
-  scrollDownText, 
-  currentLanguage, 
-  onLanguageChange, 
-  languages, 
-  currentTime, 
-  weatherData, 
-  formatDate, 
+const HeroSection = memo(({
+  heroImages,
+  welcomeText,
+  scrollDownText,
+  currentLanguage,
+  onLanguageChange,
+  languages,
+  currentTime,
+  weatherData,
+  formatDate,
   formatTime,
-  isDarkMode,
-  onToggleDarkMode
 }) => {
   const [heroSlide, setHeroSlide] = useState(0)
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false)
   const [imagesLoaded, setImagesLoaded] = useState({})
+  const langRef = useRef(null)
 
   // Preload hero images with priority
   useEffect(() => {
@@ -42,6 +42,17 @@ const HeroSection = memo(({
   }, [heroImages.length])
 
   const getCurrentLanguage = () => languages.find((lang) => lang.code === currentLanguage)
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (langRef.current && !langRef.current.contains(e.target)) {
+        setShowLanguageDropdown(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
 
   const scrollToContent = () => {
     const mainContent = document.querySelector(".novotel-v2-main-content")
@@ -71,33 +82,26 @@ const HeroSection = memo(({
             <div className="novotel-v2-hero-temp">{weatherData.temp}</div>
           </div>
           <div className="novotel-v2-hero-actions">
-            <button 
-              className="novotel-v2-theme-toggle" 
-              onClick={onToggleDarkMode}
-              aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
-            >
-              {isDarkMode ? (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-                </svg>
-              ) : (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                </svg>
-              )}
-            </button>
-            <div 
-              className="novotel-v2-hero-lang" 
-              onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
-              onBlur={() => setTimeout(() => setShowLanguageDropdown(false), 200)}
+            <ThemeToggle />
+            <div
+              ref={langRef}
+              className="novotel-v2-hero-lang"
+              onClick={() => setShowLanguageDropdown(prev => !prev)}
               tabIndex={0}
+              onKeyDown={(e) => e.key === "Enter" && setShowLanguageDropdown(prev => !prev)}
             >
-              <span>{getCurrentLanguage()?.code.toUpperCase()}</span>
               <img
                 src={getCurrentLanguage()?.flag || "/placeholder.svg"}
                 alt={getCurrentLanguage()?.name}
                 className="novotel-v2-flag"
               />
+              <span>{getCurrentLanguage()?.code.toUpperCase()}</span>
+              <svg
+                width="10" height="10" viewBox="0 0 10 10" fill="none"
+                style={{ opacity: 0.7, transition: "transform 0.2s", transform: showLanguageDropdown ? "rotate(180deg)" : "rotate(0deg)" }}
+              >
+                <path d="M1 3L5 7L9 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
               {showLanguageDropdown && (
                 <div className="language-dropdown">
                   {languages.map((lang) => (

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import ThemeToggle from "../components/ThemeToggle"
 import "./LivretClient.css"
 
 const LivretClient = () => {
@@ -144,46 +145,6 @@ const LivretClient = () => {
 
   return (
     <div className={`livret-app ${currentLanguage === "ar" ? "rtl" : "ltr"}`}>
-      <div className="language-selector">
-        <button
-          type="button"
-          className="language-toggle"
-          onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
-        >
-          <img
-            src={getCurrentLanguage()?.flag || "/placeholder.svg"}
-            alt={getCurrentLanguage()?.name}
-            className="language-flag"
-          />
-          <span>{getCurrentLanguage()?.code.toUpperCase()}</span>
-        </button>
-        {showLanguageDropdown && (
-          <div className="language-dropdown">
-            {languages.map((lang) => (
-              <div
-                key={lang.code}
-                role="button"
-                tabIndex={0}
-                className={`language-option ${currentLanguage === lang.code ? "active" : ""}`}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  changeLanguage(lang.code)
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault()
-                    changeLanguage(lang.code)
-                  }
-                }}
-              >
-                <img src={lang.flag || "/placeholder.svg"} alt={lang.name} className="flag-small" />
-                <span>{lang.name}</span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
       <header className="app-header">
         <button
           type="button"
@@ -200,7 +161,28 @@ const LivretClient = () => {
         <div className="logo-container">
           <img src="/images/logo2.png" alt="Novotel Logo" className="logo" />
         </div>
-        <div />
+        <div className="header-right-actions">
+          <div className="language-selector">
+            <button type="button" className="language-toggle" onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}>
+              <img src={getCurrentLanguage()?.flag || "/placeholder.svg"} alt={getCurrentLanguage()?.name} className="language-flag" />
+              <span>{getCurrentLanguage()?.code.toUpperCase()}</span>
+            </button>
+            {showLanguageDropdown && (
+              <div className="language-dropdown">
+                {languages.map((lang) => (
+                  <div key={lang.code} role="button" tabIndex={0}
+                    className={`language-option ${currentLanguage === lang.code ? "active" : ""}`}
+                    onClick={(e) => { e.stopPropagation(); changeLanguage(lang.code) }}
+                    onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); changeLanguage(lang.code) } }}>
+                    <img src={lang.flag || "/placeholder.svg"} alt={lang.name} className="flag-small" />
+                    <span>{lang.name}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <ThemeToggle />
+        </div>
       </header>
 
       <main className="livret-content">

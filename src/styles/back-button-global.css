@@ -1,9 +1,59 @@
 /**
- * Bouton Retour – UI globale partagée (design pro, accessible)
- * Appliqué à toutes les pages client (header-back-link, header-back-link-room-service, etc.)
+ * APP BAR – Global styles (all client pages)
+ * Covers: header variants, back button, logo, language selector,
+ *         right-actions group, dark mode.
+ * Header class variants:
+ *   .app-header | .app-header-new | .app-header-drinks | .app-header-room-service
  */
 
-/* Reset pour <button> */
+/* ═══════════════════════════════════════════════════════════════
+   1. HEADER BASE – shared across all variants
+   ═══════════════════════════════════════════════════════════════ */
+.app-header,
+.app-header-new,
+.app-header-drinks,
+.app-header-room-service {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+  padding: 0 1.25rem !important;
+  height: 60px !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07) !important;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.05), 0 4px 20px rgba(0,0,0,0.06) !important;
+  transition: background 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease !important;
+}
+
+/* ── Logo container – always centered ── */
+.logo-container,
+.logo-container-new,
+.logo-container-drinks,
+.logo-container-room-service {
+  position: absolute !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  display: flex !important;
+  align-items: center !important;
+  pointer-events: none !important;
+}
+
+.logo,
+.logo-new,
+.logo-drinks,
+.logo-room-service {
+  height: 32px !important;
+  width: auto !important;
+  object-fit: contain !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   2. BACK BUTTON – reset + style
+   ═══════════════════════════════════════════════════════════════ */
 button.header-back-link,
 button.header-back-link-new,
 button.header-back-link-room-service,
@@ -13,106 +63,182 @@ button.header-back-link-drinks {
   -webkit-appearance: none;
 }
 
-/* Bouton retour global – style pro */
 .header-back-link,
 .header-back-link-new,
 .header-back-link-room-service,
 .header-back-link-drinks {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  min-height: 44px;
-  padding: 0.5rem 1rem 0.5rem 0.875rem;
-  color: #0f3460;
-  font-weight: 600;
-  font-size: 0.9375rem;
-  letter-spacing: 0.01em;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-  cursor: pointer;
-  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
-  text-decoration: none;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  height: 36px !important;
+  padding: 0 14px 0 10px !important;
+  color: #334155 !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  letter-spacing: 0.01em !important;
+  background: #f1f5f9 !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  transition: background 0.18s ease, border-color 0.18s ease,
+              box-shadow 0.18s ease, transform 0.12s ease, color 0.18s ease !important;
 }
 
 .header-back-link svg,
 .header-back-link-new svg,
 .header-back-link-room-service svg,
 .header-back-link-drinks svg {
-  flex-shrink: 0;
-  width: 20px;
-  height: 20px;
-  opacity: 0.9;
+  flex-shrink: 0 !important;
+  width: 18px !important;
+  height: 18px !important;
+  opacity: 0.75 !important;
 }
 
 .header-back-link:hover,
 .header-back-link-new:hover,
 .header-back-link-room-service:hover,
 .header-back-link-drinks:hover {
-  color: #0a2642;
-  border-color: #0f3460;
-  background: #f0f4f8;
-  box-shadow: 0 2px 8px rgba(15, 52, 96, 0.12);
+  background: #e2e8f0 !important;
+  border-color: #94a3b8 !important;
+  color: #1e293b !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10) !important;
+  transform: translateX(-2px) !important;
 }
 
 .header-back-link:active,
 .header-back-link-new:active,
 .header-back-link-room-service:active,
 .header-back-link-drinks:active {
-  transform: scale(0.98);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  transform: scale(0.97) !important;
+  box-shadow: none !important;
 }
 
 .header-back-link:focus-visible,
 .header-back-link-new:focus-visible,
 .header-back-link-room-service:focus-visible,
 .header-back-link-drinks:focus-visible {
-  outline: none;
-  border-color: #0f3460;
-  box-shadow: 0 0 0 3px rgba(15, 52, 96, 0.2);
+  outline: none !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35) !important;
 }
 
-/* Pages client – même UI globale (Room Service inclus) */
-.hotel-app .app-header .header-back-link,
-.hotel-app9 .app-header .header-back-link,
-.livret-app .app-header .header-back-link,
-.livret-app .header-back-link,
-.hotel-app0 .app-header .header-back-link,
-.hotel-app8 .app-header .header-back-link,
-.hotel-app4 .app-header .header-back-link,
-.hotel-app-room-service .app-header-room-service .header-back-link-room-service {
-  color: #0f3460;
-  background: #fff;
-  border-color: #e5e7eb;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-}
-.hotel-app .app-header .header-back-link:hover,
-.hotel-app9 .app-header .header-back-link:hover,
-.livret-app .app-header .header-back-link:hover,
-.livret-app .header-back-link:hover,
-.hotel-app0 .app-header .header-back-link:hover,
-.hotel-app8 .app-header .header-back-link:hover,
-.hotel-app4 .app-header .header-back-link:hover,
-.hotel-app-room-service .app-header-room-service .header-back-link-room-service:hover {
-  color: #0a2642;
-  border-color: #0f3460;
-  background: #f0f4f8;
-  box-shadow: 0 2px 8px rgba(15, 52, 96, 0.12);
-}
-.hotel-app .app-header .header-back-link:focus-visible,
-.hotel-app9 .app-header .header-back-link:focus-visible,
-.livret-app .app-header .header-back-link:focus-visible,
-.livret-app .header-back-link:focus-visible,
-.hotel-app0 .app-header .header-back-link:focus-visible,
-.hotel-app8 .app-header .header-back-link:focus-visible,
-.hotel-app4 .app-header .header-back-link:focus-visible,
-.hotel-app-room-service .app-header-room-service .header-back-link-room-service:focus-visible {
-  box-shadow: 0 0 0 3px rgba(15, 52, 96, 0.2);
+/* ═══════════════════════════════════════════════════════════════
+   3. RIGHT-ACTIONS GROUP (language selector + ThemeToggle)
+   ═══════════════════════════════════════════════════════════════ */
+.header-right-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-shrink: 0 !important;
 }
 
-/* RTL (arabe) : icône avant le texte (ordre visuel [icône, texte]) */
+/* ═══════════════════════════════════════════════════════════════
+   4. LANGUAGE SELECTOR
+   ═══════════════════════════════════════════════════════════════ */
+.language-selector {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.language-toggle {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  height: 36px !important;
+  padding: 0 12px 0 8px !important;
+  background: #f1f5f9 !important;
+  color: #334155 !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+  cursor: pointer !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.3px !important;
+  white-space: nowrap !important;
+  transition: background 0.18s ease, border-color 0.18s ease,
+              box-shadow 0.18s ease, transform 0.12s ease !important;
+}
+
+.language-toggle:hover {
+  background: #e2e8f0 !important;
+  border-color: #94a3b8 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10) !important;
+  transform: translateY(-1px) !important;
+}
+
+.language-flag {
+  width: 20px !important;
+  height: 15px !important;
+  object-fit: cover !important;
+  border-radius: 3px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15) !important;
+  flex-shrink: 0 !important;
+}
+
+/* Dropdown */
+.language-dropdown {
+  position: absolute !important;
+  top: calc(100% + 6px) !important;
+  right: 0 !important;
+  left: auto !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+  border: 1px solid rgba(0,0,0,0.08) !important;
+  border-radius: 14px !important;
+  padding: 6px !important;
+  min-width: 155px !important;
+  z-index: 9999 !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.07) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  animation: langDropIn 0.16s cubic-bezier(0.4,0,0.2,1) !important;
+}
+
+@keyframes langDropIn {
+  from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.language-option {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 8px 11px !important;
+  border-radius: 9px !important;
+  cursor: pointer !important;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  color: #374151 !important;
+  transition: background 0.13s ease, color 0.13s ease !important;
+}
+
+.language-option:hover {
+  background: #f0f4ff !important;
+  color: #1d4ed8 !important;
+}
+
+.language-option.active {
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  font-weight: 700 !important;
+}
+
+.flag-small {
+  width: 20px !important;
+  height: 15px !important;
+  object-fit: cover !important;
+  border-radius: 3px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.13) !important;
+  flex-shrink: 0 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   5. RTL SUPPORT
+   ═══════════════════════════════════════════════════════════════ */
 .rtl .header-back-link,
 .rtl .header-back-link-new,
 .rtl .header-back-link-room-service,
@@ -120,10 +246,142 @@ button.header-back-link-drinks {
   flex-direction: row !important;
 }
 
-.rtl .header-back-link svg,
-.rtl .header-back-link-new svg,
-.rtl .header-back-link-room-service svg,
-.rtl .header-back-link-drinks svg {
-  margin-left: 0 !important;
-  margin-right: 0.5rem !important;
+.rtl .header-back-link:hover,
+.rtl .header-back-link-new:hover,
+.rtl .header-back-link-room-service:hover,
+.rtl .header-back-link-drinks:hover {
+  transform: translateX(2px) !important;
+}
+
+.rtl .language-dropdown {
+  right: 0 !important;
+  left: auto !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   6. DARK MODE
+   ═══════════════════════════════════════════════════════════════ */
+[data-theme="dark"] .app-header,
+[data-theme="dark"] .app-header-new,
+[data-theme="dark"] .app-header-drinks,
+[data-theme="dark"] .app-header-room-service {
+  background: rgba(20, 29, 47, 0.95) !important;
+  border-bottom-color: rgba(79, 158, 255, 0.12) !important;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.3), 0 4px 20px rgba(0,0,0,0.35) !important;
+}
+
+/* Back button – dark */
+[data-theme="dark"] .header-back-link,
+[data-theme="dark"] .header-back-link-new,
+[data-theme="dark"] .header-back-link-room-service,
+[data-theme="dark"] .header-back-link-drinks {
+  background: rgba(36, 48, 68, 0.9) !important;
+  color: #94a3b8 !important;
+  border-color: rgba(79, 158, 255, 0.18) !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3) !important;
+}
+
+[data-theme="dark"] .header-back-link:hover,
+[data-theme="dark"] .header-back-link-new:hover,
+[data-theme="dark"] .header-back-link-room-service:hover,
+[data-theme="dark"] .header-back-link-drinks:hover {
+  background: rgba(45, 62, 88, 0.95) !important;
+  color: #cbd5e1 !important;
+  border-color: rgba(79, 158, 255, 0.35) !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.4) !important;
+}
+
+/* Language toggle – dark */
+[data-theme="dark"] .language-toggle {
+  background: rgba(36, 48, 68, 0.9) !important;
+  color: #94a3b8 !important;
+  border-color: rgba(79, 158, 255, 0.18) !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3) !important;
+}
+
+[data-theme="dark"] .language-toggle:hover {
+  background: rgba(45, 62, 88, 0.95) !important;
+  color: #cbd5e1 !important;
+  border-color: rgba(79, 158, 255, 0.35) !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.4) !important;
+}
+
+/* Language dropdown – dark */
+[data-theme="dark"] .language-dropdown {
+  background: rgba(16, 24, 40, 0.98) !important;
+  border-color: rgba(79, 158, 255, 0.16) !important;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.4) !important;
+}
+
+[data-theme="dark"] .language-option {
+  color: #8fa3be !important;
+}
+
+[data-theme="dark"] .language-option:hover {
+  background: rgba(79, 158, 255, 0.10) !important;
+  color: #e2e8f0 !important;
+}
+
+[data-theme="dark"] .language-option.active {
+  background: rgba(79, 158, 255, 0.18) !important;
+  color: #60a5fa !important;
+}
+
+/* Logo stays visible in dark mode */
+[data-theme="dark"] .logo,
+[data-theme="dark"] .logo-new,
+[data-theme="dark"] .logo-drinks,
+[data-theme="dark"] .logo-room-service {
+  filter: brightness(0) invert(1) !important;
+  opacity: 0.9 !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   7. MOBILE
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  .app-header,
+  .app-header-new,
+  .app-header-drinks,
+  .app-header-room-service {
+    padding: 0 0.875rem !important;
+    height: 54px !important;
+  }
+
+  .header-back-link,
+  .header-back-link-new,
+  .header-back-link-room-service,
+  .header-back-link-drinks {
+    padding: 0 10px 0 8px !important;
+    font-size: 0.8125rem !important;
+  }
+
+  /* Hide back button label on very small screens */
+  .header-back-link span,
+  .header-back-link-new span,
+  .header-back-link-room-service span,
+  .header-back-link-drinks span {
+    display: none !important;
+  }
+
+  .header-back-link,
+  .header-back-link-new,
+  .header-back-link-room-service,
+  .header-back-link-drinks {
+    padding: 0 8px !important;
+    min-width: 36px !important;
+    justify-content: center !important;
+  }
+
+  .language-toggle {
+    padding: 0 8px !important;
+    font-size: 12px !important;
+  }
+
+  .logo,
+  .logo-new,
+  .logo-drinks,
+  .logo-room-service {
+    height: 26px !important;
+  }
 }

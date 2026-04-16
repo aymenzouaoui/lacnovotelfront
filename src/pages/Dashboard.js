@@ -191,7 +191,7 @@ const Dashboard = () => {
       description: "Gérez les types de chambres",
       path: "/chambres",
       color: "#9b59b6ff",
-    },
+    },/* 
            {
       icon: "❔",
       title: "Questionnaires",
@@ -205,7 +205,7 @@ const Dashboard = () => {
       description: "Gérez vos skip cleans",
       path: "/skipcleans ",
       color: "#eebd9eff",
-    },
+    }, */
   ]
       const rawUserRoles = Array.isArray(user.role) ? user.role : [user.role]
     const userRoles = rawUserRoles.filter(Boolean)

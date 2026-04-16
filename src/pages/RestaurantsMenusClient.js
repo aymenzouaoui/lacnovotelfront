@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import API from "../services/api"
- 
+import ThemeToggle from "../components/ThemeToggle"
 import "./RestaurantsMenusNew.css"
 import "./client-image-fix-dark.css"
 import { motion } from "framer-motion"
@@ -796,31 +796,29 @@ useEffect(() => {
         {`
         /* Language dropdown styles */
         .language-selector {
-          position: absolute;
-          top: 15px;
-          left: 15px;
+          position: relative;
           z-index: 20;
         }
-        
+
         .language-toggle {
           display: flex;
           align-items: center;
           gap: 8px;
-          background: rgba(0, 0, 0, 0.7);
-          color: white;
-          border: none;
+          background: rgba(0, 71, 171, 0.08);
+          color: var(--primary, #0047ab);
+          border: 1px solid rgba(0, 71, 171, 0.2);
           border-radius: 20px;
-          padding: 8px 12px;
+          padding: 7px 14px;
           cursor: pointer;
-          font-size: 14px;
-          font-weight: 500;
-          transition: all 0.3s ease;
-          backdrop-filter: blur(10px);
+          font-size: 13px;
+          font-weight: 600;
+          transition: all 0.2s ease;
+          white-space: nowrap;
         }
-        
+
         .language-toggle:hover {
-          background: rgba(0, 0, 0, 0.8);
-          transform: scale(1.05);
+          background: rgba(0, 71, 171, 0.15);
+          border-color: rgba(0, 71, 171, 0.4);
         }
         
         .language-flag {
@@ -876,7 +874,7 @@ useEffect(() => {
 
         .rtl .language-selector {
           left: auto;
-          right: 15px;
+          right: auto;
         }
 
         .rtl .language-dropdown {
@@ -1673,35 +1671,6 @@ useEffect(() => {
 
       `}
       </style>
-      {/* Language Selector */}
-      <div className="language-selector">
-        <button className="language-toggle" onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}>
-          <img
-            src={getCurrentLanguage()?.flag || "/placeholder.svg"}
-            alt={getCurrentLanguage()?.name}
-            className="language-flag"
-          />
-          <span>{getCurrentLanguage()?.code.toUpperCase()}</span>
-        </button>
-        {showLanguageDropdown && (
-          <div className="language-dropdown">
-            {languages.map((lang) => (
-              <div
-                key={lang.code}
-                className={`language-option ${currentLanguage === lang.code ? "active" : ""}`}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  changeLanguage(lang.code)
-                }}
-              >
-                <img src={lang.flag || "/placeholder.svg"} alt={lang.name} className="flag-small" />
-                <span>{lang.name}</span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
       <header className="app-header-new">
         <button
           className="header-back-link-new"
@@ -1726,7 +1695,26 @@ useEffect(() => {
         <div className="logo-container-new">
           <img src="/images/logo2.png" alt="Novotel Logo" className="logo-new" />
         </div>
-        <div></div>
+        <div className="header-right-actions">
+          <div className="language-selector">
+            <button className="language-toggle" onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}>
+              <img src={getCurrentLanguage()?.flag || "/placeholder.svg"} alt={getCurrentLanguage()?.name} className="language-flag" />
+              <span>{getCurrentLanguage()?.code.toUpperCase()}</span>
+            </button>
+            {showLanguageDropdown && (
+              <div className="language-dropdown">
+                {languages.map((lang) => (
+                  <div key={lang.code} className={`language-option ${currentLanguage === lang.code ? "active" : ""}`}
+                    onClick={(e) => { e.stopPropagation(); changeLanguage(lang.code) }}>
+                    <img src={lang.flag || "/placeholder.svg"} alt={lang.name} className="flag-small" />
+                    <span>{lang.name}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <ThemeToggle />
+        </div>
       </header>
       <main className="app-main-new">
 {pageContent && (
@@ -1738,6 +1726,30 @@ useEffect(() => {
         className="page-content-image"
         onError={(e) => (e.target.src = "/placeholder.svg")}
       />
+    )}
+    {pageContent.video && (
+      <div style={{
+        margin: "0 auto 20px",
+        maxWidth: "680px",
+        borderRadius: "14px",
+        overflow: "hidden",
+        boxShadow: "0 6px 24px rgba(0,0,0,0.18)",
+        background: "#000",
+        position: "relative",
+      }}>
+        <span style={{
+          position: "absolute", top: "10px", left: "12px",
+          background: "rgba(0,0,0,0.55)", backdropFilter: "blur(4px)",
+          color: "#fff", fontSize: "11px", fontWeight: "700",
+          padding: "3px 10px", borderRadius: "20px",
+          letterSpacing: "0.6px", zIndex: 2,
+        }}>▶ Vidéo</span>
+        <video
+          src={pageContent.video}
+          controls
+          style={{ width: "100%", display: "block", aspectRatio: "16/9", objectFit: "cover" }}
+        />
+      </div>
     )}
     {pageContent.description && (
       <div

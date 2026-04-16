@@ -14,10 +14,13 @@ const PageContentsPage = () => {
     pageName: "",
     description: "",
     image: null,
+    video: null,
+    mediaType: "image",
   })
 
-  // Add image preview state
+  // Add image/video preview state
   const [previewImage, setPreviewImage] = useState(null)
+  const [previewVideo, setPreviewVideo] = useState(null)
 
   const [editId, setEditId] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -89,18 +92,25 @@ const PageContentsPage = () => {
     setIsDarkMode(!isDarkMode)
   }
 
-  // Update the handleChange function to handle image files
+  // Handle image, video and other field changes
   const handleChange = (e) => {
     const { name, value, files } = e.target
 
     if (name === "image" && files && files[0]) {
       const image = files[0]
       setFormData((prev) => ({ ...prev, image }))
-
-      // Create preview for the image
       const reader = new FileReader()
       reader.onloadend = () => setPreviewImage(reader.result)
       reader.readAsDataURL(image)
+    } else if (name === "video" && files && files[0]) {
+      const video = files[0]
+      setFormData((prev) => ({ ...prev, video }))
+      setPreviewVideo(URL.createObjectURL(video))
+    } else if (name === "mediaType") {
+      // Reset files when switching type
+      setFormData((prev) => ({ ...prev, mediaType: value, image: null, video: null }))
+      setPreviewImage(null)
+      setPreviewVideo(null)
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }))
     }
@@ -118,6 +128,10 @@ const PageContentsPage = () => {
       if (formData.image) {
         form.append("image", formData.image)
       }
+      if (formData.video) {
+        form.append("video", formData.video)
+      }
+      form.append("mediaType", formData.mediaType)
 
       if (editId) {
         await API.put(`/page-contents/${editId}`, form, {
@@ -146,8 +160,11 @@ const PageContentsPage = () => {
       pageName: pageContent.pageName,
       description: pageContent.description,
       image: null,
+      video: null,
+      mediaType: pageContent.mediaType || "image",
     })
-    setPreviewImage(pageContent.image)
+    setPreviewImage(pageContent.image || null)
+    setPreviewVideo(pageContent.video || null)
     setEditId(pageContent._id)
     setShowForm(true)
   }
@@ -157,8 +174,11 @@ const PageContentsPage = () => {
       pageName: "",
       description: "",
       image: null,
+      video: null,
+      mediaType: "image",
     })
     setPreviewImage(null)
+    setPreviewVideo(null)
     setEditId(null)
     setShowForm(false)
   }
@@ -465,15 +485,69 @@ const PageContentsPage = () => {
                 isDarkMode={isDarkMode}
               />
 
-              <CompressedFileInput
-                type="file"
-                name="image"
-                accept="image/*"
-                onChange={handleChange}
-                className={isDarkMode ? "form-input" : "light-form-input"}
-              />
+              {/* Media type selector */}
+              <div style={{ marginBottom: "15px" }}>
+                <label style={{ display: "block", marginBottom: "8px", fontWeight: "600" }}>
+                  Type de média :
+                </label>
+                <div style={{ display: "flex", gap: "20px" }}>
+                  {[
+                    { value: "image", label: "🖼️ Image" },
+                    { value: "video", label: "🎬 Vidéo" },
+                    { value: "both", label: "🖼️+🎬 Image & Vidéo" },
+                  ].map(({ value, label }) => (
+                    <label key={value} style={{ display: "flex", alignItems: "center", gap: "6px", cursor: "pointer" }}>
+                      <input
+                        type="radio"
+                        name="mediaType"
+                        value={value}
+                        checked={formData.mediaType === value}
+                        onChange={handleChange}
+                      />
+                      {label}
+                    </label>
+                  ))}
+                </div>
+              </div>
 
-              {previewImage && <img src={previewImage || "/placeholder.svg"} alt="Aperçu" className="preview-img" />}
+              {/* Image input */}
+              {(formData.mediaType === "image" || formData.mediaType === "both") && (
+                <>
+                  <label style={{ display: "block", marginBottom: "6px", fontWeight: "600" }}>Image :</label>
+                  <CompressedFileInput
+                    type="file"
+                    name="image"
+                    accept="image/*"
+                    onChange={handleChange}
+                    className={isDarkMode ? "form-input" : "light-form-input"}
+                  />
+                  {previewImage && (
+                    <img src={previewImage} alt="Aperçu" className="preview-img" style={{ marginBottom: "10px" }} />
+                  )}
+                </>
+              )}
+
+              {/* Video input */}
+              {(formData.mediaType === "video" || formData.mediaType === "both") && (
+                <>
+                  <label style={{ display: "block", marginBottom: "6px", fontWeight: "600", marginTop: "10px" }}>Vidéo :</label>
+                  <input
+                    type="file"
+                    name="video"
+                    accept="video/*"
+                    onChange={handleChange}
+                    className={isDarkMode ? "form-input" : "light-form-input"}
+                    style={{ width: "100%", marginBottom: "10px" }}
+                  />
+                  {previewVideo && (
+                    <video
+                      src={previewVideo}
+                      controls
+                      style={{ width: "100%", maxHeight: "220px", borderRadius: "8px", marginBottom: "10px" }}
+                    />
+                  )}
+                </>
+              )}
 
               <div className={isDarkMode ? "form-actions" : "light-form-actions"}>
                 <button
@@ -515,9 +589,17 @@ const PageContentsPage = () => {
               <div key={pageContent._id} className={isDarkMode ? "offre-card" : "light-offre-card"}>
                 {pageContent.image && (
                   <img
-                    src={pageContent.image || "/placeholder.svg"}
+                    src={pageContent.image}
                     alt={pageContent.pageName}
                     className="card-image"
+                  />
+                )}
+                {pageContent.video && (
+                  <video
+                    src={pageContent.video}
+                    controls
+                    className="card-image"
+                    style={{ width: "100%", borderRadius: "8px", marginBottom: "10px" }}
                   />
                 )}
                 <h3>{pageContent.pageName}</h3>

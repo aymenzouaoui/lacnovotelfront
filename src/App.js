@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./styles/back-button-global.css";
 import "./styles/footer-global.css";
+import "./styles/dark-theme.css";
+import { ThemeProvider } from "./context/ThemeContext";
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import Dashboard from "./pages/Dashboard";
@@ -57,6 +59,7 @@ function App() {
   }, [])
 
   return (
+    <ThemeProvider>
     <BrowserRouter basename="">
       <Routes>
         {/* 🔐 Admin / Authenticated Routes */}
@@ -108,6 +111,7 @@ function App() {
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

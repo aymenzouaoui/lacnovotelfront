@@ -41,6 +41,14 @@
 
 /* .header-back-link-drinks → voir styles/back-button-global.css */
 
+/* Right side of header: language selector + theme toggle */
+.header-right-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
 .logo-container-drinks {
   flex: 1;
   display: flex;

@@ -1,0 +1,742 @@
+/* ============================================================
+   DARK MODE – Client pages
+   Trigger: html[data-theme="dark"]
+   Palette: Deep Navy / Slate
+   ============================================================ */
+
+/* ─── 1. Design tokens ───────────────────────────────────────── */
+:root {
+  --dk-bg:           #0d1421;
+  --dk-surface:      #1a2332;
+  --dk-surface-2:    #243040;
+  --dk-surface-3:    #2d3d53;
+  --dk-border:       #2e3f55;
+  --dk-border-light: #3a4f6a;
+  --dk-text:         #eaf0f8;
+  --dk-text-muted:   #8fa3be;
+  --dk-text-faint:   #5c7491;
+  --dk-accent:       #4f9eff;
+  --dk-accent-dark:  #2d7de8;
+  --dk-accent-glow:  rgba(79,158,255,0.18);
+  --dk-success:      #34d399;
+  --dk-warning:      #fbbf24;
+  --dk-shadow-sm:    0 1px 4px rgba(0,0,0,0.45);
+  --dk-shadow-md:    0 4px 14px rgba(0,0,0,0.55);
+  --dk-shadow-lg:    0 8px 28px rgba(0,0,0,0.65);
+  --dk-shadow-glow:  0 0 0 3px rgba(79,158,255,0.22);
+}
+
+/* ─── 2. CSS variable overrides – :root pages (Boissons…) ─────── */
+html[data-theme="dark"] {
+  --primary:       #4f9eff;
+  --primary-dark:  #2d7de8;
+  --primary-light: #1a2e4a;
+  --white:         #1a2332;
+  --off-white:     #0d1421;
+  --light-gray:    #2e3f55;
+  --gray:          #8fa3be;
+  --dark-gray:     #c8d8ea;
+  --black:         #eaf0f8;
+  --accent:        #34d399;
+  --accent-dark:   #10b981;
+  /* Home page (novotel-v2-app) CSS variables */
+  --bg-color:         #0d1421;
+  --text-color:       #eaf0f8;
+  --text-muted:       #8fa3be;
+  --card-bg:          #1a2332;
+  --header-bg:        #1a2332;
+  --nav-bg:           #141e2d;
+  --accent-blue:      #4f9eff;
+  --accent-blue-light:rgba(79,158,255,0.15);
+  --card-shadow:      0 4px 12px rgba(0,0,0,0.5);
+  --card-shadow-hover:0 8px 28px rgba(0,0,0,0.7);
+  --popup-overlay:    rgba(0,0,0,0.85);
+  --border-color:     rgba(255,255,255,0.07);
+}
+
+/* ─── 3. Variable overrides – all .hotel-app* scopes ─────────── */
+[data-theme="dark"] .hotel-app0,
+[data-theme="dark"] .hotel-app,
+[data-theme="dark"] .hotel-app-drinks,
+[data-theme="dark"] .hotel-app-new,
+[data-theme="dark"] .hotel-app-room-service,
+[data-theme="dark"] .hotel-app2,
+[data-theme="dark"] .hotel-app4,
+[data-theme="dark"] .hotel-app5,
+[data-theme="dark"] .hotel-app8,
+[data-theme="dark"] .hotel-app9 {
+  --primary:       #4f9eff;
+  --primary-dark:  #2d7de8;
+  --primary-light: #1a2e4a;
+  --white:         #1a2332;
+  --off-white:     #0d1421;
+  --light-gray:    #2e3f55;
+  --gray:          #8fa3be;
+  --dark-gray:     #c8d8ea;
+  --black:         #eaf0f8;
+  --shadow-sm:     var(--dk-shadow-sm);
+  --shadow-md:     var(--dk-shadow-md);
+  --shadow-lg:     var(--dk-shadow-lg);
+  background:      var(--dk-bg);
+  color:           var(--dk-text);
+}
+
+/* ─── 4. Smooth theme transition ────────────────────────────── */
+[data-theme="dark"] *,
+[data-theme="light"] * {
+  transition:
+    background-color 0.28s ease,
+    background     0.28s ease,
+    border-color   0.28s ease,
+    color          0.22s ease,
+    box-shadow     0.28s ease !important;
+}
+
+/* Disable transition on images / videos to avoid flash */
+[data-theme="dark"] img,
+[data-theme="dark"] video,
+[data-theme="light"] img,
+[data-theme="light"] video {
+  transition: none !important;
+}
+
+/* ─── 5. Background overlay (blurred watermark) ─────────────── */
+[data-theme="dark"] [class^="hotel-app"]::before {
+  opacity: 0.025 !important;
+}
+
+/* ─── 5b. Home page (novotel-v2-app) dark mode ──────────────── */
+
+/* Hero logo / text – must stay white over the dark image overlay */
+[data-theme="dark"] .novotel-v2-hero-logo,
+[data-theme="dark"] .novotel-v2-hero-text,
+[data-theme="dark"] .novotel-v2-hero-date-time,
+[data-theme="dark"] .novotel-v2-hero-separator,
+[data-theme="dark"] .novotel-v2-scroll-text,
+[data-theme="dark"] .novotel-v2-hero-lang {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .novotel-v2-app {
+  background-color: var(--bg-color) !important;
+  color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .novotel-v2-main {
+  background-color: var(--bg-color) !important;
+}
+
+[data-theme="dark"] .novotel-v2-footer {
+  background-color: var(--nav-bg) !important;
+  border-top: 1px solid var(--border-color) !important;
+  box-shadow: 0 -2px 16px rgba(0,0,0,0.5) !important;
+}
+
+[data-theme="dark"] .novotel-v2-nav-item {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .novotel-v2-nav-item.active,
+[data-theme="dark"] .novotel-v2-nav-item:hover {
+  color: var(--accent-blue) !important;
+}
+
+[data-theme="dark"] .novotel-v2-popup {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+[data-theme="dark"] .novotel-v2-popup-close {
+  background: var(--card-bg) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+[data-theme="dark"] .novotel-v2-social-icon {
+  border-color: var(--accent-blue) !important;
+  color: var(--accent-blue) !important;
+}
+
+[data-theme="dark"] .novotel-v2-copyright,
+[data-theme="dark"] .copyright {
+  color: var(--text-muted) !important;
+}
+
+/* ─── 6. Header ─────────────────────────────────────────────── */
+/* Header backgrounds – covers both scoped (.hotel-app0 .app-header)
+   and unscoped (.app-header) selectors across all pages */
+[data-theme="dark"] .app-header,
+[data-theme="dark"] .app-header-new,
+[data-theme="dark"] .app-header-drinks,
+[data-theme="dark"] .app-header-room-service,
+[data-theme="dark"] .hotel-app0 .app-header,
+[data-theme="dark"] .hotel-app .app-header,
+[data-theme="dark"] .hotel-app2 .app-header,
+[data-theme="dark"] .hotel-app4 .app-header,
+[data-theme="dark"] .hotel-app5 .app-header,
+[data-theme="dark"] .hotel-app8 .app-header,
+[data-theme="dark"] .hotel-app9 .app-header,
+[data-theme="dark"] .livret-app .app-header {
+  background: rgba(13, 20, 33, 0.96) !important;
+  border-bottom: 1px solid rgba(79,158,255,0.12) !important;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.3), 0 4px 20px rgba(0,0,0,0.4) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+}
+
+/* Logo – invert to white in dark mode */
+[data-theme="dark"] .logo,
+[data-theme="dark"] .logo-new,
+[data-theme="dark"] .logo-drinks,
+[data-theme="dark"] .logo-room-service {
+  filter: brightness(0) invert(1) !important;
+  opacity: 0.88 !important;
+}
+
+/* Back button – dark */
+[data-theme="dark"] .header-back-link,
+[data-theme="dark"] .header-back-link-new,
+[data-theme="dark"] .header-back-link-drinks,
+[data-theme="dark"] .header-back-link-room-service {
+  background: rgba(36, 48, 68, 0.85) !important;
+  color: #94a3b8 !important;
+  border-color: rgba(79,158,255,0.18) !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3) !important;
+}
+
+[data-theme="dark"] .header-back-link:hover,
+[data-theme="dark"] .header-back-link-new:hover,
+[data-theme="dark"] .header-back-link-drinks:hover,
+[data-theme="dark"] .header-back-link-room-service:hover {
+  background: rgba(45, 62, 88, 0.95) !important;
+  color: #e2e8f0 !important;
+  border-color: rgba(79,158,255,0.38) !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.4) !important;
+}
+
+/* ─── 7. Main content backgrounds ───────────────────────────── */
+[data-theme="dark"] .app-main,
+[data-theme="dark"] .app-main-new,
+[data-theme="dark"] .app-main-drinks,
+[data-theme="dark"] .app-main-room-service {
+  background: linear-gradient(180deg, var(--dk-bg) 0%, #111c2e 100%) !important;
+}
+
+/* ─── 8. Welcome banner ──────────────────────────────────────── */
+[data-theme="dark"] .welcome-banner {
+  background: transparent !important;
+}
+
+[data-theme="dark"] .welcome-banner h1 {
+  color: var(--dk-text) !important;
+  text-shadow: 0 2px 12px rgba(79,158,255,0.2);
+}
+
+[data-theme="dark"] .welcome-banner p {
+  color: var(--dk-text-muted) !important;
+}
+
+/* ─── 9. Page-content blocks (admin-added image+description) ── */
+[data-theme="dark"] .page-content-spa,
+[data-theme="dark"] .page-content-restaurant,
+[data-theme="dark"] .page-content-room-service,
+[data-theme="dark"] .page-content-terrassepiscine,
+[data-theme="dark"] .page-content-boisson,
+[data-theme="dark"] .page-content-seminaire,
+[data-theme="dark"] .page-content-rooms {
+  background: var(--dk-surface) !important;
+  border: 1px solid var(--dk-border) !important;
+  box-shadow: var(--dk-shadow-md) !important;
+}
+
+[data-theme="dark"] .page-content-description,
+[data-theme="dark"] .page-content-html,
+[data-theme="dark"] .page-content-html-light {
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .page-content-description p,
+[data-theme="dark"] .page-content-description h1,
+[data-theme="dark"] .page-content-description h2,
+[data-theme="dark"] .page-content-description h3,
+[data-theme="dark"] .page-content-description li {
+  color: var(--dk-text) !important;
+}
+
+/* ─── 10. Generic cards / containers ─────────────────────────── */
+[data-theme="dark"] .category-container,
+[data-theme="dark"] .category-card,
+[data-theme="dark"] .service-card,
+[data-theme="dark"] .service-card-room-service,
+[data-theme="dark"] .restaurant-card-new,
+[data-theme="dark"] .item-card,
+[data-theme="dark"] .menu-card,
+[data-theme="dark"] .room-card,
+[data-theme="dark"] .seminaire-card,
+[data-theme="dark"] .terrasse-card,
+[data-theme="dark"] .loisir-card,
+[data-theme="dark"] .evenement-card,
+[data-theme="dark"] .drink-card,
+[data-theme="dark"] .content-item,
+[data-theme="dark"] .spa-detail-view,
+[data-theme="dark"] .menu-spread-new,
+[data-theme="dark"] .menu-spread-room-service,
+[data-theme="dark"] .offre-card-client {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border) !important;
+  box-shadow: var(--dk-shadow-sm) !important;
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .category-container:hover,
+[data-theme="dark"] .category-card:hover,
+[data-theme="dark"] .service-card:hover,
+[data-theme="dark"] .service-card-room-service:hover,
+[data-theme="dark"] .restaurant-card-new:hover,
+[data-theme="dark"] .room-card:hover,
+[data-theme="dark"] .content-item:hover {
+  background: var(--dk-surface-2) !important;
+  border-color: var(--dk-border-light) !important;
+  box-shadow: var(--dk-shadow-md) !important;
+  transform: translateY(-2px);
+}
+
+/* ─── 11. Card typography ────────────────────────────────────── */
+[data-theme="dark"] .category-title,
+[data-theme="dark"] .service-name,
+[data-theme="dark"] .item-name,
+[data-theme="dark"] .card-title,
+[data-theme="dark"] .category-content h3,
+[data-theme="dark"] .content-item h3 {
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .category-description,
+[data-theme="dark"] .service-description,
+[data-theme="dark"] .item-description,
+[data-theme="dark"] .card-description {
+  color: var(--dk-text-muted) !important;
+}
+
+/* duration / label chips */
+[data-theme="dark"] .service-duration {
+  background: var(--dk-surface-3) !important;
+  color: var(--dk-accent) !important;
+}
+
+/* price */
+[data-theme="dark"] .service-prices,
+[data-theme="dark"] .price,
+[data-theme="dark"] .price-badge,
+[data-theme="dark"] .item-price,
+[data-theme="dark"] .price-tnd {
+  color: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .price-eur,
+[data-theme="dark"] .price-separator {
+  color: var(--dk-text-faint) !important;
+}
+
+/* ─── 12. Service items / list rows ──────────────────────────── */
+[data-theme="dark"] .service-item {
+  border-color: var(--dk-border) !important;
+  background: transparent !important;
+}
+
+[data-theme="dark"] .service-item:hover {
+  background: rgba(79,158,255,0.05) !important;
+}
+
+[data-theme="dark"] .service-item:last-child {
+  border-bottom: none !important;
+}
+
+/* ─── 13. Menu item rows (Room Service / Restaurants) ─────────── */
+[data-theme="dark"] .menu-item-room-service,
+[data-theme="dark"] .menu-item-new {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .menu-item-room-service:hover,
+[data-theme="dark"] .menu-item-new:hover {
+  background: var(--dk-surface-2) !important;
+}
+
+/* ─── 14. Buttons ────────────────────────────────────────────── */
+[data-theme="dark"] .reserve-button-new,
+[data-theme="dark"] .nettoyage-button-room-service,
+[data-theme="dark"] .nav-button-room-service {
+  background: var(--dk-surface) !important;
+  color: var(--dk-accent) !important;
+  border-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .reserve-button-new:hover,
+[data-theme="dark"] .nettoyage-button-room-service:hover,
+[data-theme="dark"] .nav-button-room-service:hover {
+  background: var(--dk-accent) !important;
+  color: #fff !important;
+  border-color: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .back-to-list {
+  color: var(--dk-accent) !important;
+}
+
+/* ─── 15. Back button (global) ───────────────────────────────── */
+[data-theme="dark"] .back-button,
+[data-theme="dark"] .back-btn,
+[data-theme="dark"] .btn-back {
+  background: var(--dk-surface) !important;
+  color: var(--dk-text-muted) !important;
+  border-color: var(--dk-border) !important;
+}
+
+/* Back button in RoomService / Restaurants (hardcoded #fff) */
+[data-theme="dark"] .hotel-app-room-service .back-button,
+[data-theme="dark"] .hotel-app-new .back-button {
+  background: var(--dk-surface) !important;
+  color: var(--dk-text-muted) !important;
+  border-color: var(--dk-border) !important;
+}
+
+/* ─── 16. Modal ──────────────────────────────────────────────── */
+[data-theme="dark"] .modal {
+  background: var(--dk-surface) !important;
+  border: 1px solid var(--dk-border) !important;
+  color: var(--dk-text) !important;
+  box-shadow: var(--dk-shadow-lg) !important;
+}
+
+[data-theme="dark"] .modal h2,
+[data-theme="dark"] .modal h3 {
+  color: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .modal-backdrop {
+  background: rgba(0,0,0,0.75) !important;
+  backdrop-filter: blur(4px);
+}
+
+[data-theme="dark"] .modal input,
+[data-theme="dark"] .modal textarea,
+[data-theme="dark"] .modal select {
+  background: var(--dk-bg) !important;
+  border-color: var(--dk-border) !important;
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .modal input:focus,
+[data-theme="dark"] .modal textarea:focus {
+  border-color: var(--dk-accent) !important;
+  box-shadow: var(--dk-shadow-glow) !important;
+}
+
+[data-theme="dark"] .modal-actions button:last-child {
+  background: var(--dk-surface-2) !important;
+  color: var(--dk-text-muted) !important;
+  border-color: var(--dk-border) !important;
+}
+
+/* ─── 17. Language selector ──────────────────────────────────── */
+[data-theme="dark"] .language-selector {
+  position: relative;
+  z-index: 200;
+}
+
+[data-theme="dark"] .language-toggle {
+  background: var(--dk-surface) !important;
+  border: 1px solid var(--dk-border) !important;
+  color: var(--dk-text) !important;
+  box-shadow: var(--dk-shadow-sm);
+}
+
+[data-theme="dark"] .language-toggle:hover {
+  background: var(--dk-surface-2) !important;
+  border-color: var(--dk-border-light) !important;
+}
+
+[data-theme="dark"] .language-dropdown {
+  background: var(--dk-surface) !important;
+  border: 1px solid var(--dk-border) !important;
+  box-shadow: var(--dk-shadow-lg) !important;
+}
+
+[data-theme="dark"] .language-option {
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .language-option:hover {
+  background: var(--dk-surface-2) !important;
+}
+
+[data-theme="dark"] .language-option.active {
+  background: var(--dk-accent-glow) !important;
+  color: var(--dk-accent) !important;
+}
+
+/* ─── 18. Footer ─────────────────────────────────────────────── */
+[data-theme="dark"] .app-footer,
+[data-theme="dark"] footer {
+  background: var(--dk-surface) !important;
+  border-top: 1px solid var(--dk-border) !important;
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .app-footer h3,
+[data-theme="dark"] .app-footer h4,
+[data-theme="dark"] footer h3,
+[data-theme="dark"] footer h4 {
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .app-footer p,
+[data-theme="dark"] footer p {
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .app-footer a,
+[data-theme="dark"] footer a {
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .app-footer a:hover,
+[data-theme="dark"] footer a:hover {
+  color: var(--dk-accent) !important;
+}
+
+/* footer wifi / social icons */
+[data-theme="dark"] .footer-social a,
+[data-theme="dark"] .social-link {
+  background: var(--dk-surface-2) !important;
+  color: var(--dk-text-muted) !important;
+  border-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .footer-social a:hover,
+[data-theme="dark"] .social-link:hover {
+  background: var(--dk-accent) !important;
+  color: #fff !important;
+}
+
+/* ─── 19. Loading ────────────────────────────────────────────── */
+[data-theme="dark"] .loading-container {
+  background: var(--dk-bg) !important;
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .loading-spinner,
+[data-theme="dark"] .spinner {
+  border-color: var(--dk-border) !important;
+  border-top-color: var(--dk-accent) !important;
+}
+
+/* ─── 20. Empty state ────────────────────────────────────────── */
+[data-theme="dark"] .empty-state {
+  background: var(--dk-surface) !important;
+  border: 1px solid var(--dk-border) !important;
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .empty-state h3 {
+  color: var(--dk-text) !important;
+}
+
+/* ─── 21. Slideshow ──────────────────────────────────────────── */
+[data-theme="dark"] .slideshow-container,
+[data-theme="dark"] .banner-container,
+[data-theme="dark"] .hero-section {
+  background: var(--dk-surface-2) !important;
+}
+
+[data-theme="dark"] .slideshow-nav {
+  background: rgba(13,20,33,0.8) !important;
+  color: var(--dk-text) !important;
+  border: 1px solid var(--dk-border-light) !important;
+  backdrop-filter: blur(6px);
+}
+
+[data-theme="dark"] .slideshow-nav:hover {
+  background: var(--dk-accent) !important;
+  border-color: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .slideshow-dots .dot {
+  background: var(--dk-border-light) !important;
+}
+
+[data-theme="dark"] .slideshow-dots .dot.active {
+  background: var(--dk-accent) !important;
+}
+
+/* ─── 22. Tabs / Filters ─────────────────────────────────────── */
+[data-theme="dark"] .tab-button,
+[data-theme="dark"] .filter-btn,
+[data-theme="dark"] .category-filter {
+  background: var(--dk-surface) !important;
+  border: 1px solid var(--dk-border) !important;
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .tab-button.active,
+[data-theme="dark"] .filter-btn.active,
+[data-theme="dark"] .category-filter.active {
+  background: var(--dk-accent) !important;
+  color: #fff !important;
+  border-color: var(--dk-accent) !important;
+  box-shadow: 0 0 0 3px var(--dk-accent-glow) !important;
+}
+
+[data-theme="dark"] .tab-button:hover,
+[data-theme="dark"] .filter-btn:hover {
+  background: var(--dk-surface-2) !important;
+  color: var(--dk-text) !important;
+}
+
+/* ─── 23. Form inputs ────────────────────────────────────────── */
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border) !important;
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] input:focus,
+[data-theme="dark"] textarea:focus,
+[data-theme="dark"] select:focus {
+  border-color: var(--dk-accent) !important;
+  box-shadow: var(--dk-shadow-glow) !important;
+  outline: none !important;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: var(--dk-text-faint) !important;
+}
+
+/* ─── 24. Badges / Tags ──────────────────────────────────────── */
+[data-theme="dark"] .badge,
+[data-theme="dark"] .tag,
+[data-theme="dark"] .label,
+[data-theme="dark"] .status-badge {
+  background: var(--dk-surface-3) !important;
+  color: var(--dk-text-muted) !important;
+  border-color: var(--dk-border) !important;
+}
+
+/* ─── 25. Dividers ───────────────────────────────────────────── */
+[data-theme="dark"] hr,
+[data-theme="dark"] .divider {
+  border-color: var(--dk-border) !important;
+  opacity: 1 !important;
+}
+
+/* ─── 26. Scrollbar ──────────────────────────────────────────── */
+[data-theme="dark"] ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: var(--dk-bg);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: var(--dk-surface-3);
+  border-radius: 3px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--dk-border-light);
+}
+
+/* ─── 27. Selection ──────────────────────────────────────────── */
+[data-theme="dark"] ::selection {
+  background: var(--dk-accent-glow);
+  color: var(--dk-text);
+}
+
+/* ─── 28. SpasClient – remaining hardcoded #fff ──────────────── */
+[data-theme="dark"] .hotel-app0 .modal {
+  background: var(--dk-surface) !important;
+}
+
+[data-theme="dark"] .hotel-app0 .modal input {
+  background: var(--dk-bg) !important;
+  border-color: var(--dk-border) !important;
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .hotel-app0 .category-container,
+[data-theme="dark"] .hotel-app0 .page-content-spa,
+[data-theme="dark"] .hotel-app0 .spa-detail-view,
+[data-theme="dark"] .hotel-app0 .content-item {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .hotel-app0 .category-container:hover,
+[data-theme="dark"] .hotel-app0 .content-item:hover {
+  background: var(--dk-surface-2) !important;
+  border-color: var(--dk-border-light) !important;
+}
+
+[data-theme="dark"] .hotel-app0 .service-item:hover {
+  background: rgba(79,158,255,0.05) !important;
+}
+
+[data-theme="dark"] .hotel-app0 .category-title {
+  border-bottom-color: var(--dk-border) !important;
+  color: var(--dk-accent) !important;
+}
+
+/* ─── 29. RoomService / Restaurants hardcoded #fff ───────────── */
+[data-theme="dark"] .app-header-room-service,
+[data-theme="dark"] .app-header-new {
+  background: var(--dk-surface) !important;
+  border-bottom-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .hotel-app-room-service .back-button,
+[data-theme="dark"] .hotel-app-new .back-button {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border) !important;
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .service-card-room-service,
+[data-theme="dark"] .restaurant-card-new,
+[data-theme="dark"] .menu-spread-room-service,
+[data-theme="dark"] .menu-spread-new {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .nettoyage-button-room-service,
+[data-theme="dark"] .reserve-button-new,
+[data-theme="dark"] .nav-button-room-service {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border) !important;
+  color: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .hotel-app-room-service .modal,
+[data-theme="dark"] .hotel-app-new .modal {
+  background: var(--dk-surface) !important;
+}
+
+[data-theme="dark"] .hotel-app-room-service input,
+[data-theme="dark"] .hotel-app-new input {
+  background: var(--dk-bg) !important;
+  border-color: var(--dk-border) !important;
+  color: var(--dk-text) !important;
+}
+
+/* ─── 30. Helpers ────────────────────────────────────────────── */
+[data-theme="dark"] .text-primary   { color: var(--dk-text)        !important; }
+[data-theme="dark"] .text-secondary { color: var(--dk-text-muted)  !important; }
+[data-theme="dark"] .text-accent    { color: var(--dk-accent)      !important; }
+[data-theme="dark"] .bg-surface     { background: var(--dk-surface)!important; }
