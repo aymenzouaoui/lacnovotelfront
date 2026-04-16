@@ -67,7 +67,7 @@ const OffersPopup = ({
     return () => clearInterval(id)
   }, [show, currentIndex])
 
-  if (!hasOffers) return null
+  if (!hasOffers || !show) return null
 
   const currentOffer = offers[currentIndex] || offers[0]
   const hasMultipleOffers = offers.length > 1
@@ -84,8 +84,8 @@ const OffersPopup = ({
   }
 
   return (
-    <div className={`novotel-v2-popup-overlay ${show ? "active" : ""} offers-popup-overlay ${show ? "" : "hidden"}`}>
-      <div className={`novotel-v2-popup offers-popup-modal ${show ? "" : "hidden"}`}>
+    <div className="novotel-v2-popup-overlay active offers-popup-overlay">
+      <div className="novotel-v2-popup offers-popup-modal">
         <div className="offers-popup-progress">
           <div
             className="offers-popup-progress-bar"
