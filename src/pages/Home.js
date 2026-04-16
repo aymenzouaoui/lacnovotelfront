@@ -499,45 +499,39 @@ const HomeClient = () => {
       <main className="novotel-v2-main">
         <div className="novotel-v2-main-content">
           {/* Hotel Video */}
-          <div className={`novotel-v2-video-container${videoMuted ? "" : " unmuted"}`}>
+          <div className={`novotel-v2-video-container${videoReady ? " ready" : ""}${videoMuted ? "" : " unmuted"}`}>
             <video
               ref={videoRef}
               src="https://novotel-tunis.com/uploads/events/Novotel%20Tunis%20lac.mp4"
-              poster="/images/hotel-lobby4-v4.jpg"
               autoPlay
               muted={videoMuted}
               loop
               playsInline
-              className={`novotel-v2-video${videoReady ? " ready" : ""}`}
+              className="novotel-v2-video"
               onCanPlay={() => setVideoReady(true)}
             />
-            {videoReady && (
-              <div className="novotel-v2-video-overlay">
-                <div className="novotel-v2-video-badge">
-                  <span className="novotel-v2-video-badge-dot" />
-                  Novotel Tunis Lac
-                </div>
-                <button
-                  className="novotel-v2-video-mute-btn"
-                  onClick={() => setVideoMuted((m) => !m)}
-                  aria-label={videoMuted ? "Activer le son" : "Couper le son"}
-                >
-                  {videoMuted ? (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                      <line x1="23" y1="9" x2="17" y2="15" />
-                      <line x1="17" y1="9" x2="23" y2="15" />
-                    </svg>
-                  ) : (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-                      <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-                    </svg>
-                  )}
-                </button>
+            <div className="novotel-v2-video-overlay">
+              <div className="novotel-v2-video-info">
+                <span className="novotel-v2-video-label">Novotel Tunis Lac</span>
               </div>
-            )}
+              <button
+                className="novotel-v2-video-mute-btn"
+                onClick={() => setVideoMuted((m) => !m)}
+                aria-label={videoMuted ? "Activer le son" : "Couper le son"}
+              >
+                {videoMuted ? (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                    <line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" />
+                  </svg>
+                ) : (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14" /><path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                  </svg>
+                )}
+              </button>
+            </div>
           </div>
 
           {/* Feature Cards with Horizontal Scroll - Lazy loaded */}
