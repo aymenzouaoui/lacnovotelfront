@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import "./ReservationsPage.css"
 import API from "../services/api"
+import Toast from "../components/Toast"
 
 const ReservationsPage = () => {
   const navigate = useNavigate()
@@ -25,6 +26,10 @@ const ReservationsPage = () => {
     const savedTheme = localStorage.getItem("theme")
     return savedTheme ? savedTheme === "dark" : true
   })
+
+  const [toast, setToast] = useState({ message: "", type: "success" })
+  const showToast = (message, type = "success") => setToast({ message, type })
+  const closeToast = () => setToast({ message: "", type: "success" })
 
   const SERVICE_MAP = {
     restaurant: "restaurant",
@@ -96,7 +101,7 @@ const ReservationsPage = () => {
       })
       .catch((err) => {
         console.error("Failed to update reservation status", err)
-        alert("Erreur lors de la mise à jour du statut")
+        showToast("Erreur lors de la mise à jour du statut", "error")
       })
   }
 
@@ -487,7 +492,7 @@ const ReservationsPage = () => {
                       setShowEditModal(false)
                       setEditingReservation(null)
                     })
-                    .catch(() => alert("Erreur lors de la mise à jour"))
+                    .catch(() => showToast("Erreur lors de la mise à jour", "error"))
                 }}
               >
                 ✅ Confirmer
@@ -1328,6 +1333,7 @@ button, input, select, textarea, a {
   transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
       `}</style>
+      <Toast message={toast.message} type={toast.type} onClose={closeToast} />
     </div>
   )
 }

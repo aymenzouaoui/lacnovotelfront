@@ -25,6 +25,8 @@ import {
 import API from "../services/api"
 import "./MenusPage.css"
 import CompressedFileInput from "../components/CompressedFileInput"
+import Toast from "../components/Toast"
+import ConfirmDialog from "../components/ConfirmDialog"
 
 /* Liste des allergènes avec icônes Lucide pour le formulaire items */
 const ALLERGENS_LIST = [
@@ -69,6 +71,13 @@ const RestaurantsAndMenusPage = () => {
   const [viewMode, setViewMode] = useState("grid")
 
   // Theme state with localStorage initialization
+  const [toast, setToast] = useState({ message: "", type: "success" })
+  const [confirmDialog, setConfirmDialog] = useState({ open: false, message: "", onConfirm: null })
+  const showToast = (message, type = "success") => setToast({ message, type })
+  const closeToast = () => setToast({ message: "", type: "success" })
+  const openConfirm = (message, onConfirm) => setConfirmDialog({ open: true, message, onConfirm })
+  const closeConfirm = () => setConfirmDialog({ open: false, message: "", onConfirm: null })
+
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const savedTheme = localStorage.getItem("theme")
     return savedTheme ? savedTheme === "dark" : true
@@ -137,7 +146,7 @@ const RestaurantsAndMenusPage = () => {
       setRestaurants(res.data)
     } catch (error) {
       console.error("Erreur chargement restaurants:", error)
-      alert("Erreur lors du chargement des restaurants")
+      showToast("Erreur lors du chargement des restaurants", "error")
     } finally {
       setIsLoading(false)
     }
@@ -269,7 +278,7 @@ const removePreviewImage = (index) => {
 
 const handleSubmit = async (e) => {
   e.preventDefault()
-  if (!selectedRestaurant) return alert("Sélectionnez un restaurant d'abord!")
+  if (!selectedRestaurant) return showToast("Sélectionnez un restaurant d'abord", "info")
 
   try {
     setIsLoading(true)
@@ -345,12 +354,12 @@ const handleSubmit = async (e) => {
       await API.put(`/menus/${editId}`, form, {
         headers: { "Content-Type": "multipart/form-data" },
       })
-      alert("Menu modifié avec succès")
+      showToast("Menu modifié avec succès", "success")
     } else {
       await API.post("/menus", form, {
         headers: { "Content-Type": "multipart/form-data" },
       })
-      alert("Menu créé avec succès")
+      showToast("Menu créé avec succès", "success")
     }
 
     fetchMenus(selectedRestaurant._id)
@@ -358,7 +367,7 @@ const handleSubmit = async (e) => {
     setShowForm(false)
   } catch (error) {
     console.error("Erreur lors de l'enregistrement du menu:", error)
-    alert("Erreur d'enregistrement")
+    showToast("Erreur d'enregistrement", "error")
   } finally {
     setIsLoading(false)
   }
@@ -396,19 +405,21 @@ const handleEdit = (menu) => {
   }
 };
 
-  const handleDelete = async (menuId) => {
-    try {
-      if (window.confirm("Voulez-vous supprimer ce menu ?")) {
-        setIsLoading(true)
+  const handleDelete = (menuId) => {
+    openConfirm("Voulez-vous vraiment supprimer ce menu ?", async () => {
+      closeConfirm()
+      setIsLoading(true)
+      try {
         await API.delete(`/menus/${menuId}`)
         fetchMenus(selectedRestaurant._id)
-        alert("Menu supprimé")
+        showToast("Menu supprimé avec succès", "success")
+      } catch (error) {
+        console.error("Erreur suppression:", error)
+        showToast("Erreur lors de la suppression", "error")
+      } finally {
+        setIsLoading(false)
       }
-    } catch (error) {
-      console.error("Erreur suppression:", error)
-    } finally {
-      setIsLoading(false)
-    }
+    })
   }
 
   const resetForm = () => {
@@ -471,12 +482,12 @@ const handleRestaurantChange = (e) => {
         await API.put(`/restaurants/${editingRestaurantId}`, form, {
           headers: { "Content-Type": "multipart/form-data" },
         })
-        alert("Restaurant modifié avec succès")
+        showToast("Restaurant modifié avec succès", "success")
       } else {
         await API.post("/restaurants", form, {
           headers: { "Content-Type": "multipart/form-data" },
         })
-        alert("Restaurant créé avec succès")
+        showToast("Restaurant créé avec succès", "success")
       }
 
       fetchRestaurants()
@@ -492,26 +503,27 @@ const handleRestaurantChange = (e) => {
       setRestaurantPreviewImage(null)
     } catch (error) {
       console.error("Erreur soumission restaurant:", error)
-      alert("Erreur lors de la soumission")
+      showToast("Erreur lors de la soumission", "error")
     } finally {
       setIsLoading(false)
     }
   }
 
-  const handleDeleteRestaurant = async (id) => {
-    if (window.confirm("Voulez-vous vraiment supprimer ce restaurant ?")) {
+  const handleDeleteRestaurant = (id) => {
+    openConfirm("Voulez-vous vraiment supprimer ce restaurant ?", async () => {
+      closeConfirm()
+      setIsLoading(true)
       try {
-        setIsLoading(true)
         await API.delete(`/restaurants/${id}`)
-        alert("Restaurant supprimé")
+        showToast("Restaurant supprimé avec succès", "success")
         fetchRestaurants()
       } catch (error) {
         console.error("Erreur suppression:", error)
-        alert("Erreur lors de la suppression")
+        showToast("Erreur lors de la suppression", "error")
       } finally {
         setIsLoading(false)
       }
-    }
+    })
   }
 
   const formatDate = (date) => {
@@ -2850,6 +2862,13 @@ div.light-menus-container.grid div.light-menu-card img.card-image {
   color: #495057;
 }
       `}</style>
+      <Toast message={toast.message} type={toast.type} onClose={closeToast} />
+      <ConfirmDialog
+        open={confirmDialog.open}
+        message={confirmDialog.message}
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={closeConfirm}
+      />
     </div>
   )
 }

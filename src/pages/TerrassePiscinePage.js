@@ -25,6 +25,8 @@ import "./MenusPage.css"
 import "./TerrassePiscinePage.css"
 import "./client-image-fix-dark.css"
 import CompressedFileInput from "../components/CompressedFileInput"
+import Toast from "../components/Toast"
+import ConfirmDialog from "../components/ConfirmDialog"
 
 const ALLERGENS_LIST = [
   { key: "arachideAllergy",    label: "Arachide",        Icon: CircleDot },
@@ -112,6 +114,13 @@ const TerrassePiscinePage = () => {
   const [previewImages, setPreviewImages] = useState([]) // Changed to array
   const [editingLoungeId, setEditingLoungeId] = useState(null)
 
+  const [toast, setToast] = useState({ message: "", type: "success" })
+  const [confirmDialog, setConfirmDialog] = useState({ open: false, message: "", onConfirm: null })
+  const showToast = (message, type = "success") => setToast({ message, type })
+  const closeToast = () => setToast({ message: "", type: "success" })
+  const openConfirm = (message, onConfirm) => setConfirmDialog({ open: true, message, onConfirm })
+  const closeConfirm = () => setConfirmDialog({ open: false, message: "", onConfirm: null })
+
   const handleEditLounge = (lounge) => {
     const tr = lounge.translations || {}
     setEditingLoungeId(lounge._id)
@@ -137,7 +146,7 @@ const TerrassePiscinePage = () => {
       setLounges(res.data)
     } catch (error) {
       console.error("Erreur chargement lounges:", error)
-      alert("Erreur lors du chargement des lounges")
+      showToast("Erreur lors du chargement des lounges", "error")
     } finally {
       setIsLoading(false)
     }
@@ -272,7 +281,7 @@ const removePreviewImage = (index) => {
 
 const handleSubmit = async (e) => {
   e.preventDefault()
-  if (!selectedLounge) return alert("Sélectionnez un lounge d'abord!")
+  if (!selectedLounge) return showToast("Sélectionnez un lounge d'abord", "info")
 
   try {
     setIsLoading(true)
@@ -332,12 +341,12 @@ const handleSubmit = async (e) => {
       await API.put(`/menus/${editId}`, form, {
         headers: { "Content-Type": "multipart/form-data" },
       })
-      alert("Menu modifié avec succès")
+      showToast("Menu modifié avec succès", "success")
     } else {
       await API.post("/menus", form, {
         headers: { "Content-Type": "multipart/form-data" },
       })
-      alert("Menu créé avec succès")
+      showToast("Menu créé avec succès", "success")
     }
 
     fetchMenus(selectedLounge._id)
@@ -345,7 +354,7 @@ const handleSubmit = async (e) => {
     setShowForm(false)
   } catch (error) {
     console.error("Erreur lors de l'enregistrement du menu:", error)
-    alert("Erreur d'enregistrement")
+    showToast("Erreur d'enregistrement", "error")
   } finally {
     setIsLoading(false)
   }
@@ -375,19 +384,21 @@ const handleEdit = (menu) => {
   }
 };
 
-  const handleDelete = async (menuId) => {
-    try {
-      if (window.confirm("Voulez-vous supprimer ce menu ?")) {
-        setIsLoading(true)
+  const handleDelete = (menuId) => {
+    openConfirm("Voulez-vous vraiment supprimer ce menu ?", async () => {
+      closeConfirm()
+      setIsLoading(true)
+      try {
         await API.delete(`/menus/${menuId}`)
         fetchMenus(selectedLounge._id)
-        alert("Menu supprimé")
+        showToast("Menu supprimé avec succès", "success")
+      } catch (error) {
+        console.error("Erreur suppression:", error)
+        showToast("Erreur lors de la suppression", "error")
+      } finally {
+        setIsLoading(false)
       }
-    } catch (error) {
-      console.error("Erreur suppression:", error)
-    } finally {
-      setIsLoading(false)
-    }
+    })
   }
 
   const resetForm = () => {
@@ -448,12 +459,12 @@ const handleEdit = (menu) => {
         await API.put(`/terrasses-piscine/${editingLoungeId}`, form, {
           headers: { "Content-Type": "multipart/form-data" },
         })
-        alert("Lounge modifié avec succès")
+        showToast("Lounge modifié avec succès", "success")
       } else {
         await API.post("/terrasses-piscine", form, {
           headers: { "Content-Type": "multipart/form-data" },
         })
-        alert("Lounge créé avec succès")
+        showToast("Lounge créé avec succès", "success")
       }
 
       fetchLounges()
@@ -469,26 +480,27 @@ const handleEdit = (menu) => {
       setLoungePreviewImage(null)
     } catch (error) {
       console.error("Erreur soumission lounge:", error)
-      alert("Erreur lors de la soumission")
+      showToast("Erreur lors de la soumission", "error")
     } finally {
       setIsLoading(false)
     }
   }
 
-  const handleDeleteLounge = async (id) => {
-    if (window.confirm("Voulez-vous vraiment supprimer ce lounge ?")) {
+  const handleDeleteLounge = (id) => {
+    openConfirm("Voulez-vous vraiment supprimer ce lounge ?", async () => {
+      closeConfirm()
+      setIsLoading(true)
       try {
-        setIsLoading(true)
         await API.delete(`/terrasses-piscine/${id}`)
-        alert("Lounge supprimé")
+        showToast("Lounge supprimé avec succès", "success")
         fetchLounges()
       } catch (error) {
         console.error("Erreur suppression:", error)
-        alert("Erreur lors de la suppression")
+        showToast("Erreur lors de la suppression", "error")
       } finally {
         setIsLoading(false)
       }
-    }
+    })
   }
 
   const formatDate = (date) => {
@@ -2352,6 +2364,13 @@ const handleEdit = (menu) => {
   flex-shrink: 0 !important;
 }
 `}</style>
+      <Toast message={toast.message} type={toast.type} onClose={closeToast} />
+      <ConfirmDialog
+        open={confirmDialog.open}
+        message={confirmDialog.message}
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={closeConfirm}
+      />
     </div>
   )
 }

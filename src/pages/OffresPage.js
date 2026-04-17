@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom"
 import API from "../services/api"
 import "./OffresPage.css"
 import CompressedFileInput from "../components/CompressedFileInput"
+import Toast from "../components/Toast"
+import ConfirmDialog from "../components/ConfirmDialog"
 
 // Composant pour générer une miniature à partir d'une vidéo
 const VideoThumbnail = ({ src, alt }) => {
@@ -182,6 +184,13 @@ const OffresPage = () => {
     return savedTheme ? savedTheme === "dark" : true
   })
 
+  const [toast, setToast] = useState({ message: "", type: "success" })
+  const [confirmDialog, setConfirmDialog] = useState({ open: false, message: "", onConfirm: null })
+  const showToast = (message, type = "success") => setToast({ message, type })
+  const closeToast = () => setToast({ message: "", type: "success" })
+  const openConfirm = (message, onConfirm) => setConfirmDialog({ open: true, message, onConfirm })
+  const closeConfirm = () => setConfirmDialog({ open: false, message: "", onConfirm: null })
+
   const fetchOffres = async () => { 
     try {
       setIsLoading(true)
@@ -189,24 +198,27 @@ const OffresPage = () => {
       setOffres(res.data)
     } catch (error) {
       console.error("Erreur chargement offres:", error)
-      alert("Erreur de chargement")
+      showToast("Erreur de chargement", "error")
     } finally {
       setIsLoading(false)
     }
   }
 
-  const handleDelete = async (id) => {
-    try {
+  const handleDelete = (id) => {
+    openConfirm("Voulez-vous vraiment supprimer cette offre ?", async () => {
+      closeConfirm()
       setIsLoading(true)
-      await API.delete(`/offres/${id}`)
-      alert("Offre supprimée avec succès")
-      fetchOffres()
-    } catch (error) {
-      console.error("Erreur suppression offre:", error)
-      alert("Erreur lors de la suppression")
-    } finally {
-      setIsLoading(false)
-    }
+      try {
+        await API.delete(`/offres/${id}`)
+        showToast("Offre supprimée avec succès", "success")
+        fetchOffres()
+      } catch (error) {
+        console.error("Erreur suppression offre:", error)
+        showToast("Erreur lors de la suppression", "error")
+      } finally {
+        setIsLoading(false)
+      }
+    })
   }
 
   useEffect(() => {
@@ -289,7 +301,7 @@ const OffresPage = () => {
       reader.onloadend = () => setPreviewVideo(reader.result)
       reader.readAsDataURL(file)
     } else {
-      alert("Veuillez sélectionner un fichier vidéo")
+      showToast("Veuillez sélectionner un fichier vidéo", "info")
     }
   }
 
@@ -375,19 +387,19 @@ const OffresPage = () => {
         await API.put(`/offres/${editId}`, form, {
           headers: { "Content-Type": "multipart/form-data" },
         })
-        alert("Offre modifiée avec succès")
+        showToast("Offre modifiée avec succès", "success")
       } else {
         await API.post("/offres", form, {
           headers: { "Content-Type": "multipart/form-data" },
         })
-        alert("Offre créée avec succès")
+        showToast("Offre créée avec succès", "success")
       }
 
       fetchOffres()
       resetForm()
     } catch (error) {
       console.error("Erreur enregistrement:", error)
-      alert("Erreur lors de l'enregistrement")
+      showToast("Erreur lors de l'enregistrement", "error")
     } finally {
       setIsLoading(false)
     }
@@ -2608,6 +2620,13 @@ button, input, select, textarea, a {
   transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
       `}</style>
+      <Toast message={toast.message} type={toast.type} onClose={closeToast} />
+      <ConfirmDialog
+        open={confirmDialog.open}
+        message={confirmDialog.message}
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={closeConfirm}
+      />
     </div>
   )
 }

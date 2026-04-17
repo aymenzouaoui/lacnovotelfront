@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom"
 import API from "../services/api"
 import "./ChambresPage.css"
 import CompressedFileInput from "../components/CompressedFileInput"
+import Toast from "../components/Toast"
+import ConfirmDialog from "../components/ConfirmDialog"
 
 // Helper functions for multilingual fields
 const getTranslatedText = (obj, field, lang = "fr", fallbackLang = "fr") => {
@@ -119,6 +121,13 @@ const ChambresPage = () => {
     return savedTheme === "dark"
   })
 
+  const [toast, setToast] = useState({ message: "", type: "success" })
+  const [confirmDialog, setConfirmDialog] = useState({ open: false, message: "", onConfirm: null })
+  const showToast = (message, type = "success") => setToast({ message, type })
+  const closeToast = () => setToast({ message: "", type: "success" })
+  const openConfirm = (message, onConfirm) => setConfirmDialog({ open: true, message, onConfirm })
+  const closeConfirm = () => setConfirmDialog({ open: false, message: "", onConfirm: null })
+
   const fetchChambres = async () => {
     try {
       setIsLoading(true)
@@ -126,26 +135,27 @@ const ChambresPage = () => {
       setChambres(res.data || [])
     } catch (error) {
       console.error("Erreur chargement chambres:", error)
-      alert("Erreur de chargement")
+      showToast("Erreur de chargement", "error")
     } finally {
       setIsLoading(false)
     }
   }
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Êtes-vous sûr de vouloir supprimer cette chambre ?")) return
-
-    try {
+  const handleDelete = (id) => {
+    openConfirm("Voulez-vous vraiment supprimer cette chambre ?", async () => {
+      closeConfirm()
       setIsLoading(true)
-      await API.delete(`/chambres/${id}`)
-      alert("Chambre supprimée avec succès")
-      fetchChambres()
-    } catch (error) {
-      console.error("Erreur suppression chambre:", error)
-      alert("Erreur lors de la suppression")
-    } finally {
-      setIsLoading(false)
-    }
+      try {
+        await API.delete(`/chambres/${id}`)
+        showToast("Chambre supprimée avec succès", "success")
+        fetchChambres()
+      } catch (error) {
+        console.error("Erreur suppression chambre:", error)
+        showToast("Erreur lors de la suppression", "error")
+      } finally {
+        setIsLoading(false)
+      }
+    })
   }
 
   useEffect(() => {
@@ -271,19 +281,19 @@ const ChambresPage = () => {
         await API.put(`/chambres/${editId}`, form, {
           headers: { "Content-Type": "multipart/form-data" },
         })
-        alert("Chambre modifiée avec succès")
+        showToast("Chambre modifiée avec succès", "success")
       } else {
         await API.post("/chambres", form, {
           headers: { "Content-Type": "multipart/form-data" },
         })
-        alert("Chambre créée avec succès")
+        showToast("Chambre créée avec succès", "success")
       }
 
       fetchChambres()
       resetForm()
     } catch (error) {
       console.error("Erreur enregistrement:", error)
-      alert("Erreur lors de l'enregistrement")
+      showToast("Erreur lors de l'enregistrement", "error")
     } finally {
       setIsLoading(false)
     }
@@ -1129,10 +1139,8 @@ const ChambresPage = () => {
                   </button>
                   <button
                     onClick={() => {
-                      if (window.confirm("Êtes-vous sûr de vouloir supprimer cette chambre ?")) {
-                        handleDelete(selectedChambreDetails._id)
-                        setShowDetailsModal(false)
-                      }
+                      handleDelete(selectedChambreDetails._id)
+                      setShowDetailsModal(false)
                     }}
                     className={`${isDarkMode ? "btn btn-danger" : "light-btn light-btn-danger"}`}
                   >
@@ -1150,6 +1158,13 @@ const ChambresPage = () => {
           </div>
         )}
       </div>
+      <Toast message={toast.message} type={toast.type} onClose={closeToast} />
+      <ConfirmDialog
+        open={confirmDialog.open}
+        message={confirmDialog.message}
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={closeConfirm}
+      />
     </div>
   )
 }

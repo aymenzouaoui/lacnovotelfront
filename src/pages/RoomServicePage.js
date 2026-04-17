@@ -26,6 +26,8 @@ import API from "../services/api"
 import "./MenusPage.css"
 import "./RoomServicePage.css"
 import CompressedFileInput from "../components/CompressedFileInput"
+import Toast from "../components/Toast"
+import ConfirmDialog from "../components/ConfirmDialog"
 
 const ALLERGENS_LIST = [
   { key: "arachideAllergy",   label: "Arachide",       Icon: CircleDot },
@@ -116,6 +118,13 @@ const RoomServicePage = () => {
     return savedTheme ? savedTheme === "dark" : true
   })
 
+  const [toast, setToast] = useState({ message: "", type: "success" })
+  const [confirmDialog, setConfirmDialog] = useState({ open: false, message: "", onConfirm: null })
+  const showToast = (message, type = "success") => setToast({ message, type })
+  const closeToast = () => setToast({ message: "", type: "success" })
+  const openConfirm = (message, onConfirm) => setConfirmDialog({ open: true, message, onConfirm })
+  const closeConfirm = () => setConfirmDialog({ open: false, message: "", onConfirm: null })
+
   const handleEditService = (service) => {
     setEditingServiceId(service._id)
     const tr = service.translations || {}
@@ -150,7 +159,7 @@ const RoomServicePage = () => {
       setServices(res.data)
     } catch (error) {
       console.error("Erreur chargement services:", error)
-      alert("Erreur lors du chargement des services")
+      showToast("Erreur lors du chargement des services", "error")
     } finally {
       setIsLoading(false)
     }
@@ -288,7 +297,7 @@ const removePreviewImage = (index) => {
 
 const handleSubmit = async (e) => {
   e.preventDefault()
-  if (!selectedService) return alert("Sélectionnez un service d'abord!")
+  if (!selectedService) return showToast("Sélectionnez un service d'abord", "info")
 
   try {
     setIsLoading(true)
@@ -359,12 +368,12 @@ const handleSubmit = async (e) => {
         menus: [...(selectedService.menus || []), newMenuId],
       })
 
-      alert("Menu créé avec succès")
+      showToast("Menu créé avec succès", "success")
     } else {
       await API.put(`/menus/${editId}`, form, {
         headers: { "Content-Type": "multipart/form-data" },
       })
-      alert("Menu modifié avec succès")
+      showToast("Menu modifié avec succès", "success")
     }
 
     fetchServices()
@@ -373,7 +382,7 @@ const handleSubmit = async (e) => {
     setShowForm(false)
   } catch (error) {
     console.error("Erreur lors de l'enregistrement du menu:", error)
-    alert("Erreur d'enregistrement")
+    showToast("Erreur d'enregistrement", "error")
   } finally {
     setIsLoading(false)
   }
@@ -412,10 +421,11 @@ const handleEdit = (menu) => {
   }
 }
 
-  const handleDelete = async (menuId) => {
-    try {
-      if (window.confirm("Voulez-vous supprimer ce menu ?")) {
-        setIsLoading(true)
+  const handleDelete = (menuId) => {
+    openConfirm("Voulez-vous vraiment supprimer ce menu ?", async () => {
+      closeConfirm()
+      setIsLoading(true)
+      try {
         await API.delete(`/menus/${menuId}`)
 
         // Check if this was the last menu and update service if needed
@@ -429,13 +439,14 @@ const handleEdit = (menu) => {
         }
 
         fetchMenus(selectedService._id)
-        alert("Menu supprimé")
+        showToast("Menu supprimé avec succès", "success")
+      } catch (error) {
+        console.error("Erreur suppression:", error)
+        showToast("Erreur lors de la suppression", "error")
+      } finally {
+        setIsLoading(false)
       }
-    } catch (error) {
-      console.error("Erreur suppression:", error)
-    } finally {
-      setIsLoading(false)
-    }
+    })
   }
 
   const resetForm = () => {
@@ -469,10 +480,10 @@ const handleEdit = (menu) => {
 
       if (editingServiceId) {
         await API.put(`/room-services/${editingServiceId}`, dataToSubmit)
-        alert("Service modifié avec succès")
+        showToast("Service modifié avec succès", "success")
       } else {
         await API.post("/room-services", dataToSubmit)
-        alert("Service créé avec succès")
+        showToast("Service créé avec succès", "success")
       }
 
       fetchServices()
@@ -485,26 +496,27 @@ const handleEdit = (menu) => {
       })
     } catch (error) {
       console.error("Erreur soumission service:", error)
-      alert("Erreur lors de la soumission")
+      showToast("Erreur lors de la soumission", "error")
     } finally {
       setIsLoading(false)
     }
   }
 
-  const handleDeleteService = async (id) => {
-    if (window.confirm("Voulez-vous vraiment supprimer ce service ?")) {
+  const handleDeleteService = (id) => {
+    openConfirm("Voulez-vous vraiment supprimer ce service ?", async () => {
+      closeConfirm()
+      setIsLoading(true)
       try {
-        setIsLoading(true)
         await API.delete(`/room-services/${id}`)
-        alert("Service supprimé")
+        showToast("Service supprimé avec succès", "success")
         fetchServices()
       } catch (error) {
         console.error("Erreur suppression:", error)
-        alert("Erreur lors de la suppression")
+        showToast("Erreur lors de la suppression", "error")
       } finally {
         setIsLoading(false)
       }
-    }
+    })
   }
 
   const formatDate = (date) => {
@@ -2470,6 +2482,13 @@ const handleEdit = (menu) => {
 }
 
       `}</style>
+      <Toast message={toast.message} type={toast.type} onClose={closeToast} />
+      <ConfirmDialog
+        open={confirmDialog.open}
+        message={confirmDialog.message}
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={closeConfirm}
+      />
     </div>
   )
 }

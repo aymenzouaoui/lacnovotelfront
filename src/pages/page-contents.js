@@ -6,6 +6,8 @@ import API from "../services/api"
 import "./PageContentsPage.css"
 import CompressedFileInput from "../components/CompressedFileInput"
 import RichTextEditor from "../components/RichTextEditor"
+import Toast from "../components/Toast"
+import ConfirmDialog from "../components/ConfirmDialog"
 
 const PageContentsPage = () => {
   const navigate = useNavigate()
@@ -38,6 +40,13 @@ const PageContentsPage = () => {
     return savedTheme ? savedTheme === "dark" : true
   })
 
+  const [toast, setToast] = useState({ message: "", type: "success" })
+  const [confirmDialog, setConfirmDialog] = useState({ open: false, message: "", onConfirm: null })
+  const showToast = (message, type = "success") => setToast({ message, type })
+  const closeToast = () => setToast({ message: "", type: "success" })
+  const openConfirm = (message, onConfirm) => setConfirmDialog({ open: true, message, onConfirm })
+  const closeConfirm = () => setConfirmDialog({ open: false, message: "", onConfirm: null })
+
   const fetchPageContents = async () => {
     try {
       setIsLoading(true)
@@ -45,24 +54,27 @@ const PageContentsPage = () => {
       setPageContents(res.data)
     } catch (error) {
       console.error("Erreur chargement contenus de page:", error)
-      alert("Erreur de chargement")
+      showToast("Erreur de chargement", "error")
     } finally {
       setIsLoading(false)
     }
   }
 
-  const handleDelete = async (id) => {
-    try {
+  const handleDelete = (id) => {
+    openConfirm("Voulez-vous vraiment supprimer ce contenu de page ?", async () => {
+      closeConfirm()
       setIsLoading(true)
-      await API.delete(`/page-contents/${id}`)
-      alert("Contenu de page supprimé avec succès")
-      fetchPageContents()
-    } catch (error) {
-      console.error("Erreur suppression contenu de page:", error)
-      alert("Erreur lors de la suppression")
-    } finally {
-      setIsLoading(false)
-    }
+      try {
+        await API.delete(`/page-contents/${id}`)
+        showToast("Contenu de page supprimé avec succès", "success")
+        fetchPageContents()
+      } catch (error) {
+        console.error("Erreur suppression contenu de page:", error)
+        showToast("Erreur lors de la suppression", "error")
+      } finally {
+        setIsLoading(false)
+      }
+    })
   }
 
   useEffect(() => {
@@ -137,19 +149,19 @@ const PageContentsPage = () => {
         await API.put(`/page-contents/${editId}`, form, {
           headers: { "Content-Type": "multipart/form-data" },
         })
-        alert("Contenu de page modifié avec succès")
+        showToast("Contenu de page modifié avec succès", "success")
       } else {
         await API.post("/page-contents", form, {
           headers: { "Content-Type": "multipart/form-data" },
         })
-        alert("Contenu de page créé avec succès")
+        showToast("Contenu de page créé avec succès", "success")
       }
 
       fetchPageContents()
       resetForm()
     } catch (error) {
       console.error("Erreur enregistrement:", error)
-      alert("Erreur lors de l'enregistrement")
+      showToast("Erreur lors de l'enregistrement", "error")
     } finally {
       setIsLoading(false)
     }
@@ -1467,6 +1479,13 @@ button, input, select, textarea, a {
   transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
       `}</style>
+      <Toast message={toast.message} type={toast.type} onClose={closeToast} />
+      <ConfirmDialog
+        open={confirmDialog.open}
+        message={confirmDialog.message}
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={closeConfirm}
+      />
     </div>
   )
 }

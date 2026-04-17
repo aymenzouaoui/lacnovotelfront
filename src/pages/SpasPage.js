@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom"
 import API from "../services/api"
 import "./SpasPage.css"
 import CompressedFileInput from "../components/CompressedFileInput"
+import Toast from "../components/Toast"
+import ConfirmDialog from "../components/ConfirmDialog"
 
 const SpaCategoriesPage = () => {
   const navigate = useNavigate()
@@ -42,6 +44,14 @@ const SpaCategoriesPage = () => {
     return savedTheme ? savedTheme === "dark" : true
   })
 
+  const [toast, setToast] = useState({ message: "", type: "success" })
+  const [confirmDialog, setConfirmDialog] = useState({ open: false, message: "", onConfirm: null })
+
+  const showToast = (message, type = "success") => setToast({ message, type })
+  const closeToast = () => setToast({ message: "", type: "success" })
+  const openConfirm = (message, onConfirm) => setConfirmDialog({ open: true, message, onConfirm })
+  const closeConfirm = () => setConfirmDialog({ open: false, message: "", onConfirm: null })
+
   const fetchCategories = async () => {
     setIsLoading(true)
     try {
@@ -49,28 +59,27 @@ const SpaCategoriesPage = () => {
       setCategories(res.data)
     } catch (error) {
       console.error("Erreur lors du chargement des catégories:", error)
-      alert("Impossible de charger les catégories")
+      showToast("Impossible de charger les catégories", "error")
     } finally {
       setIsLoading(false)
     }
   }
 
-  const handleDelete = async (categoryId) => {
-    if (!window.confirm("Êtes-vous sûr de vouloir supprimer cette catégorie ?")) {
-      return
-    }
-
-    setIsLoading(true)
-    try {
-      await API.delete(`/spa-categories/${categoryId}`)
-      alert("Catégorie supprimée avec succès")
-      fetchCategories()
-    } catch (error) {
-      console.error("Erreur lors de la suppression de la catégorie:", error)
-      alert("Échec de la suppression")
-    } finally {
-      setIsLoading(false)
-    }
+  const handleDelete = (categoryId) => {
+    openConfirm("Voulez-vous vraiment supprimer cette catégorie ?", async () => {
+      closeConfirm()
+      setIsLoading(true)
+      try {
+        await API.delete(`/spa-categories/${categoryId}`)
+        showToast("Catégorie supprimée avec succès", "success")
+        fetchCategories()
+      } catch (error) {
+        console.error("Erreur lors de la suppression de la catégorie:", error)
+        showToast("Échec de la suppression", "error")
+      } finally {
+        setIsLoading(false)
+      }
+    })
   }
 
   useEffect(() => {
@@ -178,19 +187,19 @@ const SpaCategoriesPage = () => {
         await API.put(`/spa-categories/${editId}`, formDataToSend, {
           headers: { "Content-Type": "multipart/form-data" },
         })
-        alert("Catégorie modifiée avec succès")
+        showToast("Catégorie modifiée avec succès", "success")
       } else {
         await API.post("/spa-categories", formDataToSend, {
           headers: { "Content-Type": "multipart/form-data" },
         })
-        alert("Catégorie créée avec succès")
+        showToast("Catégorie créée avec succès", "success")
       }
 
       resetForm()
       fetchCategories()
     } catch (error) {
       console.error("Erreur lors de l'enregistrement:", error)
-      alert(editId ? "Échec de la modification" : "Échec de la création")
+      showToast(editId ? "Échec de la modification" : "Échec de la création", "error")
       setIsLoading(false)
     }
   }
@@ -1953,6 +1962,13 @@ const SpaCategoriesPage = () => {
   transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
       `}</style>
+      <Toast message={toast.message} type={toast.type} onClose={closeToast} />
+      <ConfirmDialog
+        open={confirmDialog.open}
+        message={confirmDialog.message}
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={closeConfirm}
+      />
     </div>
   )
 }

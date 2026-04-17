@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom"
 import API from "../services/api"
 import "./BoissonsPage.css"
 import CompressedFileInput from "../components/CompressedFileInput"
+import Toast from "../components/Toast"
+import ConfirmDialog from "../components/ConfirmDialog"
 
 const BoissonsPage = () => {
   const navigate = useNavigate()
@@ -55,6 +57,15 @@ const BoissonsPage = () => {
   const [activeLang, setActiveLang] = useState("fr")
   const [editBoissonId, setEditBoissonId] = useState(null)
   const [previewImage, setPreviewImage] = useState(null)
+
+  // Toast & Confirm dialog state
+  const [toast, setToast] = useState({ message: "", type: "success" })
+  const [confirmDialog, setConfirmDialog] = useState({ open: false, message: "", onConfirm: null })
+
+  const showToast = (message, type = "success") => setToast({ message, type })
+  const closeToast = () => setToast({ message: "", type: "success" })
+  const openConfirm = (message, onConfirm) => setConfirmDialog({ open: true, message, onConfirm })
+  const closeConfirm = () => setConfirmDialog({ open: false, message: "", onConfirm: null })
 
   const fetchCategories = async () => {
     try {
@@ -152,12 +163,12 @@ const BoissonsPage = () => {
         await API.put(`/categories-boisson/${editCategoryId}`, form, {
           headers: { "Content-Type": "multipart/form-data" },
         })
-        alert("Catégorie mise à jour")
+        showToast("Catégorie mise à jour avec succès", "success")
       } else {
         await API.post("/categories-boisson", form, {
           headers: { "Content-Type": "multipart/form-data" },
         })
-        alert("Catégorie créée")
+        showToast("Catégorie créée avec succès", "success")
       }
       setCategoryFormData({ name: "", image: null, translations: { fr: { name: "" }, ar: { name: "" } } })
       setCategoryPreviewImage(null)
@@ -165,7 +176,7 @@ const BoissonsPage = () => {
       setShowCategoryForm(false)
       fetchCategories()
     } catch (err) {
-      alert("Erreur")
+      showToast("Erreur lors de l'enregistrement de la catégorie", "error")
       console.error("Error submitting category:", err)
     }
   }
@@ -190,21 +201,23 @@ const BoissonsPage = () => {
     }
   }
 
-  const handleDeleteCategory = async (id) => {
-    if (window.confirm("Supprimer cette catégorie ?")) {
+  const handleDeleteCategory = (id) => {
+    openConfirm("Voulez-vous vraiment supprimer cette catégorie ?", async () => {
+      closeConfirm()
       try {
         await API.delete(`/categories-boisson/${id}`)
         fetchCategories()
+        showToast("Catégorie supprimée avec succès", "success")
       } catch (error) {
         console.error("Error deleting category:", error)
-        alert("Erreur lors de la suppression")
+        showToast("Erreur lors de la suppression", "error")
       }
-    }
+    })
   }
 
   const handleBoissonSubmit = async (e) => {
     e.preventDefault()
-    if (!activeCategory) return alert("Sélectionnez une catégorie")
+    if (!activeCategory) return showToast("Sélectionnez une catégorie", "info")
 
     try {
       const form = new FormData()
@@ -229,12 +242,12 @@ const BoissonsPage = () => {
         await API.put(`/boissons/${editBoissonId}`, form, {
           headers: { "Content-Type": "multipart/form-data" },
         })
-        alert("Boisson modifiée")
+        showToast("Boisson modifiée avec succès", "success")
       } else {
         await API.post("/boissons", form, {
           headers: { "Content-Type": "multipart/form-data" },
         })
-        alert("Boisson ajoutée")
+        showToast("Boisson ajoutée avec succès", "success")
       }
 
       setBoissonFormData({
@@ -252,7 +265,7 @@ const BoissonsPage = () => {
       fetchBoissons(activeCategory._id)
     } catch (error) {
       console.error("Error submitting boisson:", error)
-      alert("Erreur lors de l'enregistrement")
+      showToast("Erreur lors de l'enregistrement", "error")
     }
   }
 
@@ -305,17 +318,18 @@ const BoissonsPage = () => {
     }
   }
 
-  const handleDeleteBoisson = async (id) => {
-    if (window.confirm("Voulez-vous supprimer cette boisson ?")) {
+  const handleDeleteBoisson = (id) => {
+    openConfirm("Voulez-vous vraiment supprimer cette boisson ?", async () => {
+      closeConfirm()
       try {
         await API.delete(`/boissons/${id}`)
         fetchBoissons(activeCategory._id)
-        alert("Boisson supprimée")
+        showToast("Boisson supprimée avec succès", "success")
       } catch (error) {
         console.error("Error deleting boisson:", error)
-        alert("Erreur lors de la suppression")
+        showToast("Erreur lors de la suppression", "error")
       }
-    }
+    })
   }
 
   const formatDate = (date) => {
@@ -889,6 +903,14 @@ const BoissonsPage = () => {
           </div>
         </div>
       </div>
+
+      <Toast message={toast.message} type={toast.type} onClose={closeToast} />
+      <ConfirmDialog
+        open={confirmDialog.open}
+        message={confirmDialog.message}
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={closeConfirm}
+      />
 
       <style jsx>{`
 /* Enhanced Category Styles */
