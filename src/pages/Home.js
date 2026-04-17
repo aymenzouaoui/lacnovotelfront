@@ -260,7 +260,7 @@ const HomeClient = () => {
       title: "",
       description: "",
       image: "/images/accor.png",
-      link: "https://all.accor.com/loyalty-program/reasonstojoin/index.en.shtml",
+      link: "https://bit.ly/3jyy5Ya",
       external: true,
     },
     {
