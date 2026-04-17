@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import API from "../services/api"
 import ThemeToggle from "../components/ThemeToggle"
+import { useTheme } from "../context/ThemeContext"
 import "./RestaurantsMenusNew.css"
 import "./client-image-fix-dark.css"
 import { motion } from "framer-motion"
@@ -296,6 +297,7 @@ const languages = [
 
 const RestaurantsMenusClient = () => {
   const navigate = useNavigate()
+  const { isDark } = useTheme()
   const [restaurants, setRestaurants] = useState([])
   const [selectedRestaurant, setSelectedRestaurant] = useState(null)
   const [menus, setMenus] = useState([])
@@ -601,7 +603,7 @@ useEffect(() => {
     "arachide", "celeri", "crustaces", "gluten", "fruitsACoque", "lait", "lupin",
     "oeuf", "poisson", "mollusques", "moutarde", "sesame", "soja", "sulfites"
   ]
-  const strokeAllergen = "#333333"
+  const strokeAllergen = isDark ? "#a8c4e8" : "#333333"
   const allergenIcons = {
     arachide: (
       <svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">

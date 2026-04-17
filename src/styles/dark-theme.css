@@ -77,6 +77,11 @@ html[data-theme="dark"] {
   --shadow-sm:     var(--dk-shadow-sm);
   --shadow-md:     var(--dk-shadow-md);
   --shadow-lg:     var(--dk-shadow-lg);
+  --pro-text:      #eaf0f8;
+  --pro-text-muted:#8fa3be;
+  --pro-primary:   #4f9eff;
+  --pro-primary-hover: #2d7de8;
+  --pro-primary-soft: #1a2e4a;
   background:      var(--dk-bg);
   color:           var(--dk-text);
 }
@@ -184,13 +189,21 @@ html[data-theme="dark"] {
   -webkit-backdrop-filter: blur(18px) !important;
 }
 
-/* Logo – invert to white in dark mode */
+/* Logo – white background pill so the original logo stays readable on dark headers */
 [data-theme="dark"] .logo,
 [data-theme="dark"] .logo-new,
 [data-theme="dark"] .logo-drinks,
 [data-theme="dark"] .logo-room-service {
-  filter: brightness(0) invert(1) !important;
-  opacity: 0.88 !important;
+  filter: none !important;
+  opacity: 1 !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-radius: 8px !important;
+  padding: 3px 8px !important;
+}
+
+[data-theme="dark"] .logo-container,
+[data-theme="dark"] .logo-container-new {
+  background: transparent !important;
 }
 
 /* Back button – dark */
@@ -740,3 +753,636 @@ html[data-theme="dark"] {
 [data-theme="dark"] .text-secondary { color: var(--dk-text-muted)  !important; }
 [data-theme="dark"] .text-accent    { color: var(--dk-accent)      !important; }
 [data-theme="dark"] .bg-surface     { background: var(--dk-surface)!important; }
+
+/* ─── 31. Modern menu (TerrassePiscine / Restaurants) ────────── */
+[data-theme="dark"] .modern-menu-container {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border) !important;
+  box-shadow: var(--dk-shadow-sm) !important;
+}
+
+[data-theme="dark"] .modern-menu-tabs {
+  background: var(--dk-surface-2) !important;
+  border-bottom-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .menu-tab {
+  background: var(--dk-surface-2) !important;
+  color: var(--dk-text-muted) !important;
+  border-bottom-color: transparent !important;
+}
+
+[data-theme="dark"] .menu-tab:hover {
+  background: var(--dk-surface-3) !important;
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .menu-tab.active {
+  background: var(--dk-surface) !important;
+  color: var(--dk-accent) !important;
+  border-bottom-color: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .modern-menu-items {
+  background: var(--dk-surface) !important;
+}
+
+[data-theme="dark"] .modern-item {
+  border-bottom-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .modern-item-name {
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .modern-item-description {
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .modern-item-image {
+  background: var(--dk-surface-3) !important;
+}
+
+[data-theme="dark"] .modern-item-price {
+  color: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .modern-section-title {
+  color: var(--dk-accent) !important;
+  border-bottom-color: var(--dk-border) !important;
+}
+
+/* ─── 32. restaurant-card-new child text ─────────────────────── */
+[data-theme="dark"] .restaurant-card-title-new {
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .restaurant-card-description-new {
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .restaurant-card-content-new {
+  background: var(--dk-surface) !important;
+}
+
+/* ─── 33. content-container areas (Terrasse / Chambres / Séminaire / Spas) */
+[data-theme="dark"] .hotel-app9 .content-container,
+[data-theme="dark"] .hotel-app .content-container,
+[data-theme="dark"] .hotel-app8 .content-container,
+[data-theme="dark"] .hotel-app0 .content-container {
+  background: transparent !important;
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .hotel-app9 .room-card,
+[data-theme="dark"] .hotel-app .room-card,
+[data-theme="dark"] .hotel-app8 .room-card {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border) !important;
+  box-shadow: var(--dk-shadow-sm) !important;
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .hotel-app9 .content-item,
+[data-theme="dark"] .hotel-app .content-item,
+[data-theme="dark"] .hotel-app8 .content-item {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border) !important;
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .hotel-app9 .seminaire-detail-container,
+[data-theme="dark"] .hotel-app8 .seminaire-detail-container {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border) !important;
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .hotel-app8 .seminaire-navigation {
+  background: var(--dk-surface-2) !important;
+  border-bottom-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .hotel-app .room-card h3,
+[data-theme="dark"] .hotel-app .room-card p,
+[data-theme="dark"] .hotel-app8 .room-card h3,
+[data-theme="dark"] .hotel-app8 .room-card p {
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .hotel-app .room-card-meta span,
+[data-theme="dark"] .hotel-app8 .room-card-meta span {
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .hotel-app9 .modal,
+[data-theme="dark"] .hotel-app8 .modal {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border) !important;
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .hotel-app9 .modal input,
+[data-theme="dark"] .hotel-app8 .modal input {
+  background: var(--dk-bg) !important;
+  border-color: var(--dk-border) !important;
+  color: var(--dk-text) !important;
+}
+
+/* ─── 34. LoisirsClient (hotel-app4) ─────────────────────────── */
+[data-theme="dark"] .hotel-app4 .content-container {
+  background: var(--dk-bg) !important;
+}
+
+[data-theme="dark"] .hotel-app4 .nav-tab {
+  background: var(--dk-surface-2) !important;
+  color: var(--dk-text-muted) !important;
+  border-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .hotel-app4 .nav-tab:hover {
+  color: var(--dk-accent) !important;
+  border-color: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .hotel-app4 .nav-tab.active {
+  background: var(--dk-accent) !important;
+  color: #fff !important;
+  border-color: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .hotel-app4 .loisir-card {
+  background: var(--dk-surface) !important;
+  box-shadow: var(--dk-shadow-sm) !important;
+}
+
+[data-theme="dark"] .hotel-app4 .loisir-title {
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .hotel-app4 .loisir-description {
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .hotel-app4 .loisir-footer {
+  border-top-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .hotel-app4 .loisir-time {
+  color: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .hotel-app4 .navigation-tabs::-webkit-scrollbar-track {
+  background: var(--dk-surface-2) !important;
+}
+
+[data-theme="dark"] .hotel-app4 .navigation-tabs::-webkit-scrollbar-thumb {
+  background: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .hotel-app4 .loading-container {
+  color: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .hotel-app4 .loading-spinner {
+  border-color: var(--dk-surface-3) !important;
+  border-top-color: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .hotel-app4 .empty-state {
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .hotel-app4 .empty-state h3 {
+  color: var(--dk-text) !important;
+}
+
+/* ─── 35. SeminaireClient (hotel-app8) extras ────────────────── */
+[data-theme="dark"] .hotel-app8 .thumbnail-name {
+  background: var(--dk-surface-2) !important;
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .hotel-app8 .fiche-button {
+  color: var(--dk-text) !important;
+}
+
+/* ─── 36. TerrassePiscineClient (hotel-app9) modal extras ──────── */
+[data-theme="dark"] .hotel-app9 .modal h2 {
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .hotel-app9 .modal input {
+  background: var(--dk-bg) !important;
+  border-color: var(--dk-border) !important;
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .hotel-app9 .modal-actions button:first-child {
+  background: var(--dk-accent) !important;
+  color: #fff !important;
+}
+
+[data-theme="dark"] .hotel-app9 .modal-actions button:last-child {
+  background: var(--dk-surface-3) !important;
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .hotel-app9 .dietary-legend {
+  background: var(--dk-surface-2) !important;
+  border-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .hotel-app9 .dietary-legend h4 {
+  color: var(--dk-accent) !important;
+}
+
+/* ─── 37. SpasClient (hotel-app0) extras ─────────────────────── */
+[data-theme="dark"] .hotel-app0 .service-item {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .hotel-app0 .service-item:hover {
+  background: var(--dk-surface-2) !important;
+  border-color: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .hotel-app0 .loading-container {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .hotel-app0 .modal input {
+  background: var(--dk-bg) !important;
+  border-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .hotel-app0 .modal-actions button:last-child {
+  background: var(--dk-surface-3) !important;
+  color: var(--dk-text-muted) !important;
+}
+
+/* ─── 38. RestaurantsMenusClient / RestaurantsMenusNew (hotel-app-new) ── */
+
+/* App background */
+[data-theme="dark"] .hotel-app-new {
+  background: var(--dk-bg) !important;
+}
+
+/* ── Restaurant cards (old CSS classes from RestaurantsMenusClient.css) ── */
+[data-theme="dark"] .hotel-app-new .restaurant-card {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border) !important;
+  box-shadow: var(--dk-shadow-sm) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .restaurant-card:hover {
+  box-shadow: var(--dk-shadow-md) !important;
+  border-color: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .restaurant-card-description {
+  color: var(--dk-text-muted) !important;
+}
+
+/* ── Book-view spread ──────────────────────────────────────────── */
+[data-theme="dark"] .hotel-app-new .menu-spread {
+  background: var(--dk-surface) !important;
+  box-shadow: var(--dk-shadow-lg) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .menu-image-side {
+  background: var(--dk-surface-2) !important;
+  border-right-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .menu-items-side {
+  background: var(--dk-surface) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .menu-item {
+  background: var(--dk-surface-2) !important;
+  border-color: var(--dk-border) !important;
+  border-left-color: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .menu-item-name {
+  color: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .menu-item-description {
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .menu-title {
+  color: var(--dk-accent) !important;
+  border-bottom-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .nav-button {
+  background: var(--dk-surface-2) !important;
+  border-color: var(--dk-accent) !important;
+  color: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .nav-button:hover:not(:disabled) {
+  background: var(--dk-accent) !important;
+  color: #fff !important;
+}
+
+/* ── Inline-JSX: menu-image-side-fixed ───────────────────────── */
+[data-theme="dark"] .hotel-app-new .menu-image-side-fixed {
+  background: var(--dk-surface-2) !important;
+}
+
+/* ── Inline-JSX: view-toggle-button (circle) ─────────────────── */
+[data-theme="dark"] .hotel-app-new .view-toggle-button {
+  background: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .view-toggle-button:hover {
+  background: var(--dk-accent-dark) !important;
+}
+
+/* ── Inline-JSX: view-toggle-with-icon (pill) ────────────────── */
+[data-theme="dark"] .hotel-app-new .view-toggle-with-icon {
+  background: var(--dk-surface-2) !important;
+  border-color: var(--dk-border) !important;
+  color: var(--dk-text-muted) !important;
+}
+
+/* ── Inline-JSX: modern-menu-container ───────────────────────── */
+[data-theme="dark"] .hotel-app-new .modern-menu-container {
+  background: var(--dk-surface) !important;
+  box-shadow: var(--dk-shadow-md) !important;
+}
+
+/* ── Inline-JSX: modern-menu-tabs & menu-tab ─────────────────── */
+[data-theme="dark"] .hotel-app-new .modern-menu-tabs {
+  background: var(--dk-surface-2) !important;
+  border-bottom-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .menu-tab {
+  background: var(--dk-surface-2) !important;
+  color: var(--dk-text-muted) !important;
+  border-right-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .menu-tab:hover {
+  color: var(--dk-text) !important;
+  background: var(--dk-surface-3) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .menu-tab.active {
+  background: var(--dk-accent) !important;
+  color: #fff !important;
+}
+
+/* ── Inline-JSX: allergen toggle & panel ─────────────────────── */
+[data-theme="dark"] .hotel-app-new .allergen-legend-toggle {
+  background: var(--dk-surface-2) !important;
+  border-color: var(--dk-border) !important;
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .allergen-legend-toggle:hover {
+  background: var(--dk-surface-3) !important;
+  border-color: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .allergen-legend-toggle-icon {
+  background: rgba(79, 158, 255, 0.15) !important;
+  color: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .allergen-legend-regulatory {
+  background: var(--dk-surface-2) !important;
+  border-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .allergen-legend-title {
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .allergen-legend-subtitle {
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .modern-allergen {
+  background: var(--dk-surface-3) !important;
+  border-color: var(--dk-border) !important;
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .modern-allergen:hover {
+  border-color: var(--dk-accent) !important;
+  box-shadow: var(--dk-shadow-sm) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .allergen-icon-wrap {
+  background: var(--dk-surface) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .allergen-name {
+  color: var(--dk-text) !important;
+}
+
+/* ── Inline-JSX: modern-menu-items area ──────────────────────── */
+[data-theme="dark"] .hotel-app-new .modern-menu-items {
+  background: var(--dk-surface) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .modern-item {
+  border-bottom-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .modern-item-title {
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .modern-item-description {
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .modern-item-weight {
+  color: var(--dk-text-faint) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .modern-item-price {
+  color: var(--dk-accent) !important;
+}
+
+/* ── Inline-JSX: modern-grid items ───────────────────────────── */
+[data-theme="dark"] .hotel-app-new .modern-grid-item {
+  background: var(--dk-surface-2) !important;
+  box-shadow: var(--dk-shadow-sm) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .modern-grid-title {
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .modern-grid-description {
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .modern-grid-weight {
+  color: var(--dk-text-faint) !important;
+}
+
+/* ── New-CSS classes from RestaurantsMenusNew.css ─────────────── */
+[data-theme="dark"] .hotel-app-new .menu-image-side-new {
+  background: var(--dk-surface-2) !important;
+  border-right-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .menu-image-placeholder-new {
+  background: var(--dk-surface-3) !important;
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .menu-item-new {
+  background: var(--dk-surface-2) !important;
+  border-color: var(--dk-border) !important;
+  border-left-color: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .menu-item-new:hover {
+  background: var(--dk-surface-3) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .menu-item-name-new {
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .menu-item-description-new {
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .dietary-legend {
+  background: var(--dk-surface-2) !important;
+  border-color: var(--dk-border) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .dietary-legend h4 {
+  color: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .nav-button-new {
+  background: var(--dk-surface-2) !important;
+  border-color: var(--dk-accent) !important;
+  color: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .nav-button-new:hover:not(:disabled) {
+  background: var(--dk-accent) !important;
+  color: #fff !important;
+}
+
+[data-theme="dark"] .hotel-app-new .empty-state-new {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border) !important;
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .empty-state-new h3 {
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .modal-new {
+  background: var(--dk-surface) !important;
+  border-color: var(--dk-border) !important;
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .modal-new input {
+  background: var(--dk-bg) !important;
+  border-color: var(--dk-border) !important;
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .modal-actions-new button:first-child {
+  background: var(--dk-accent) !important;
+  color: #fff !important;
+}
+
+[data-theme="dark"] .hotel-app-new .modal-actions-new button:last-child {
+  background: var(--dk-surface-3) !important;
+  color: var(--dk-text-muted) !important;
+}
+
+/* ── Loading & empty ─────────────────────────────────────────── */
+[data-theme="dark"] .hotel-app-new .loading-container-new {
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .hotel-app-new .loading-spinner-new {
+  border-color: var(--dk-surface-3) !important;
+  border-top-color: var(--dk-accent) !important;
+}
+
+/* ── Welcome banner ──────────────────────────────────────────── */
+[data-theme="dark"] .hotel-app-new .welcome-banner-new h1,
+[data-theme="dark"] .hotel-app-new .welcome-banner-new p {
+  color: var(--dk-text) !important;
+}
+
+/* ─── 39. EvenementsClient (hotel-app2) – only hardcoded colors ─ */
+[data-theme="dark"] .hotel-app2 .reserve-button,
+[data-theme="dark"] .hotel-app2 .nettoyage-button {
+  background: var(--dk-accent) !important;
+  color: #fff !important;
+}
+
+/* ─── 40. ChambresClient (hotel-app) room modal ──────────────── */
+[data-theme="dark"] .hotel-app .content-item-image {
+  background: var(--dk-surface-3) !important;
+}
+
+[data-theme="dark"] .hotel-app .room-description-preview {
+  background: rgba(79, 158, 255, 0.06) !important;
+  color: var(--dk-text-muted) !important;
+  border-left-color: rgba(79, 158, 255, 0.3) !important;
+}
+
+[data-theme="dark"] .hotel-app .room-info-row {
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .hotel-app .room-type-badge {
+  background: rgba(79, 158, 255, 0.12) !important;
+  color: var(--dk-accent) !important;
+  border-color: rgba(79, 158, 255, 0.25) !important;
+}
+
+[data-theme="dark"] .hotel-app .room-modal-overlay {
+  background: rgba(0, 0, 0, 0.85) !important;
+}
+
+[data-theme="dark"] .hotel-app .room-modal {
+  background: var(--dk-surface) !important;
+  color: var(--dk-text) !important;
+}
+
+[data-theme="dark"] .hotel-app .room-modal-header {
+  background: var(--dk-surface-2) !important;
+}
+
+[data-theme="dark"] .hotel-app .room-gallery-nav {
+  background: rgba(26, 35, 50, 0.92) !important;
+  color: var(--dk-accent) !important;
+}
+
+[data-theme="dark"] .hotel-app .room-details-description {
+  background: rgba(79, 158, 255, 0.04) !important;
+  color: var(--dk-text-muted) !important;
+}
+
+[data-theme="dark"] .hotel-app .content-item-content h3 {
+  background: linear-gradient(135deg, var(--dk-accent) 0%, #7ab8ff 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
