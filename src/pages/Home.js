@@ -473,9 +473,10 @@ const HomeClient = () => {
     {
       id: "feedback",
       title: t("feedback"),
-      image: "/images/feeddd.jpeg",
+      image: "/images/feed3.png",
       fallback: "/placeholder.svg?height=300&width=200&text=Feedback",
       url: "https://tinyurl.com/ydpjnzt7",
+      objectFit: "contain",
     },
    
   ], [currentLanguage])
